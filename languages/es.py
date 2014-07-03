@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -316,6 +316,8 @@
 'No records found': 'No se han encontrado registros',
 'Nombre': 'Nombre',
 'Nombre Comercial': 'Nombre Comercial',
+'Nombre de Administrador': 'Nombre de Administrador',
+'Nombre de Departamento': 'Nombre de Departamento',
 'Nombre de la Sucursal': 'Nombre de la Sucursal',
 'None': 'None',
 'Not authorized': 'No autorizado',
@@ -352,6 +354,7 @@
 'previous 100 rows': '100 filas anteriores',
 'Profile': 'Perfil',
 'Profile updated': 'Perfil actualizado',
+'Puesto': 'Puesto',
 'Puesto Id': 'Puesto Id',
 'Python': 'Python',
 'Query Not Supported: %s': 'Consulta No Soportada: %s',
