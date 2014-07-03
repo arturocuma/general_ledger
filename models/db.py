@@ -132,7 +132,7 @@ db.define_table('persona',
     Field('dir_telefono', 'string', label='Teléfono'),
     Field('dir_movil', 'string', label='Móvil'),
     Field('dir_email', requires=IS_EMAIL(), label='Email'),
-    Field('localidad_id', 'reference localidad', label='Localidad/Ciudad')
+    Field('localidad_id', 'reference localidad', requires=IS_NULL_OR(IS_IN_DB(db, 'localidad.id')), label='Localidad/Ciudad')
     )
 
 db.define_table('empresa',
