@@ -235,7 +235,7 @@ if not db(db.tipo_cc.id>0).count():
     
 db.define_table('cc_empresa',
     Field('empresa_id', 'reference empresa', label='Empresa'),
-    Field('cuenta_padre', 'reference cc_empresa',  requires=IS_NULL_OR(IS_IN_DB(db, 'cc_empresa.id', '%(num_cc)s %(descripcion)s')), label='Cuenta Padre'),
+    Field('cuenta_padre', 'reference cc_empresa', represent = lambda id,row: db.cc_empresa(row.cuenta_padre).num_cc if row.cuenta_padre != None else 'Raíz', requires=IS_NULL_OR(IS_IN_DB(db, 'cc_empresa.id', '%(num_cc)s %(descripcion)s')), label='Cuenta Padre'),
     Field('num_cc', 'string', label='Número de Cuenta Contable'),
     Field('descripcion', 'string', label='Descripción'),
     Field('nivel', 'integer'),

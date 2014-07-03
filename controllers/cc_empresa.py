@@ -23,7 +23,7 @@ def crear_cc(form):
 
 def listar():
     form = SQLFORM.smartgrid(db.cc_empresa,
-                             onvalidation = crear_cc,
+                             ##onvalidation = crear_cc,
                              editable = True,
                              linked_tables=['empresa'])
     return dict(form=form)
