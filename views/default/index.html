@@ -4,6 +4,75 @@
     <h1>{{=message}}<br><small>Captura de pólizas y asientos contables</small></h1>
   </div>
 <br>
-<img src="{{=URL('static/images/','pic1.jpg')}}">
+<!--<img src="{{=URL('static/images/','pic1.jpg')}}">
 <img src="{{=URL('static/images/','pic2.jpg')}}">
-<img src="{{=URL('static/images/','pic3.jpg')}}">
+<img src="{{=URL('static/images/','pic3.jpg')}}">-->
+
+	<div class="row">
+		<div class="col-sm-6">
+			<div id="activos" style="height: 300px;"></div>
+		</div>
+		<div class="col-sm-6">
+			<div id="pasivos" style="height: 300px;"></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="col-sm-6">
+			<div id="capital" style="height: 300px;"></div>
+		</div>
+	</div>
+	<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+      google.load("visualization", "1", {packages:["corechart"]});
+      google.setOnLoadCallback(drawChart);
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable([
+          ['Activos', '$'],
+          ['Activos fijos',     11],
+          ['Activo circulante',      10],
+          ['Activo diferido',  9],
+        ]);
+
+        var options = {
+          title: 'Activos'
+        };
+
+        var chart = new google.visualization.PieChart(document.getElementById('activos'));
+        chart.draw(data, options);
+      
+        var data = google.visualization.arrayToDataTable([
+          ['Mes', 'Pasivo fijo', 'Pasivo circulante', 'Creditos diferidos'],
+          ['Ene',  1000,      400, 500],
+          ['Feb',  1170,      460, 920],
+          ['Mar',  390,       1120, 550],
+          ['Abr',  1030,      540, 460],
+          ['May',  660,       1120, 760],
+          ['Jun',  760,       110, 254],
+          ['Jul',  820,       208, 987]
+        ]);
+
+        var options = {
+          title: 'Pasivos',
+          hAxis: {title: 'Mes',  titleTextStyle: {color: '#333'}},
+          vAxis: {minValue: 0}
+        };
+
+        var chart = new google.visualization.AreaChart(document.getElementById('pasivos'));
+        chart.draw(data, options);
+
+        var data = google.visualization.arrayToDataTable([
+			['Capital', 'Cuenta', { role: 'style' }],
+		    ['Ventas', 894, 'red'],            // RGB value
+			['Costos de venta', 1049, 'green'],            // English color name
+			['Capital', 930, 'gold'],
+			['Perdidas y ganancias', 450, 'blue' ], // CSS-style declaration
+		    ]);
+
+       	var options = {
+          title: 'Capital'
+        };
+
+        var chart = new google.visualization.BarChart(document.getElementById('capital'));
+        chart.draw(data, options);
+    }
+    </script>
