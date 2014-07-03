@@ -14,22 +14,32 @@
     <script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
     <link href="{{=URL('static', 'css/jquery.steps.css')}}" rel="stylesheet">
     <link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
-    
+        <style>
+        .wizard > .content
+            {
+                overflow-y:auto;
+            }
+    </style>
 </head>
 <body>
 <script>
-$(function ()
-                {
-                    $("#wizard").steps({
-                        headerTag: "h2",
-                        bodyTag: "section",
-                        transitionEffect: "slideLeft",
-                        stepsOrientation: "vertical"
-                    });
-                    $("#wizard2").steps({
-                        
-                    });
-                });
+$(function (){
+                    
+       $("#wizard").steps({
+        headerTag: 'h2',
+        bodyTag: 'section',
+        labels: {
+            next: 'Siguiente',
+            previous: 'Anterior',
+            finish: 'Finalizar',
+            cancel: 'Cancelar'
+        },
+        autofocus: true,
+        titleTemplate: "<center>#title#</center>",
+        transitionEffect: 'slideLeft',
+        
+    });
+});
 </script>
     <div id="wizard">
     <h2>Cat Cuentas</h2>
