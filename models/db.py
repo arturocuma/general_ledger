@@ -194,7 +194,7 @@ db.define_table('proveedor_banco',
     )
 
 auth.settings.extra_fields['auth_user']= [
-    Field('empleado_id', 'reference empleado'),
+    Field('empleado_id', 'reference empleado', requires=IS_NULL_OR(IS_IN_DB(db, 'empleado.id', '%(nombre)s %(ap_paterno)s %(ap_materno)s'))),
     ]
 
 auth.define_tables(username=False, signature=False)
