@@ -4,7 +4,19 @@
     <h1>{{=message}}<br><small>General Ledger</small></h1>
   </div>
 
-<a href="{{=URL('empresa','listar')}}" class="btn btn-large btn-info">Empresa</a>
-<a href="{{=URL('cc_empresa','listar')}}" class="btn btn-large btn-info">Catalogo de Empresas</a>
-<a href="{{=URL('asiento','listar')}}" class="btn btn-large btn-info">Pólizas Contables</a>
-<a href="{{=URL('cc_empresa','resumen')}}" class="btn btn-large btn-info">Resumen de Cuentas</a>
+ 	<div class="row">
+	 	<div class="col-sm-12">
+			<a href="{{=URL('empresa','listar')}}" class="btn btn-large btn-info">Empresa</a>
+			<a href="{{=URL('cc_empresa','listar')}}" class="btn btn-large btn-info">Catalogo de Empresas</a>
+			<a href="{{=URL('asiento','listar')}}" class="btn btn-large btn-info">Pólizas Contables</a>
+			<a href="{{=URL('cc_empresa','resumen')}}" class="btn btn-large btn-info">Resumen de Cuentas</a>
+		</div>
+    </div>
+    <div class="row">
+	 	<div class="col-sm-12">
+			<a href="{{=URL('default','index2')}}" class="btn btn-large btn-warning">Configuración inicial p1</a>
+			<a href="{{=URL('default','index3')}}" class="btn btn-large btn-warning">Configuración inicial p2</a>
+			<a href="{{=URL('default','index4')}}" class="btn btn-large btn-warning">Configuración inicial p3</a>
+			<a href="{{=URL('wizard_cat_cuentas','index')}}" class="btn btn-large btn-danger">Wizard</a>
+		</div>
+    </div>
