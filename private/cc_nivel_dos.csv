@@ -1,0 +1,32 @@
+0,1,1.01,Activo circulante,2,1,1
+0,1,1.02,Activo fijo,2,1,1
+0,1,1.03,Activo diferido,2,1,1
+0,2,2.01,Pasivo circulante,2,2,1
+0,2,2.02,Pasivo circulante,2,2,1
+0,2,2.03,Pasivo circulante,2,2,1
+0,3,3.01,Capital social fijo,2,2,1
+0,3,3.02,Capital social variable,2,2,1
+0,3,3.03,Reserva legal,2,2,1
+0,3,3.04,Resultado del ejercicio,2,2,1
+0,3,3.05,Resultado de ejercicios anteriores,2,2,1
+0,3,3.06,Superávit por revaluación,2,2,1
+0,4,4.01,Ventas,2,3,1
+0,4,4.02,Productos financieros,2,3,1
+0,4,4.03,Otros ingresos,2,3,1
+0,4,4.04,Devoluciones sobre compras,2,3,1
+0,4,4.05,Rebajas sobre compras,2,3,1
+0,4,4.06,Bonificaciones sobre compras,2,3,1
+0,4,4.07,Descuentos sobre compras,2,3,1
+0,4,4.08,Utilidad en cambios,2,3,1
+0,5,5.01,Compras,2,3,1
+0,5,5.02,Gastos sobre compras,2,3,1
+0,5,5.03,Devoluciones sobre ventas,2,3,1
+0,5,5.04,Rebajas sobre ventas,2,3,1
+0,5,5.05,Bonificaciones sobre ventas,2,3,1
+0,5,5.06,Descuentos sobre ventas,2,3,1
+0,5,5.07,Costo de ventas,2,3,1
+0,5,5.08,Gastos de venta,2,3,1
+0,5,5.09,Gastos de administración,2,3,1
+0,5,5.10,Gastos financieros,2,3,1
+0,5,5.11,Otros gastos,2,3,1
+0,5,5.12,Impuestos causados,2,3,1

@@ -42,7 +42,7 @@ def wiz_cc():
     
 def cat_cuentas_nivel_uno(empresa_id):    
     nivel_uno=[]
-    with open('applications/fase1/private/cc_nivel_uno.csv', 'rb') as f:
+    with open('applications/general_ledger/private/cc_nivel_uno.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:        
             row[0]=str(empresa_id)
@@ -51,7 +51,7 @@ def cat_cuentas_nivel_uno(empresa_id):
 
 def cat_cuentas_nivel_dos(empresa_id):
     nivel_dos=[]
-    with open('applications/fase1/private/cc_nivel_dos.csv', 'rb') as f:
+    with open('applications/general_ledger/private/cc_nivel_dos.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:        
             row[0]=str(empresa_id)
@@ -60,7 +60,7 @@ def cat_cuentas_nivel_dos(empresa_id):
 
 def cat_cuentas_nivel_tres(empresa_id):
     nivel_tres=[]
-    with open('applications/fase1/private/cc_nivel_tres.csv', 'rb') as f:
+    with open('applications/general_ledger/private/cc_nivel_tres.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:        
             row[0]=str(empresa_id)
