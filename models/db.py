@@ -207,12 +207,32 @@ db.define_table('tipo_naturaleza',
    Field('nombre','string'),
    format='%(nombre)s'
    )
+if not db(db.tipo_naturaleza.id>0).count():
+    db.tipo_naturaleza.insert(
+        nombre = 'ACREEDORA',
+    )
+    db.tipo_naturaleza.insert(
+        nombre = 'DEUDORA',
+    )
+    db.tipo_naturaleza.insert(
+        nombre = 'CAPITAL',
+    )
+    db.tipo_naturaleza.insert(
+        nombre = 'RESULTADO',
+    )
 
 db.define_table('tipo_cc',
    Field('nombre','string'),
    format='%(nombre)s'
    )
-
+if not db(db.tipo_cc.id>0).count():
+    db.tipo_cc.insert(
+        nombre = 'ACUMULATIVA',
+    )
+    db.tipo_cc.insert(
+        nombre = 'DETALLE',
+    )
+    
 db.define_table('cc_empresa',
     Field('empresa_id', 'reference empresa', label='Empresa'),
     Field('cuenta_padre', 'reference cc_empresa', represent = lambda id,row: db.cc_empresa(row.cuenta_padre).num_cc if row.cuenta_padre != None else 'Raíz', requires=IS_NULL_OR(IS_IN_DB(db, 'cc_empresa.id', '%(num_cc)s %(descripcion)s')), label='Cuenta Padre'),
