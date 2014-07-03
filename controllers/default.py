@@ -9,6 +9,390 @@
 ## - call exposes all registered services (none by default)
 #########################################################################
 
+import csv
+import sqlite3
+
+def insertar_pais(nombre):
+    """
+    Inserta un registro `pais` si no existe,
+    en caso contrario retorna su id
+    """
+    try:
+        pais_id = db.pais.insert(nombre = nombre)
+    except sqlite3.IntegrityError:
+        pais_id = db(db.pais.nombre == nombre).select(db.pais.id).first()
+
+    return str(pais_id.id)
+
+def insertar_estado(nombre, clave_interna, pais_id):
+    """
+    Inserta un registro `estado` si no existe,
+    en caso contrario retorna su id
+    """
+    try:
+        estado_id = db.estado.insert(
+                nombre = nombre,
+                clave_interna = clave_interna,
+                pais_id = pais_id
+                )
+    except sqlite3.IntegrityError:
+        estado_id = db(db.estado.nombre == nombre).select(db.estado.id).first()
+
+    return str(estado_id.id)
+
+def insertar_municipio(nombre, clave_interna, estado_id):
+    """
+    Inserta un registro `municipio` si no existe, en caso contrario retorna su id
+    """
+    try:
+        municipio_id = db.municipio.insert(
+                nombre = nombre,
+                clave_interna = clave_interna,
+                estado_id = estado_id
+                )
+    except sqlite3.IntegrityError:
+        municipio_id = db(db.municipio.nombre == nombre).select(db.municipio.id).first()
+
+    return str(municipio_id.id)
+
+def insertar_localidad(
+        nombre,
+        clave_interna,
+        lat_grad,
+        lon_grad,
+        lat_dec,
+        lon_dec,
+        municipio_id
+        ):
+    """
+    Inserta un registro `localidad`
+    """
+
+    db.localidad.insert(
+            nombre = nombre,
+            clave_interna = clave_interna,
+            lat_grad = lat_grad,
+            lon_grad = lon_grad,
+            lat_dec = lat_dec,
+            lon_dec = lon_dec,
+            municipio_id = municipio_id
+        )
+
+def precargar():
+
+    pais_id = insertar_pais('MÉXICO')
+
+    # precargar estados
+    with open('csvs/localidades.csv', 'rb') as f:
+
+        reader = csv.reader(f)
+        lines = [line for line in reader]
+
+        for line in lines[0:6000]:
+
+            estado_id = insertar_estado(line[1], line[0], pais_id)
+            municipio_id = insertar_municipio(line[3], line[2], estado_id)
+            insertar_localidad(
+                    line[5], line[4],
+                    float(line[6]), float(line[7]),
+                    float(line[8]), float(line[9]),
+                    municipio_id
+                    )
+
+    return dict()
+
+def cargar_paises():
+    """
+    Genera un objeto SELECT de los países que ya existen en la BD.
+    """
+
+    opciones = [OPTION(pais.nombre, _value=pais.id) for pais in\
+               db().select(
+                   db.pais.ALL,
+                   #cache=(cache.ram, 3600) #problemas SQLite
+                   )
+               ]
+
+    opciones[:0] = [OPTION('TODOS', _value='')]
+
+    resultado = SELECT(
+        _id='pais_id',
+        *opciones,
+        **dict(
+            _name='paises',
+            requires = IS_IN_DB(db,'pais.nombre')
+        )
+    )
+    return resultado
+
+
+def cargar_estados():
+    """
+    Genera un objeto SELECT de los estados del pais X.
+    """
+
+    opciones = [OPTION(estado.nombre, _value=estado.id) for estado in\
+               db(db.estado.pais_id == request.vars.pais_id).select(
+                   db.estado.ALL,
+                   #cache=(cache.ram, 3600) #problemas SQLite
+                   )
+               ]
+
+    opciones[:0] = [OPTION('TODOS', _value='')]
+
+    resultado = SELECT(
+        _id='estado_id',
+        *opciones,
+        **dict(
+            _name='estados',
+            requires = IS_IN_DB(db, 'estado.nombre')
+        )
+    )
+    return resultado
+
+
+def cargar_municipios():
+    """
+    Genera un objeto SELECT de los municipios del estado X.
+    """
+
+    opciones = [OPTION(municipio.nombre, _value=municipio.id) for municipio in\
+               db(db.municipio.estado_id == request.vars.estado_id).select(
+                   db.municipio.ALL,
+                   #cache=(cache.ram, 3600) #problemas SQLite
+                   )
+               ]
+
+    opciones[:0] = [OPTION('TODOS', _value='')]
+
+    resultado = SELECT(
+        _id='municipio_id',
+        *opciones,
+        **dict(
+            _name='municipios',
+            requires = IS_IN_DB(db, 'municipio.nombre')
+        )
+    )
+    return resultado
+
+
+def cargar_localidades():
+    """
+    Genera un objeto SELECT de las localidades del municipio X.
+    """
+
+    opciones = [OPTION(localidad.nombre, _value=localidad.id) for localidad in\
+               db(db.localidad.municipio_id == request.vars.municipio_id).select(
+                   db.localidad.ALL,
+                   #cache=(cache.ram, 3600) #problemas SQLite
+                   )
+               ]
+
+    opciones[:0] = [OPTION('TODOS', _value='')]
+
+    resultado = SELECT(
+        _id='localidad_id',
+        *opciones,
+        **dict(
+            _name='localidad',
+            requires = IS_IN_DB(db, 'localidad.nombre')
+        )
+    )
+    return resultado
+
+
+def index2():
+    """
+    Útil para introducir los datos iniciales de una empresa
+    """
+
+    db.pais.nombre.writable = False
+    db.pais.nombre.readable = False
+
+    db.estado.nombre.writable = False
+    db.estado.nombre.readable = False
+    db.estado.clave_interna.writable = False
+    db.estado.clave_interna.readable = False
+
+    db.municipio.nombre.writable = False
+    db.municipio.nombre.readable = False
+    db.municipio.clave_interna.writable = False
+    db.municipio.clave_interna.readable = False
+
+    db.localidad.nombre.writable = False
+    db.localidad.nombre.readable = False
+    db.localidad.clave_interna.writable = False
+    db.localidad.clave_interna.readable = False
+    db.localidad.lat_grad.writable = False
+    db.localidad.lat_grad.readable = False
+    db.localidad.lon_grad.writable = False
+    db.localidad.lon_grad.readable = False
+    db.localidad.lat_dec.writable = False
+    db.localidad.lat_dec.readable = False
+    db.localidad.lon_dec.writable = False
+    db.localidad.lon_dec.readable = False
+
+    form = SQLFORM.factory(db.pais, db.estado, db.municipio,  db.localidad,\
+                        db.empresa)
+
+    if form.process().accepted:
+
+        empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
+        vars = {'empresa_id': empresa_id}
+        redirect(URL('default', 'index3', vars=vars))
+        response.flash = 'OK'
+
+    elif form.errors:
+        response.flash = 'Errores en el formulario'
+    else:
+        response.flash = 'Formulario incompleto'
+
+    return dict(form=form)
+
+
+def index3():
+    """
+    Útil para introducir los datos iniciales de una sucursal y departamento
+    """
+
+    db.pais.nombre.writable = False
+    db.pais.nombre.readable = False
+
+    db.estado.nombre.writable = False
+    db.estado.nombre.readable = False
+    db.estado.clave_interna.writable = False
+    db.estado.clave_interna.readable = False
+
+    db.municipio.nombre.writable = False
+    db.municipio.nombre.readable = False
+    db.municipio.clave_interna.writable = False
+    db.municipio.clave_interna.readable = False
+
+    db.localidad.nombre.writable = False
+    db.localidad.nombre.readable = False
+    db.localidad.clave_interna.writable = False
+    db.localidad.clave_interna.readable = False
+    db.localidad.lat_grad.writable = False
+    db.localidad.lat_grad.readable = False
+    db.localidad.lon_grad.writable = False
+    db.localidad.lon_grad.readable = False
+    db.localidad.lat_dec.writable = False
+    db.localidad.lat_dec.readable = False
+    db.localidad.lon_dec.writable = False
+    db.localidad.lon_dec.readable = False
+
+    db.sucursal.empresa_id.writable = False
+    db.sucursal.empresa_id.readable = False
+    db.sucursal.nombre.writable = True
+    db.sucursal.nombre.readable = True
+
+    form = SQLFORM.factory(db.sucursal, db.pais, db.estado, db.municipio,\
+            db.localidad)
+
+    form.vars.empresa_id = request.vars.empresa_id
+
+    if form.process().accepted:
+
+        sucursal_id = db.sucursal.insert(**db.sucursal._filter_fields(form.vars))
+
+        vars = {'sucursal_id': sucursal_id, 'empresa_id': request.vars.empresa_id}
+
+        redirect(URL('default', 'index4', vars=vars))
+        response.flash = 'OK'
+
+    elif form.errors:
+        response.flash = 'Errores en el formulario'
+    else:
+        response.flash = 'Formulario incompleto'
+
+    return dict(form=form)
+
+
+def index4():
+    """
+    Útil para introducir los datos iniciales de la sucursal inicial
+    """
+
+    db.pais.nombre.writable = False
+    db.pais.nombre.readable = False
+
+    db.estado.nombre.writable = False
+    db.estado.nombre.readable = False
+    db.estado.clave_interna.writable = False
+    db.estado.clave_interna.readable = False
+
+    db.municipio.nombre.writable = False
+    db.municipio.nombre.readable = False
+    db.municipio.clave_interna.writable = False
+    db.municipio.clave_interna.readable = False
+
+    db.localidad.nombre.writable = False
+    db.localidad.nombre.readable = False
+    db.localidad.clave_interna.writable = False
+    db.localidad.clave_interna.readable = False
+    db.localidad.lat_grad.writable = False
+    db.localidad.lat_grad.readable = False
+    db.localidad.lon_grad.writable = False
+    db.localidad.lon_grad.readable = False
+    db.localidad.lat_dec.writable = False
+    db.localidad.lat_dec.readable = False
+    db.localidad.lon_dec.writable = False
+    db.localidad.lon_dec.readable = False
+
+    db.empleado.departamento_id.writable = False
+    db.empleado.departamento_id.readable = False
+    db.empleado.puesto_id.writable = False
+    db.empleado.puesto_id.readable = False
+
+    fields  = [f for f in db.pais]
+    fields += [f for f in db.estado]
+    fields += [f for f in db.municipio]
+    fields += [f for f in db.localidad]
+    fields += [f for f in db.puesto]
+    fields += [f for f in db.empleado]
+
+    fields += [
+        Field('nombre_dep', 'string', label=T('Nombre de Departamento')),
+        Field('nombre_emp', 'string', label=T('Nombre de Administrador')),
+        Field('nombre_pue', 'string', label=T('Puesto'))
+    ]
+
+    #form = SQLFORM.factory(db.pais, db.estado)
+    form = SQLFORM.factory(*fields)
+
+    if form.process().accepted:
+
+        # insertar departamento
+        form.vars.sucursal_id = request.vars.sucursal_id
+        form.vars.nombre = request.vars.nombre_dep
+        departamento_id = db.departamento.insert(
+                **db.departamento._filter_fields(form.vars)
+                )
+
+        # insertar puesto
+        form.vars.nombre = request.vars.nombre_pue
+        puesto_id = db.puesto.insert(**db.puesto._filter_fields(form.vars))
+
+        # insertar empleado
+        form.vars.nombre = form.vars.nombre_emp
+        form.vars.departamento_id = departamento_id
+        form.vars.puesto_id = puesto_id
+        empleado_id = db.empleado.insert(
+                **db.empleado._filter_fields(form.vars)
+                )
+
+        vars = {'empresa_id': request.vars.empresa_id}
+        redirect(URL('default', 'index5', vars=vars))
+
+        response.flash = 'OK'
+
+    elif form.errors:
+        print form.errors
+        response.flash = 'Errores en el formulario'
+    else:
+        response.flash = 'Formulario incompleto'
+
+    return dict(form=form)
 
 def index():
     """
