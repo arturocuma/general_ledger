@@ -256,13 +256,20 @@ db.define_table('tipo_asiento',
     Field('nombre','string'),
     format='%(nombre)s'
     )
-
+if not db(db.tipo_asiento.id>0).count():
+    db.tipo_asiento.insert(
+        nombre = 'INGRESO',
+    )
+    db.tipo_asiento.insert(
+        nombre = 'EGRESO',
+    )
+    
 db.define_table('poliza',
     Field('f_poliza', 'datetime', label='Fecha de Póliza'),
     Field('concepto_general', 'string'),
     )
 db.poliza.id.label='#Póliza'
-
+    
 db.define_table('asiento',
     Field('poliza_id', 'reference poliza', label='#Póliza'),
     Field('tipo', 'reference tipo_asiento'),
