@@ -10,9 +10,11 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
     <script src="{{=URL('static', 'js/jquery.js')}}"></script>
-
+    <script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
     <script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
-    <link href="{{=URL('static', 'css/jquery.steps.css')}}" rel="stylesheet">
+        
+    <link rel="stylesheet" href="{{=URL('static', 'css/jquery.steps.css')}}">
+    <link rel="stylesheet" href="{{=URL('static', 'css/bootstrap.css')}}">
     <link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
         <style>
         .wizard > .content
@@ -41,7 +43,7 @@ $(function (){
     });
 });
 </script>
-    <div id="wizard">
+    <div id='wizard'>
     <h2>Cat Cuentas</h2>
     <section>
      <h1>
@@ -53,7 +55,7 @@ $(function (){
     </div>
         <br>
      <div class="table">
-        <div class="row">
+        <div class="fila">
           <div class="cell">Elija el número de niveles preconfigurados: </div>
           <div class="cell"><select name='sel_preconf_cc' id='sel_preconf_cc'>
             {{for i in range(1, 4):}}
@@ -64,7 +66,7 @@ $(function (){
             </select>
             </div>
          </div>
-         <div class="row">
+         <div class="fila">
              <div class="cell">Elija el número de niveles a configurar: </div>
              <div class="cell"> 
                  <select name='sel_conf_cc' id='sel_conf_cc'>
@@ -77,7 +79,7 @@ $(function (){
              </div>
          </div>
        
-         <div class="row">
+         <div class="fila">
              <div class="cell">Elija el número de dígitos en los niveles de cuentas mayores y acumulativas: </div>
              <div class="cell"> 
                  <select name='sel_dig_acum' id='sel_dig_acum'>
@@ -90,7 +92,7 @@ $(function (){
              </div>
          </div>
          
-         <div class="row">
+         <div class="fila">
              <div class="cell">Elija el número de dígitos en los niveles de cuentas auxiliares: </div>
              <div class="cell"> 
                  <select name='sel_dig_aux' id='sel_dig_aux'>
@@ -103,7 +105,7 @@ $(function (){
              </div>
          </div>
          
-         <div class="row">
+         <div class="fila">
              <div class="cell"><button name='btn_enviar'  id='btn_enviar'>Crear Catálogo</button> </div>
              <div class="cell"><div id='resultado'></div></div>
          </div>
@@ -114,18 +116,16 @@ $(function (){
     <h2>Nivel 1</h2>
     <section>
        <div class="table">
-        <div class="row-header">
+        <div class="fila-cabecera">
           <div class="cell">Num cc</div>
           <div class="cell">Descripción</div>
+         
         </div>
          {{i=0}}
          {{for row in cc_uno:}}
            {{i=i+1}}
-           {{if (i%2)==0:}}
-        <div class="row">
-            {{else:}}
-          <div class="row-odd"> 
-              {{pass}}
+           <div class="{{='fila' if i%2==0 else 'fila-impar'}}">
+           
           <div class="cell">{{=row[2]}}</div>
           <div class="cell">{{=row[3]}}</div>
          </div>
@@ -136,17 +136,18 @@ $(function (){
     <h2>Nivel 2</h2>
     <section>
        <div class="table">
-        <div class="row-header">
+        <div class="fila-cabecera">
           <div class="cell">Num cc</div>
           <div class="cell">Descripción</div>
+            
         </div>
            {{i=0}}
          {{for row in cc_dos:}}
            {{i=i+1}}
            {{if (i%2)==0:}}
-        <div class="row">
+        <div class="fila">
             {{else:}}
-          <div class="row-odd"> 
+          <div class="fila-impar"> 
               {{pass}}
           <div class="cell">{{=row[2]}}</div>
           <div class="cell">{{=row[3]}}</div>
@@ -158,26 +159,27 @@ $(function (){
     <h2>Nivel 3</h2>
     <section>
        <div class="table">
-        <div class="row-header">
+        <div class="fila-cabecera">
           <div class="cell">Num cc</div>
           <div class="cell">Descripción</div>
+          
         </div>
         {{i=0}}
          {{for row in cc_tres:}}
            {{i=i+1}}
            {{if (i%2)==0:}}
-        <div class="row">
+               <div class="fila">
             {{else:}}
-          <div class="row-odd"> 
-              {{pass}}
-          <div class="cell">{{=row[2]}}</div>
-          <div class="cell">{{=row[3]}}</div>
-         </div>
+               <div class="fila-impar"> 
+             {{pass}}
+                 <div class="cell">{{=row[2]}}</div>
+                 <div class="cell">{{=row[3]}}</div>
+               </div>
          {{pass}}
        </div>
     </section>
     </div>
-<div>
+
 <script>
     $(document).ready(function(){
         
