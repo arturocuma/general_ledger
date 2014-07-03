@@ -17,43 +17,44 @@ def insertar_pais(nombre):
     Inserta un registro `pais` si no existe,
     en caso contrario retorna su id
     """
-    try:
-        pais_id = db.pais.insert(nombre = nombre)
-    except sqlite3.IntegrityError:
-        pais_id = db(db.pais.nombre == nombre).select(db.pais.id).first()
+    pais = db(db.pais.nombre == nombre).select(db.pais.id).first()
+    if not pais:
+        return db.pais.insert(nombre = nombre)
+    else:
+        return pais.id
 
-    return str(pais_id.id)
 
 def insertar_estado(nombre, clave_interna, pais_id):
     """
     Inserta un registro `estado` si no existe,
     en caso contrario retorna su id
     """
-    try:
-        estado_id = db.estado.insert(
+    estado = db(db.estado.nombre == nombre).select(db.estado.id).first()
+    if not estado:
+        return db.estado.insert(
                 nombre = nombre,
                 clave_interna = clave_interna,
                 pais_id = pais_id
                 )
-    except sqlite3.IntegrityError:
-        estado_id = db(db.estado.nombre == nombre).select(db.estado.id).first()
+    else:
+        return estado.id
 
-    return str(estado_id.id)
 
 def insertar_municipio(nombre, clave_interna, estado_id):
     """
-    Inserta un registro `municipio` si no existe, en caso contrario retorna su id
+    Inserta un registro `municipio` si no existe,
+    en caso contrario retorna su id
     """
-    try:
-        municipio_id = db.municipio.insert(
+
+    municipio = db(db.municipio.nombre == nombre).select(db.municipio.id).first()
+    if not municipio:
+        return db.municipio.insert(
                 nombre = nombre,
                 clave_interna = clave_interna,
                 estado_id = estado_id
                 )
-    except sqlite3.IntegrityError:
-        municipio_id = db(db.municipio.nombre == nombre).select(db.municipio.id).first()
-
-    return str(municipio_id.id)
+    else:
+        return municipio.id
 
 def insertar_localidad(
         nombre,
@@ -88,7 +89,7 @@ def precargar():
         reader = csv.reader(f)
         lines = [line for line in reader]
 
-        for line in lines[0:6000]:
+        for line in lines:
 
             estado_id = insertar_estado(line[1], line[0], pais_id)
             municipio_id = insertar_municipio(line[3], line[2], estado_id)
