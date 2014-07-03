@@ -224,6 +224,14 @@ db.define_table('cc_empresa',
     format='%(num_cc)s %(descripcion)s'
     )
 
+db.define_table('niveles_cc_empresa',
+    Field('empresa_id', 'reference empresa', label='Empresa'),
+    Field('niveles', 'integer', label='Niveles'),
+    Field('digitos_cc_acum', 'integer', label='Dígitos cuentas acum'),
+    Field('digitos_cc_aux', 'integer', label='Dígitos cuentas aux'),
+    format='%(niveles)s',
+    )
+
 db.define_table('tipo_asiento',
     Field('nombre','string'),
     format='%(nombre)s'
