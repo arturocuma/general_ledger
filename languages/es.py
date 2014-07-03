@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -222,6 +222,7 @@
 'Forms and Validators': 'Formularios y validadores',
 'Free Applications': 'Aplicaciones Libres',
 'Functions with no doctests will result in [passed] tests.': 'Funciones sin doctests equivalen a pruebas [aceptadas].',
+'General Ledger': 'General Ledger',
 'Group %(group_id)s created': 'Grupo %(group_id)s creado',
 'Group ID': 'ID de Grupo',
 'Group uniquely assigned to user %(id)s': 'Grupo asignado únicamente al usuario %(id)s',
@@ -512,6 +513,7 @@
 'Welcome %s': 'Bienvenido %s',
 'Welcome to web2py': 'Bienvenido a web2py',
 'Welcome to web2py!': '¡Bienvenido a web2py!',
+'Welcome!': 'Welcome!',
 'Which called the function %s located in the file %s': 'La cual llamó la función %s localizada en el archivo %s',
 'Working...': 'Trabajando...',
 'XML': 'XML',

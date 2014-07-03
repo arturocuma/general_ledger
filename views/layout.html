@@ -89,7 +89,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-folder-close"></span> Asientos <b class="caret"></b></a>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-folder-close"></span> Pólizas <b class="caret"></b></a>
                         </h4>
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse">
@@ -98,7 +98,7 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="{{=URL('asiento','listar')}}" class="text-primary"><span class="glyphicon glyphicon-file"></span> Pólizas contables</a>
+                                            <a href="{{=URL('poliza','listar')}}" class="text-primary"><span class="glyphicon glyphicon-file"></span> Capturar</a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -121,14 +121,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="">
-                            <span class="glyphicon glyphicon-file"></span> Libro diario</a>
-                        </h4>
-                    </div>
-                </div>                          
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -285,7 +277,7 @@
                     <button class="nav-toggler toggle-push-left navbar-brand" style="margin-top:0px; margin-bottom:0px;" >
                       <span class="glyphicon glyphicon-align-justify"></span>
                     </button>                    
-                    <a class="navbar-brand" href="{{=URL('default','index')}}">Datawork.mx</a>
+                    <a class="navbar-brand" href="{{=URL('default','index')}}">General Ledger</a>
                     
                 </div>     
                 <!-- Agrupar los enlaces de navegación, los formularios y cualquier
@@ -320,8 +312,7 @@
                           {{=T('Copyright')}} &#169; datawork.mx {{=request.now.year}}
                         </div>
                         <div class="col-sm-6 text-right">
-                            {{=T('Powered by')}}
-                          <a href="#">web2py</a>
+                          <a href="#">Grupo DG</a>
                         </div>
                     </footer>
                     <!-- FIN-FOOTER==================================================== -->
@@ -352,7 +343,7 @@
    <script type="text/javascript">
         $(document).ready(function(){
             setTimeout(function() {
-                $(".flash").fadeOut(2000);
+                $(".flash").fadeOut(1000);
             },3000);
         });
    </script>

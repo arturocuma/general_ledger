@@ -403,8 +403,8 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    response.flash = T("Welcome to web2py!")
-    return dict(message=T('Hello World'))
+    response.flash = T("Welcome!")
+    return dict(message=T('General Ledger'))
 
 
 def user():
