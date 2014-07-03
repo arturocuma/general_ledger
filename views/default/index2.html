@@ -1,0 +1,256 @@
+{{#extend 'layout.html'}}
+
+<!-- CSS -->
+<link rel="stylesheet" href="{{=URL('static', 'css/jquery.steps.css')}}">
+<link rel="stylesheet" href="{{=URL('static', 'css/bootstrap.css')}}">
+
+<!-- JS -->
+<script src="{{=URL('static', 'js/jquery.js')}}"></script>
+<script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
+<script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
+
+<div class='container'>
+<h1>Configuración Inicial <span>Empresa</span></h1>
+
+<form name='empresa' action='' id='empresa' method='post'>
+{{form.custom.begin}}
+
+<div id="wizard">
+
+    <h2>Lugar</h2>
+    <section>
+
+    <fieldset>
+    <legend>Lugar</legend>
+
+    <div class='row'>
+        <div class='col-lg-3'><label>País</label></div>
+        <div class='col-lg-5'>
+            {{=form.custom.widget.pais_id}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Estado</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.estado_id}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Municipio</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.municipio_id}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Localidad</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.localidad_id}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Calle</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_calle}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Número Exterior</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_num_ext}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Número Interior</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_num_int}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Colonia</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_colonia}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Código Postal</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_cp}}
+        </div>
+    </div>
+
+    </fieldset>
+    </section>
+
+    <h2>Otros datos</h2>
+    <section>
+
+    <fieldset>
+    <legend>Otros datos</legend>
+
+    <div class='row'>
+        <div class='col-md-3'><label>Registro Fiscal</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.registro_fiscal}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Teléfono</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_telefono}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Móvil</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_movil}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Email</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.dir_email}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>Razón Social</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.razon_social}}
+        </div>
+    </div>
+    <!--div class='row'>
+        <div class='col-md-3'></div>
+        <div class='col-md-5'>
+            {{#=form.custom.submit}}
+        </div>
+    </div-->
+
+    </fieldset>
+    </section>
+</div>
+
+{{=form.custom.end}}
+</form>
+
+</div>
+
+<script>
+
+function cargarLocalidades() {
+    var municipio_id = $('#no_table_municipio_id').val();
+    $.post(
+        '{{=URL("cargar_localidades")}}', 'municipio_id=' + municipio_id
+    ).success(function(data){
+        $('#no_table_localidad_id').html(data);
+    });
+}
+
+function cargarMunicipios() {
+    var estado_id = $('#no_table_estado_id').val();
+    $.post(
+        '{{=URL("cargar_municipios")}}', 'estado_id=' + estado_id
+    ).success(function(data){
+        $('#no_table_municipio_id').html(data);
+        cargarLocalidades();
+    });
+}
+
+function cargarEstados() {
+    var pais_id = $('#no_table_pais_id').val();
+    $.post(
+        '{{=URL("cargar_estados")}}', 'pais_id=' + pais_id
+    ).success(function(data){
+        $('#no_table_estado_id').html(data);
+        cargarMunicipios();
+    });
+}
+
+function cargarPaises() {
+    $.post(
+        '{{=URL("cargar_paises")}}'
+    ).success(function(data){
+        $('#no_table_pais_id').html(data);
+        cargarEstados();
+    });
+}
+
+$(document).ready(function(){
+
+    $("#wizard").steps({
+        headerTag: 'h2',
+        bodyTag: 'section',
+        labels: {
+            next: 'Siguiente',
+            previous: 'Anterior',
+            finish: 'Finalizar',
+            cancel: 'Cancelar'
+        },
+        autofocus: true,
+        titleTemplate: "<center>#title#</center>",
+        transitionEffect: 'slideLeft',
+        onFinishing: function(event, newIndex) {
+            console.log('finalizando');
+            $("#empresa").submit();
+            return true;
+        },
+        onStepChanging: function(event, currentIndex, newIndex){
+
+            $('[id^="no_table_"]').on('keyup change', function(){
+                $(this).css('background', '#fff');
+            });
+
+            if (currentIndex > newIndex) {
+                return true;
+            }
+
+            if (currentIndex < newIndex) {
+                var flag = true;
+
+                //se usa doble selector
+                $('[id^="wizard-p"][aria-hidden="false"]').each(function(){
+                    $(this).find('[id^="no_table_"]').each(function(){
+                        if (!$(this).val()) {
+                            $(this).css('background', '#fbe3e4');
+                            flag = false;
+                            console.log('you don\'t pass');
+                        }
+                    });
+                });
+
+                return flag;
+            }
+        }
+    });
+
+    cargarPaises();
+
+    $('#no_table_pais_id').change(function() {
+        cargarEstados();
+    });
+
+    $('#no_table_estado_id').change(function() {
+        cargarMunicipios();
+    });
+
+    $('#no_table_municipio_id').change(function() {
+        cargarLocalidades();
+    });
+
+});
+
+</script>
+
+<style>
+/* útil para evitar la barrita  de navegación */
+div.tab-content { overflow: visible; }
+
+.focus-error {
+    background: none repeat scroll 0 0 #FBE3E4;
+    border: 1px solid #FBC2C4;
+}
+
+.unfocus-error {
+    background: none repeat scroll 0 0 #FFF;
+    border: 1px solid #0000FB;
+}
+</style>
+
