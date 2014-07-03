@@ -73,7 +73,8 @@
   {{end}}
 </head>
 
-<body>    
+<body>
+    
     <nav class="menu push-menu-left">
         <div class="panel panel-group" id="main">
             <div class="panel-body">
@@ -97,22 +98,22 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="{{=URL('asiento','listar')}}"><span class="glyphicon glyphicon-eye-open text-primary"></span> Pólizas contables</a>
+                                            <a href="{{=URL('asiento','listar')}}" class="text-primary"><span class="glyphicon glyphicon-file"></span> Pólizas contables</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-flash text-success"></span> Recientes</a>
+                                            <a href="#" class="text-success"><span class="glyphicon glyphicon-flash text-success"></span> Recientes</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-file text-info"></span> Ayuda</a>
+                                            <a href="#" class="text-info"><span class="glyphicon glyphicon-question-sign"></span> Ayuda</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-comment text-success"></span> Mensajes <span class="badge">4</span></a>
+                                            <a href="#" class="text-success"><span class="glyphicon glyphicon-comment"></span> Mensajes <span class="badge">4</span></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -151,7 +152,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="{{=URL('cc_empresa','resumen')}}"><span class="glyphicon glyphicon-usd"></span> Resumen de cuentas</a>
+                                            <a href="{{=URL('cc_empresa','resumen')}}"><span class="glyphicon glyphicon-signal"></span> Resumen de cuentas</a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -316,7 +317,7 @@
                     <!-- FOOTER======================================================== -->
                     <footer class="modal-footer">
                         <div class="col-sm-6 text-left">
-                          {{=T('Copyright')}} &#169; {{=request.now.year}}
+                          {{=T('Copyright')}} &#169; datawork.mx {{=request.now.year}}
                         </div>
                         <div class="col-sm-6 text-right">
                             {{=T('Powered by')}}
@@ -348,6 +349,12 @@
     });</script>
     {{pass}}
     <script src="{{=URL('static','js/share.js',vars=dict(static=URL('static','images')))}}"></script>
-   
+   <script type="text/javascript">
+        $(document).ready(function(){
+            setTimeout(function() {
+                $(".flash").fadeOut(2000);
+            },3000);
+        });
+   </script>
 </body>
 </html>
