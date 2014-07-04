@@ -46,7 +46,10 @@ def insertar_municipio(nombre, clave_interna, estado_id):
     en caso contrario retorna su id
     """
 
-    municipio = db(db.municipio.nombre == nombre).select(db.municipio.id).first()
+    municipio = db(
+            (db.municipio.nombre == nombre) &
+            (db.municipio.estado_id == estado_id)
+            ).select(db.municipio.id).first()
     if not municipio:
         return db.municipio.insert(
                 nombre = nombre,
@@ -55,6 +58,7 @@ def insertar_municipio(nombre, clave_interna, estado_id):
                 )
     else:
         return municipio.id
+
 
 def insertar_localidad(
         nombre,
@@ -79,12 +83,13 @@ def insertar_localidad(
             municipio_id = municipio_id
         )
 
+
 def precargar():
 
     pais_id = insertar_pais('MÉXICO')
 
     # precargar estados
-    with open('csvs/localidades.csv', 'rb') as f:
+    with open('localidades.csv', 'rb') as f:
 
         reader = csv.reader(f)
         lines = [line for line in reader]
@@ -99,8 +104,8 @@ def precargar():
                     float(line[8]), float(line[9]),
                     municipio_id
                     )
-
     return dict()
+
 
 def cargar_paises():
     """
@@ -138,7 +143,6 @@ def cargar_estados():
                    #cache=(cache.ram, 3600) #problemas SQLite
                    )
                ]
-
     opciones[:0] = [OPTION('TODOS', _value='')]
 
     resultado = SELECT(
@@ -207,34 +211,25 @@ def index2():
     Útil para introducir los datos iniciales de una empresa
     """
 
-    db.pais.nombre.writable = False
-    db.pais.nombre.readable = False
+    campos = [
+        Field('pais_id', 'string', label=T('País')),
+        Field('estado_id', 'string', label=T('Estado')),
+        Field('municipio_id', 'string', label=T('Municipio')),
+        Field('localidad_id', 'string', label=T('Localidad')),
+        Field('registro_fiscal', 'string', label='Registro Fiscal'),
+        Field('dir_calle', 'string', label=T('Calle')),
+        Field('dir_num_ext', 'string', label=T('Número Exterior')),
+        Field('dir_num_int', 'string', label=T('Número Interior')),
+        Field('dir_colonia', 'string', label='Colonia'),
+        Field('dir_cp', 'string', label='Código Postal'),
+        Field('dir_telefono', 'string', label='Teléfono'),
+        Field('dir_movil', 'string', label='Móvil'),
+        Field('dir_email', requires=IS_EMAIL(), label='Email'),
+        Field('razon_social', 'string', label='Razón Social'),
+        Field('nombre_comercial', 'string', label='Nombre Comercial'),
+    ]
 
-    db.estado.nombre.writable = False
-    db.estado.nombre.readable = False
-    db.estado.clave_interna.writable = False
-    db.estado.clave_interna.readable = False
-
-    db.municipio.nombre.writable = False
-    db.municipio.nombre.readable = False
-    db.municipio.clave_interna.writable = False
-    db.municipio.clave_interna.readable = False
-
-    db.localidad.nombre.writable = False
-    db.localidad.nombre.readable = False
-    db.localidad.clave_interna.writable = False
-    db.localidad.clave_interna.readable = False
-    db.localidad.lat_grad.writable = False
-    db.localidad.lat_grad.readable = False
-    db.localidad.lon_grad.writable = False
-    db.localidad.lon_grad.readable = False
-    db.localidad.lat_dec.writable = False
-    db.localidad.lat_dec.readable = False
-    db.localidad.lon_dec.writable = False
-    db.localidad.lon_dec.readable = False
-
-    form = SQLFORM.factory(db.pais, db.estado, db.municipio,  db.localidad,\
-                        db.empresa)
+    form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
 
@@ -242,6 +237,8 @@ def index2():
         vars = {'empresa_id': empresa_id}
         redirect(URL('default', 'index3', vars=vars))
         response.flash = 'OK'
+
+        print 'after'
 
     elif form.errors:
         response.flash = 'Errores en el formulario'
@@ -256,49 +253,17 @@ def index3():
     Útil para introducir los datos iniciales de una sucursal y departamento
     """
 
-    db.pais.nombre.writable = False
-    db.pais.nombre.readable = False
-
-    db.estado.nombre.writable = False
-    db.estado.nombre.readable = False
-    db.estado.clave_interna.writable = False
-    db.estado.clave_interna.readable = False
-
-    db.municipio.nombre.writable = False
-    db.municipio.nombre.readable = False
-    db.municipio.clave_interna.writable = False
-    db.municipio.clave_interna.readable = False
-
-    db.localidad.nombre.writable = False
-    db.localidad.nombre.readable = False
-    db.localidad.clave_interna.writable = False
-    db.localidad.clave_interna.readable = False
-    db.localidad.lat_grad.writable = False
-    db.localidad.lat_grad.readable = False
-    db.localidad.lon_grad.writable = False
-    db.localidad.lon_grad.readable = False
-    db.localidad.lat_dec.writable = False
-    db.localidad.lat_dec.readable = False
-    db.localidad.lon_dec.writable = False
-    db.localidad.lon_dec.readable = False
-
-    db.sucursal.empresa_id.writable = False
-    db.sucursal.empresa_id.readable = False
-    db.sucursal.nombre.writable = True
-    db.sucursal.nombre.readable = True
-
-    form = SQLFORM.factory(db.sucursal, db.pais, db.estado, db.municipio,\
-            db.localidad)
+    form = SQLFORM.factory(db.sucursal)
 
     form.vars.empresa_id = request.vars.empresa_id
 
     if form.process().accepted:
 
-        sucursal_id = db.sucursal.insert(**db.sucursal._filter_fields(form.vars))
+        #sucursal_id = db.sucursal.insert(**db.sucursal._filter_fields(form.vars))
 
-        vars = {'sucursal_id': sucursal_id, 'empresa_id': request.vars.empresa_id}
+        #vars = {'sucursal_id': sucursal_id, 'empresa_id': request.vars.empresa_id}
 
-        redirect(URL('default', 'index4', vars=vars))
+        #redirect(URL('default', 'index4', vars=vars))
         response.flash = 'OK'
 
     elif form.errors:
@@ -314,76 +279,34 @@ def index4():
     Útil para introducir los datos iniciales de la sucursal inicial
     """
 
-    db.pais.nombre.writable = False
-    db.pais.nombre.readable = False
-
-    db.estado.nombre.writable = False
-    db.estado.nombre.readable = False
-    db.estado.clave_interna.writable = False
-    db.estado.clave_interna.readable = False
-
-    db.municipio.nombre.writable = False
-    db.municipio.nombre.readable = False
-    db.municipio.clave_interna.writable = False
-    db.municipio.clave_interna.readable = False
-
-    db.localidad.nombre.writable = False
-    db.localidad.nombre.readable = False
-    db.localidad.clave_interna.writable = False
-    db.localidad.clave_interna.readable = False
-    db.localidad.lat_grad.writable = False
-    db.localidad.lat_grad.readable = False
-    db.localidad.lon_grad.writable = False
-    db.localidad.lon_grad.readable = False
-    db.localidad.lat_dec.writable = False
-    db.localidad.lat_dec.readable = False
-    db.localidad.lon_dec.writable = False
-    db.localidad.lon_dec.readable = False
-
-    db.empleado.departamento_id.writable = False
-    db.empleado.departamento_id.readable = False
-    db.empleado.puesto_id.writable = False
-    db.empleado.puesto_id.readable = False
-
-    fields  = [f for f in db.pais]
-    fields += [f for f in db.estado]
-    fields += [f for f in db.municipio]
-    fields += [f for f in db.localidad]
-    fields += [f for f in db.puesto]
-    fields += [f for f in db.empleado]
-
-    fields += [
-        Field('nombre_dep', 'string', label=T('Nombre de Departamento')),
-        Field('nombre_emp', 'string', label=T('Nombre de Administrador')),
-        Field('nombre_pue', 'string', label=T('Puesto'))
+    fields = [
     ]
 
-    #form = SQLFORM.factory(db.pais, db.estado)
     form = SQLFORM.factory(*fields)
 
     if form.process().accepted:
 
         # insertar departamento
-        form.vars.sucursal_id = request.vars.sucursal_id
-        form.vars.nombre = request.vars.nombre_dep
-        departamento_id = db.departamento.insert(
-                **db.departamento._filter_fields(form.vars)
-                )
+        #form.vars.sucursal_id = request.vars.sucursal_id
+        #form.vars.nombre = request.vars.nombre_dep
+        #departamento_id = db.departamento.insert(
+        #        **db.departamento._filter_fields(form.vars)
+        #        )
 
-        # insertar puesto
-        form.vars.nombre = request.vars.nombre_pue
-        puesto_id = db.puesto.insert(**db.puesto._filter_fields(form.vars))
+        ## insertar puesto
+        #form.vars.nombre = request.vars.nombre_pue
+        #puesto_id = db.puesto.insert(**db.puesto._filter_fields(form.vars))
 
-        # insertar empleado
-        form.vars.nombre = form.vars.nombre_emp
-        form.vars.departamento_id = departamento_id
-        form.vars.puesto_id = puesto_id
-        empleado_id = db.empleado.insert(
-                **db.empleado._filter_fields(form.vars)
-                )
+        ## insertar empleado
+        #form.vars.nombre = form.vars.nombre_emp
+        #form.vars.departamento_id = departamento_id
+        #form.vars.puesto_id = puesto_id
+        #empleado_id = db.empleado.insert(
+        #        **db.empleado._filter_fields(form.vars)
+        #        )
 
-        vars = {'empresa_id': request.vars.empresa_id}
-        redirect(URL('default', 'index5', vars=vars))
+        #vars = {'empresa_id': request.vars.empresa_id}
+        #redirect(URL('default', 'index5', vars=vars))
 
         response.flash = 'OK'
 
