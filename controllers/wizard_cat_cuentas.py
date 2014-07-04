@@ -25,9 +25,11 @@ def wiz_cc():
         cat_cuentas=cat_cuentas+cc_dos
     if cc_preconf>=3:
         cat_cuentas=cat_cuentas+cc_tres
-        cat_cuentas=cc_tres
     
     db(db.cc_empresa).delete()
+    #db(db.sqlite_sequence.name=='cc_empresa').delete()
+    db.executesql('delete from sqlite_sequence where name="cc_empresa";')
+    #delete from sqlite_sequence where name='your_table';
     db(db.niveles_cc_empresa.empresa_id==empresa_id).delete()
     db.niveles_cc_empresa.insert(empresa_id=empresa_id, niveles=cc_conf+cc_preconf, digitos_cc_acum=dig_acum, digitos_cc_aux=dig_aux)
 
