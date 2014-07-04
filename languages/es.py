@@ -315,6 +315,7 @@
 'New Record': 'Registro nuevo',
 'new record inserted': 'nuevo registro insertado',
 'New Search': 'New Search',
+'next %s rows': 'next %s rows',
 'next 100 rows': '100 filas siguientes',
 'Nivel': 'Nivel',
 'NO': 'NO',
