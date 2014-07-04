@@ -21,58 +21,78 @@
     <section>
 
     <fieldset>
-    <legend>Lugar</legend>
+    <legend>Datos de la Empresa</legend>
 
     <div class='row'>
-        <div class='col-lg-3'><label>País</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.razon_social}}</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.razon_social}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-md-3'><label>{{=form.custom.label.nombre_comercial}}</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.nombre_comercial}}
+        </div>
+    </div>
+    <div class='row'>
+        <div class='col-lg-3'><label>{{=form.custom.label.pais_id}}</label></div>
         <div class='col-lg-5'>
-            {{=form.custom.widget.pais_id}}
+            <select id='no_table_pais_id' name='pais_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Estado</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.estado_id}}</label></div>
         <div class='col-md-5'>
-            {{=form.custom.widget.estado_id}}
+            <select id='no_table_estado_id' name='estado_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Municipio</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.municipio_id}}</label></div>
         <div class='col-md-5'>
-            {{=form.custom.widget.municipio_id}}
+            <select id='no_table_municipio_id' name='municipio_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Localidad</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.localidad_id}}</label></div>
         <div class='col-md-5'>
-            {{=form.custom.widget.localidad_id}}
+            <select id='no_table_localidad_id' name='localidad_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Calle</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_calle}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_calle}}
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Número Exterior</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_num_ext}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_num_ext}}
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Número Interior</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_num_int}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_num_int}}
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Colonia</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_colonia}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_colonia}}
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Código Postal</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_cp}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_cp}}
         </div>
@@ -88,41 +108,29 @@
     <legend>Otros datos</legend>
 
     <div class='row'>
-        <div class='col-md-3'><label>Registro Fiscal</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.registro_fiscal}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.registro_fiscal}}
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Teléfono</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_telefono}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_telefono}}
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Móvil</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_movil}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_movil}}
         </div>
     </div>
     <div class='row'>
-        <div class='col-md-3'><label>Email</label></div>
+        <div class='col-md-3'><label>{{=form.custom.label.dir_email}}</label></div>
         <div class='col-md-5'>
             {{=form.custom.widget.dir_email}}
         </div>
     </div>
-    <div class='row'>
-        <div class='col-md-3'><label>Razón Social</label></div>
-        <div class='col-md-5'>
-            {{=form.custom.widget.razon_social}}
-        </div>
-    </div>
-    <!--div class='row'>
-        <div class='col-md-3'></div>
-        <div class='col-md-5'>
-            {{#=form.custom.submit}}
-        </div>
-    </div-->
 
     </fieldset>
     </section>
@@ -130,7 +138,6 @@
 
 {{=form.custom.end}}
 </form>
-
 </div>
 
 <script>
@@ -173,6 +180,22 @@ function cargarPaises() {
     });
 }
 
+(function( $ ){
+    $.fn.validarCamposVisibles = function() {
+        var flag = true;
+        $(this).each(function(){
+            $(this).find('[id^="no_table_"]').each(function(){
+                if (!$(this).val()) {
+                    $(this).css('background', '#fbe3e4');
+                    flag = false;
+                    console.log('you don\'t pass');
+                }
+            });
+        });
+        return flag;
+    };
+})( jQuery );
+
 $(document).ready(function(){
 
     $("#wizard").steps({
@@ -188,9 +211,17 @@ $(document).ready(function(){
         titleTemplate: "<center>#title#</center>",
         transitionEffect: 'slideLeft',
         onFinishing: function(event, newIndex) {
-            console.log('finalizando');
-            $("#empresa").submit();
-            return true;
+
+            //se usa doble selector
+            var flag = $('[id^="wizard-p"][aria-hidden="false"]').validarCamposVisibles();
+
+            if (flag) {
+                $("#empresa").submit();
+            } else {
+                console.log('You don\'t pass');
+            }
+
+            return flag;
         },
         onStepChanging: function(event, currentIndex, newIndex){
 
@@ -203,19 +234,7 @@ $(document).ready(function(){
             }
 
             if (currentIndex < newIndex) {
-                var flag = true;
-
-                //se usa doble selector
-                $('[id^="wizard-p"][aria-hidden="false"]').each(function(){
-                    $(this).find('[id^="no_table_"]').each(function(){
-                        if (!$(this).val()) {
-                            $(this).css('background', '#fbe3e4');
-                            flag = false;
-                            console.log('you don\'t pass');
-                        }
-                    });
-                });
-
+                var flag = $('[id^="wizard-p"][aria-hidden="false"]').validarCamposVisibles();
                 return flag;
             }
         }

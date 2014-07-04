@@ -7,21 +7,6 @@
 <script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
 <script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
 
-<script>
-$(function(){
-    $("#wizard").steps({
-        headerTag: 'h2',
-        bodyTag: 'section',
-        transitionEffect: 'slideLeft'
-    });
-});
-</script>
-
-<style>
-/* útil para evitar la barrita  de navegación */
-div.tab-content { overflow: visible; }
-</style>
-
 <div class='container'>
 
 <h1>Configuración Inicial <span>Sucursal</span></h1>
@@ -35,30 +20,44 @@ div.tab-content { overflow: visible; }
     <section>
 
     <fieldset>
-    <legend>Lugar</legend>
+    <legend>Datos Sucursal</legend>
 
+    <div class='row'>
+        <div class='col-md-3'><label>{{=form.custom.label.nombre_suc}}</label></div>
+        <div class='col-md-5'>
+            {{=form.custom.widget.nombre_suc}}
+        </div>
+    </div>
     <div class='row'>
         <div class='col-md-3'><label>País</label></div>
         <div class='col-md-5'>
-            {{=form.custom.widget.pais_id}}
+            <select id='no_table_pais_id' name='pais_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
         <div class='col-md-3'><label>Estado</label></div>
         <div class='col-md-5'>
-            {{=form.custom.widget.estado_id}}
+            <select id='no_table_estado_id' name='estado_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
         <div class='col-md-3'><label>Municipio</label></div>
         <div class='col-md-5'>
-            {{=form.custom.widget.municipio_id}}
+            <select id='no_table_municipio_id' name='municipio_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
         <div class='col-md-3'><label>Localidad</label></div>
         <div class='col-md-5'>
-            {{=form.custom.widget.localidad_id}}
+            <select id='no_table_localidad_id' name='localidad_id'>
+                <option value="">TODO</option>
+            </select>
         </div>
     </div>
     <div class='row'>
@@ -125,21 +124,6 @@ div.tab-content { overflow: visible; }
             {{=form.custom.widget.dir_email}}
         </div>
     </div>
-    <div class='row'>
-        <div class='col-md-3'><label>{{=form.custom.label.nombre}}</label></div>
-        <div class='col-md-5'>
-            <!--input type="text" name="nombre" id="no_table_nombre"
-            class="string"-->
-            {{=form.custom.widget.nombre}}
-        </div>
-    </div>
-    <div class='row'>
-        <div class='col-md-3'></div>
-        <div class='col-md-5'>
-            {{=form.custom.submit}}
-        </div>
-    </div>
-
     </fieldset>
     </section>
 </div>
@@ -155,9 +139,7 @@ function cargarLocalidades() {
     $.post(
         '{{=URL("cargar_localidades")}}', 'municipio_id=' + municipio_id
     ).success(function(data){
-        //if ($('#no_table_pais_id').val() == '') {
-            $('#no_table_localidad_id').html(data);
-        //}
+        $('#no_table_localidad_id').html(data);
     });
 }
 
@@ -166,9 +148,7 @@ function cargarMunicipios() {
     $.post(
         '{{=URL("cargar_municipios")}}', 'estado_id=' + estado_id
     ).success(function(data){
-        //if ($('#no_table_pais_id').val() == '') {
-            $('#no_table_municipio_id').html(data);
-        //}
+        $('#no_table_municipio_id').html(data);
         cargarLocalidades();
     });
 }
@@ -178,9 +158,7 @@ function cargarEstados() {
     $.post(
         '{{=URL("cargar_estados")}}', 'pais_id=' + pais_id
     ).success(function(data){
-        //if ($('#no_table_pais_id').val() == '') {
-            $('#no_table_estado_id').html(data);
-        //}
+        $('#no_table_estado_id').html(data);
         cargarMunicipios();
     });
 }
@@ -189,14 +167,71 @@ function cargarPaises() {
     $.post(
         '{{=URL("cargar_paises")}}'
     ).success(function(data){
-        //if ($('#no_table_pais_id').val() == '') {
-            $('#no_table_pais_id').html(data);
-        //}
+        $('#no_table_pais_id').html(data);
         cargarEstados();
     });
 }
 
+(function( $ ){
+    $.fn.validarCamposVisibles = function() {
+        var flag = true;
+        $(this).each(function(){
+            $(this).find('[id^="no_table_"]').each(function(){
+                if (!$(this).val()) {
+                    $(this).css('background', '#fbe3e4');
+                    flag = false;
+                    console.log('you don\'t pass');
+                }
+            });
+        });
+        return flag;
+    };
+})( jQuery );
+
 $(document).ready(function(){
+
+    $("#wizard").steps({
+        headerTag: 'h2',
+        bodyTag: 'section',
+        labels: {
+            next: 'Siguiente',
+            previous: 'Anterior',
+            finish: 'Finalizar',
+            cancel: 'Cancelar'
+        },
+        autofocus: true,
+        titleTemplate: "<center>#title#</center>",
+        transitionEffect: 'slideLeft',
+        onFinishing: function(event, newIndex) {
+
+            //se usa doble selector
+            var flag = $('[id^="wizard-p"][aria-hidden="false"]').validarCamposVisibles();
+
+            if (flag) {
+                $("#sucursal").submit();
+            } else {
+                console.log('You don\'t pass');
+            }
+
+            return flag;
+        },
+        onStepChanging: function(event, currentIndex, newIndex){
+
+            $('[id^="no_table_"]').on('keyup change', function(){
+                $(this).css('background', '#fff');
+            });
+
+            if (currentIndex > newIndex) {
+                return true;
+            }
+
+            if (currentIndex < newIndex) {
+                var flag = $('[id^="wizard-p"][aria-hidden="false"]').validarCamposVisibles();
+                return flag;
+            }
+        }
+    });
+
     cargarPaises();
 
     $('#no_table_pais_id').change(function() {
@@ -214,3 +249,19 @@ $(document).ready(function(){
 });
 
 </script>
+
+<style>
+/* útil para evitar la barrita  de navegación */
+div.tab-content { overflow: visible; }
+
+.focus-error {
+    background: none repeat scroll 0 0 #FBE3E4;
+    border: 1px solid #FBC2C4;
+}
+
+.unfocus-error {
+    background: none repeat scroll 0 0 #FFF;
+    border: 1px solid #0000FB;
+}
+</style>
+
