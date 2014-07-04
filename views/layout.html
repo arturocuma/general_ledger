@@ -73,7 +73,8 @@
   {{end}}
 </head>
 
-<body>    
+<body>
+    
     <nav class="menu push-menu-left">
         <div class="panel panel-group" id="main">
             <div class="panel-body">
@@ -88,7 +89,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-folder-close"></span> Asientos <b class="caret"></b></a>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-folder-close"></span> Pólizas <b class="caret"></b></a>
                         </h4>
                     </div>
                     <div id="collapseOne" class="panel-collapse collapse">
@@ -97,22 +98,22 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="{{=URL('asiento','listar')}}"><span class="glyphicon glyphicon-eye-open text-primary"></span> Pólizas contables</a>
+                                            <a href="{{=URL('poliza','listar')}}" class="text-primary"><span class="glyphicon glyphicon-file"></span> Capturar</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-flash text-success"></span> Recientes</a>
+                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-flash text-muted"></span> Recientes</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-file text-info"></span> Ayuda</a>
+                                            <a href="#"  class="text-muted"><span class="glyphicon glyphicon-question-sign"></span> Ayuda</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-comment text-success"></span> Mensajes <span class="badge">4</span></a>
+                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-comment"></span> Mensajes <span class="badge">4</span></a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -120,14 +121,6 @@
                         </div>
                     </div>
                 </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="">
-                            <span class="glyphicon glyphicon-file"></span> Libro diario</a>
-                        </h4>
-                    </div>
-                </div>                          
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
@@ -141,17 +134,17 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-usd"></span> Balance general</a>
+                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-usd"></span> Balance general</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#"><span class="glyphicon glyphicon-tasks"></span> Balanza</a>
+                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-tasks"></span> Balanza</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="{{=URL('cc_empresa','resumen')}}"><span class="glyphicon glyphicon-usd"></span> Resumen de cuentas</a>
+                                            <a href="{{=URL('cc_empresa','resumen')}}"><span class="glyphicon glyphicon-signal"></span> Resumen de cuentas</a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -171,26 +164,36 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="#">Usuarios <span class="label label-success">42</span></a>
+                                            <a href="{{=URL('default','index2')}}">Wizard Empresa</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#">Grupos</a>
+                                            <a href="{{=URL('wizard_cat_cuentas','index')}}">Wizard Catalogo de Cuentas</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#">Permisos</a>
+                                            <a href="#" class="text-muted">Usuarios <span class="label label-muted">42</span></a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="#" class="text-muted">Grupos</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a href="#" class="text-muted">Permisos</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>                                                        
-                                            <a href="#SubMenu1" data-toggle="collapse" data-parent="#SubMenu1">Empresa <b class="caret"></b></a>
+                                            <a href="#SubMenu1" class="text-muted" data-toggle="collapse" data-parent="#SubMenu1">Empresa <b class="caret"></b></a>
                                                 <div class="collapse list-group-submenu" id="SubMenu1">
                                                     <a href="{{=URL('empresa','listar')}}" class="list-group-item" data-parent="#SubMenu1">Sucursales</a>
-                                                    <a href="#" class="list-group-item" data-parent="#SubMenu1">Sucursales</a>
-                                                    <a href="#" class="list-group-item" data-parent="#SubMenu1">Departamentos</a>
+                                                    <a href="#" class="list-group-item text-muted" data-parent="#SubMenu1">Sucursales</a>
+                                                    <a href="#" class="list-group-item text-muted" data-parent="#SubMenu1">Departamentos</a>
                                                 </div>
                                         </td>
                                     </tr>
@@ -211,12 +214,12 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="#">Empleados <span class="label label-success">42</span></a>
+                                            <a href="#" class="text-muted">Empleados <span class="label label-muted">42</span></a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#">Proveedores</a>
+                                            <a href="#" class="text-muted">Proveedores</a>
                                         </td>
                                     </tr>
                                     <tr>
@@ -226,7 +229,7 @@
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#">Empresa</a>
+                                            <a href="#" class="text-muted">Empresa</a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -237,7 +240,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree"><span class="glyphicon glyphicon-user"></span> Perfil <b class="caret"></b></a>
+                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" disabled="disabled"><span class="glyphicon glyphicon-user"></span> Perfil <b class="caret"></b></a>
                         </h4>
                     </div>
                     <div id="collapseThree" class="panel-collapse collapse ">
@@ -246,17 +249,17 @@
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <a href="#">Preferencias</a>
+                                            <a href="#" class="text-muted">Preferencias</a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#">Notificaciones <span class="label label-info">9</span></a>
+                                            <a href="#" class="text-muted" >Notificaciones <span class="label label-muted">9</span></a>
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>
-                                            <a href="#" class="text-danger"><span class="glyphicon glyphicon-trash text-danger"></span> Eliminar cuenta</a>
+                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-trash "></span> Eliminar cuenta</a>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -281,10 +284,10 @@
                         <span class="b-icon-bar"></span>
                         <span class="b-icon-bar"></span>
                     </button>
-                    <button class="nav-toggler toggle-push-left navbar-brand" >
+                    <button class="nav-toggler toggle-push-left navbar-brand" style="margin-top:0px; margin-bottom:0px;" >
                       <span class="glyphicon glyphicon-align-justify"></span>
                     </button>                    
-                    <a class="navbar-brand" href="{{=URL('default','index')}}">Datawork.mx</a>
+                    <a class="navbar-brand" href="{{=URL('default','index')}}">General Ledger</a>
                     
                 </div>     
                 <!-- Agrupar los enlaces de navegación, los formularios y cualquier
@@ -316,11 +319,10 @@
                     <!-- FOOTER======================================================== -->
                     <footer class="modal-footer">
                         <div class="col-sm-6 text-left">
-                          {{=T('Copyright')}} &#169; {{=request.now.year}}
+                          {{=T('Copyright')}} &#169; datawork.mx {{=request.now.year}}
                         </div>
                         <div class="col-sm-6 text-right">
-                            {{=T('Powered by')}}
-                          <a href="#">web2py</a>
+                          <a href="#">Grupo DG</a>
                         </div>
                     </footer>
                     <!-- FIN-FOOTER==================================================== -->
@@ -348,6 +350,12 @@
     });</script>
     {{pass}}
     <script src="{{=URL('static','js/share.js',vars=dict(static=URL('static','images')))}}"></script>
-   
+   <script type="text/javascript">
+        $(document).ready(function(){
+            setTimeout(function() {
+                $(".flash").fadeOut(1000);
+            },3000);
+        });
+   </script>
 </body>
 </html>
