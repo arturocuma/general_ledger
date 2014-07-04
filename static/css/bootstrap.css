@@ -302,6 +302,9 @@ a:focus {
   outline: 5px auto -webkit-focus-ring-color;
   outline-offset: -2px;
 }
+a:hover.text-muted{
+  color: #999;
+}
 figure {
   margin: 0;
 }
@@ -1994,7 +1997,8 @@ select[multiple].input-lg {
 .btn {
   display: inline-block;
   padding: 6px 12px;
-  margin-bottom: 0;
+  margin-top: 2px;
+  margin-bottom: 2px;
   font-size: 14px;
   font-weight: normal;
   line-height: 1.42857143;
@@ -4309,6 +4313,13 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .label-danger[href]:hover,
 .label-danger[href]:focus {
   background-color: #c9302c;
+}
+.label-muted {
+  background-color: #999;
+}
+.label-muted[href]:hover,
+.label-muted[href]:focus {
+  background-color: #999;
 }
 .badge {
   display: inline-block;
