@@ -92,9 +92,8 @@ def precargar():
     with open('localidades.csv', 'rb') as f:
 
         reader = csv.reader(f)
-        lines = [line for line in reader]
 
-        for line in lines:
+        for line in reader:
 
             estado_id = insertar_estado(line[1], line[0], pais_id)
             municipio_id = insertar_municipio(line[3], line[2], estado_id)
@@ -253,17 +252,34 @@ def index3():
     Útil para introducir los datos iniciales de una sucursal y departamento
     """
 
-    form = SQLFORM.factory(db.sucursal)
+    campos = [
+        Field('pais_id', 'string', label=T('País')),
+        Field('estado_id', 'string', label=T('Estado')),
+        Field('municipio_id', 'string', label=T('Municipio')),
+        Field('localidad_id', 'string', label=T('Localidad')),
+        Field('registro_fiscal', 'string', label='Registro Fiscal'),
+        Field('dir_calle', 'string', label=T('Calle')),
+        Field('dir_num_ext', 'string', label=T('Número Exterior')),
+        Field('dir_num_int', 'string', label=T('Número Interior')),
+        Field('dir_colonia', 'string', label=T('Colonia')),
+        Field('dir_cp', 'string', label=T('Código Postal')),
+        Field('dir_telefono', 'string', label=T('Teléfono')),
+        Field('dir_movil', 'string', label=T('Móvil')),
+        Field('dir_email', requires=IS_EMAIL(), label=T('Email')),
+        Field('nombre_suc', 'string', label=T('Nombre Sucursal')),
+    ]
 
-    form.vars.empresa_id = request.vars.empresa_id
+    form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
 
-        #sucursal_id = db.sucursal.insert(**db.sucursal._filter_fields(form.vars))
+        form.vars.empresa_id = request.vars.empresa_id
+        form.vars.nombre = request.vars.nombre_suc
+        sucursal_id = db.sucursal.insert(**db.sucursal._filter_fields(form.vars))
 
-        #vars = {'sucursal_id': sucursal_id, 'empresa_id': request.vars.empresa_id}
+        vars = {'sucursal_id': sucursal_id, 'empresa_id': request.vars.empresa_id}
 
-        #redirect(URL('default', 'index4', vars=vars))
+        redirect(URL('default', 'index4', vars=vars))
         response.flash = 'OK'
 
     elif form.errors:
@@ -280,6 +296,24 @@ def index4():
     """
 
     fields = [
+        Field('pais_id', 'string', label=T('País')),
+        Field('estado_id', 'string', label=T('Estado')),
+        Field('municipio_id', 'string', label=T('Municipio')),
+        Field('localidad_id', 'string', label=T('Localidad')),
+        Field('registro_fiscal', 'string', label='Registro Fiscal'),
+        Field('dir_calle', 'string', label=T('Calle')),
+        Field('dir_num_ext', 'string', label=T('Número Exterior')),
+        Field('dir_num_int', 'string', label=T('Número Interior')),
+        Field('dir_colonia', 'string', label=T('Colonia')),
+        Field('dir_cp', 'string', label=T('Código Postal')),
+        Field('dir_telefono', 'string', label=T('Teléfono')),
+        Field('dir_movil', 'string', label=T('Móvil')),
+        Field('dir_email', requires=IS_EMAIL(), label=T('Email')),
+        Field('nombre_emp', 'string', label=T('Nombre Empleado')),
+        Field('ap_paterno', 'string', label=T('Apellido Paterno')),
+        Field('ap_materno', 'string', label=T('Apellido Materno')),
+        Field('nombre_pue', 'string', label=T('Puesto')),
+        Field('nombre_dep', 'string', label=T('Departamento')),
     ]
 
     form = SQLFORM.factory(*fields)
@@ -287,26 +321,26 @@ def index4():
     if form.process().accepted:
 
         # insertar departamento
-        #form.vars.sucursal_id = request.vars.sucursal_id
-        #form.vars.nombre = request.vars.nombre_dep
-        #departamento_id = db.departamento.insert(
-        #        **db.departamento._filter_fields(form.vars)
-        #        )
+        form.vars.sucursal_id = request.vars.sucursal_id
+        form.vars.nombre = request.vars.nombre_dep
+        departamento_id = db.departamento.insert(
+                **db.departamento._filter_fields(form.vars)
+                )
 
-        ## insertar puesto
-        #form.vars.nombre = request.vars.nombre_pue
-        #puesto_id = db.puesto.insert(**db.puesto._filter_fields(form.vars))
+        # insertar puesto
+        form.vars.nombre = request.vars.nombre_pue
+        puesto_id = db.puesto.insert(**db.puesto._filter_fields(form.vars))
 
-        ## insertar empleado
-        #form.vars.nombre = form.vars.nombre_emp
-        #form.vars.departamento_id = departamento_id
-        #form.vars.puesto_id = puesto_id
-        #empleado_id = db.empleado.insert(
-        #        **db.empleado._filter_fields(form.vars)
-        #        )
+        # insertar empleado
+        form.vars.nombre = form.vars.nombre_emp
+        form.vars.departamento_id = departamento_id
+        form.vars.puesto_id = puesto_id
+        empleado_id = db.empleado.insert(
+                **db.empleado._filter_fields(form.vars)
+                )
 
-        #vars = {'empresa_id': request.vars.empresa_id}
-        #redirect(URL('default', 'index5', vars=vars))
+        vars = {'empresa_id': request.vars.empresa_id}
+        redirect(URL('default', 'index5', vars=vars))
 
         response.flash = 'OK'
 
