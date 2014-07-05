@@ -1,0 +1,296 @@
+timestamp: 2014-07-03T16:13:09.116833
+CREATE TABLE pais(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:09.236403
+CREATE TABLE estado(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    clave_interna CHAR(512),
+    nombre CHAR(512),
+    pais_id INTEGER REFERENCES pais (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:09.353090
+CREATE TABLE municipio(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    clave_interna CHAR(512),
+    nombre CHAR(512),
+    estado_id INTEGER REFERENCES estado (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:09.461762
+CREATE TABLE localidad(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    clave_interna CHAR(512),
+    nombre CHAR(512),
+    lat_grad CHAR(512),
+    lon_grad CHAR(512),
+    lat_dec CHAR(512),
+    lon_dec CHAR(512),
+    municipio_id INTEGER REFERENCES municipio (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:09.569784
+CREATE TABLE banco(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:09.678780
+CREATE TABLE persona(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    registro_fiscal CHAR(512),
+    dir_calle CHAR(512),
+    dir_num_ext CHAR(512),
+    dir_num_int CHAR(512),
+    dir_colonia CHAR(512),
+    dir_cp CHAR(512),
+    dir_telefono CHAR(512),
+    dir_movil CHAR(512),
+    dir_email CHAR(512),
+    localidad_id INTEGER REFERENCES localidad (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:09.795611
+CREATE TABLE empresa(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    razon_social CHAR(512),
+    nombre_comercial CHAR(512),
+    registro_fiscal CHAR(512),
+    dir_calle CHAR(512),
+    dir_num_ext CHAR(512),
+    dir_num_int CHAR(512),
+    dir_colonia CHAR(512),
+    dir_cp CHAR(512),
+    dir_telefono CHAR(512),
+    dir_movil CHAR(512),
+    dir_email CHAR(512),
+    localidad_id INTEGER REFERENCES localidad (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:09.913697
+CREATE TABLE empresa_banco(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    empresa_id INTEGER REFERENCES empresa (id) ON DELETE CASCADE,
+    banco_id INTEGER REFERENCES banco (id) ON DELETE CASCADE,
+    clabe CHAR(512),
+    cuenta CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:10.047679
+CREATE TABLE sucursal(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    empresa_id INTEGER REFERENCES empresa (id) ON DELETE CASCADE,
+    nombre CHAR(512),
+    registro_fiscal CHAR(512),
+    dir_calle CHAR(512),
+    dir_num_ext CHAR(512),
+    dir_num_int CHAR(512),
+    dir_colonia CHAR(512),
+    dir_cp CHAR(512),
+    dir_telefono CHAR(512),
+    dir_movil CHAR(512),
+    dir_email CHAR(512),
+    localidad_id INTEGER REFERENCES localidad (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:10.155437
+CREATE TABLE departamento(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sucursal_id INTEGER REFERENCES sucursal (id) ON DELETE CASCADE,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:10.272673
+CREATE TABLE puesto(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:10.466918
+CREATE TABLE empleado(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    departamento_id INTEGER REFERENCES departamento (id) ON DELETE CASCADE,
+    puesto_id INTEGER REFERENCES puesto (id) ON DELETE CASCADE,
+    nombre CHAR(512),
+    ap_paterno CHAR(512),
+    ap_materno CHAR(512),
+    registro_fiscal CHAR(512),
+    dir_calle CHAR(512),
+    dir_num_ext CHAR(512),
+    dir_num_int CHAR(512),
+    dir_colonia CHAR(512),
+    dir_cp CHAR(512),
+    dir_telefono CHAR(512),
+    dir_movil CHAR(512),
+    dir_email CHAR(512),
+    localidad_id INTEGER REFERENCES localidad (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:10.738796
+CREATE TABLE proveedor(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    razon_social CHAR(512),
+    nombre_comercial CHAR(512),
+    registro_fiscal CHAR(512),
+    dir_calle CHAR(512),
+    dir_num_ext CHAR(512),
+    dir_num_int CHAR(512),
+    dir_colonia CHAR(512),
+    dir_cp CHAR(512),
+    dir_telefono CHAR(512),
+    dir_movil CHAR(512),
+    dir_email CHAR(512),
+    localidad_id INTEGER REFERENCES localidad (id) ON DELETE CASCADE,
+    producto_comercial CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:10.855200
+CREATE TABLE proveedor_banco(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    proveedor_id INTEGER REFERENCES proveedor (id) ON DELETE CASCADE,
+    banco_id INTEGER REFERENCES banco (id) ON DELETE CASCADE,
+    clabe CHAR(512),
+    cuenta CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:11.022168
+CREATE TABLE auth_user(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name CHAR(128),
+    last_name CHAR(128),
+    email CHAR(512),
+    password CHAR(512),
+    registration_key CHAR(512),
+    reset_password_key CHAR(512),
+    registration_id CHAR(512),
+    empleado_id INTEGER REFERENCES empleado (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:11.154791
+CREATE TABLE auth_group(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    role CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2014-07-03T16:13:11.329628
+CREATE TABLE auth_membership(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:11.496256
+CREATE TABLE auth_permission(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER REFERENCES auth_group (id) ON DELETE CASCADE,
+    name CHAR(512),
+    table_name CHAR(512),
+    record_id INTEGER
+);
+success!
+timestamp: 2014-07-03T16:13:11.771206
+CREATE TABLE auth_event(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    time_stamp TIMESTAMP,
+    client_ip CHAR(512),
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    origin CHAR(512),
+    description TEXT
+);
+success!
+timestamp: 2014-07-03T16:13:11.931086
+CREATE TABLE auth_cas(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER REFERENCES auth_user (id) ON DELETE CASCADE,
+    created_on TIMESTAMP,
+    service CHAR(512),
+    ticket CHAR(512),
+    renew CHAR(1)
+);
+success!
+timestamp: 2014-07-03T16:13:12.130363
+CREATE TABLE tipo_naturaleza(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:12.304903
+CREATE TABLE tipo_cc(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:12.463701
+CREATE TABLE cc_empresa(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    empresa_id INTEGER REFERENCES empresa (id) ON DELETE CASCADE,
+    cuenta_padre INTEGER REFERENCES cc_empresa (id) ON DELETE CASCADE,
+    num_cc CHAR(512),
+    descripcion CHAR(512),
+    nivel INTEGER,
+    tipo_naturaleza_id INTEGER REFERENCES tipo_naturaleza (id) ON DELETE CASCADE,
+    tipo_cc_id INTEGER REFERENCES tipo_cc (id) ON DELETE CASCADE
+);
+success!
+timestamp: 2014-07-03T16:13:12.646790
+CREATE TABLE niveles_cc_empresa(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    empresa_id INTEGER REFERENCES empresa (id) ON DELETE CASCADE,
+    niveles INTEGER,
+    digitos_cc_acum INTEGER,
+    digitos_cc_aux INTEGER
+);
+success!
+timestamp: 2014-07-03T16:13:12.823197
+CREATE TABLE tipo_asiento(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:13.054740
+CREATE TABLE poliza(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    f_poliza TIMESTAMP,
+    concepto_general CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:13.205316
+CREATE TABLE asiento(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    poliza_id INTEGER REFERENCES poliza (id) ON DELETE CASCADE,
+    tipo INTEGER REFERENCES tipo_asiento (id) ON DELETE CASCADE,
+    f_asiento TIMESTAMP,
+    cc_empresa_id INTEGER REFERENCES cc_empresa (id) ON DELETE CASCADE,
+    concepto_movimiento CHAR(512),
+    debe DOUBLE,
+    haber DOUBLE
+);
+success!
+timestamp: 2014-07-03T16:13:13.346171
+CREATE TABLE mes(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nombre CHAR(512)
+);
+success!
+timestamp: 2014-07-03T16:13:13.495908
+CREATE TABLE anio(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    numero INTEGER
+);
+success!
+timestamp: 2014-07-03T16:13:13.638404
+CREATE TABLE balanza(
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    mes INTEGER REFERENCES mes (id) ON DELETE CASCADE,
+    anio INTEGER REFERENCES anio (id) ON DELETE CASCADE,
+    saldo_inicial DOUBLE,
+    cargo DOUBLE,
+    abono DOUBLE,
+    saldo_final DOUBLE,
+    cc_empresa_id INTEGER REFERENCES cc_empresa (id) ON DELETE CASCADE
+);
+success!
