@@ -2,8 +2,8 @@
 0,1,1.02,Activo fijo,2,1,1
 0,1,1.03,Activo diferido,2,1,1
 0,2,2.01,Pasivo circulante,2,2,1
-0,2,2.02,Pasivo circulante,2,2,1
-0,2,2.03,Pasivo circulante,2,2,1
+0,2,2.02,Pasivo fijo,2,2,1
+0,2,2.03,Pasivo diferido,2,2,1
 0,3,3.01,Capital social fijo,2,2,1
 0,3,3.02,Capital social variable,2,2,1
 0,3,3.03,Reserva legal,2,2,1
