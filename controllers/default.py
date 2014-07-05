@@ -85,7 +85,6 @@ def insertar_localidad(
 
 
 def precargar():
-
     pais_id = insertar_pais('MÉXICO')
 
     # precargar estados
@@ -229,15 +228,16 @@ def index2():
     ]
 
     form = SQLFORM.factory(*campos)
+    response.flash = 'Response inicial'
 
     if form.process().accepted:
 
         empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
-        redirect(URL('default', 'index3', vars=vars))
-        response.flash = 'OK'
 
-        print 'after'
+        # response.flash = 'Response han configurado correctamente los datos de la empresa'
+        session.flash = 'Se han configurado correctamente los datos de la empresa'
+        redirect(URL('default', 'index3', vars=vars))
 
     elif form.errors:
         response.flash = 'Errores en el formulario'
@@ -279,8 +279,9 @@ def index3():
 
         vars = {'sucursal_id': sucursal_id, 'empresa_id': request.vars.empresa_id}
 
+        response.flash = 'Se han configurado correctamente los datos de la sucursal'
+        session.flash = 'Se han configurado correctamente los datos de la sucursal'
         redirect(URL('default', 'index4', vars=vars))
-        response.flash = 'OK'
 
     elif form.errors:
         response.flash = 'Errores en el formulario'
@@ -292,7 +293,7 @@ def index3():
 
 def index4():
     """
-    Útil para introducir los datos iniciales de la sucursal inicial
+    Útil para introducir los datos iniciales del departamento y usuario
     """
 
     fields = [
@@ -340,9 +341,9 @@ def index4():
                 )
 
         vars = {'empresa_id': request.vars.empresa_id}
-        redirect(URL('default', 'index5', vars=vars))
 
-        response.flash = 'OK'
+        session.flash = 'Se han configurado correctamente los datos de la sucursal'
+        #redirect(URL('default', 'index5', vars=vars))
 
     elif form.errors:
         print form.errors
@@ -360,8 +361,8 @@ def index():
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
     """
-    response.flash = T("Welcome!")
-    return dict(message=T('General Ledger'))
+    response.flash = T("Welcome to web2py!")
+    return dict(message=T('Hello World'))
 
 
 def user():
