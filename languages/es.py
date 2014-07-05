@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -149,6 +149,7 @@
 'delete all checked': 'eliminar marcados',
 'Delete:': 'Eliminar:',
 'Demo': 'Demostración',
+'Departamento': 'Departamento',
 'Departamento Adscrito': 'Departamento Adscrito',
 'Departamentos': 'Departamentos',
 'Deploy on Google App Engine': 'Despliegue en Google App Engine',
@@ -258,6 +259,7 @@
 'Invalid login': 'Inicio de sesión inválido',
 'invalid password': 'contraseña inválida',
 'Invalid Query': 'Consulta inválida',
+'Invalid query': 'Invalid query',
 'invalid request': 'solicitud inválida',
 'Invalid reset password': 'Reinicio de contraseña inválido',
 'invalid ticket': 'tiquete inválido',
@@ -314,6 +316,7 @@
 'New Record': 'Registro nuevo',
 'new record inserted': 'nuevo registro insertado',
 'New Search': 'New Search',
+'next %s rows': 'next %s rows',
 'next 100 rows': '100 filas siguientes',
 'Nivel': 'Nivel',
 'NO': 'NO',
@@ -324,6 +327,8 @@
 'Nombre de Administrador': 'Nombre de Administrador',
 'Nombre de Departamento': 'Nombre de Departamento',
 'Nombre de la Sucursal': 'Nombre de la Sucursal',
+'Nombre Empleado': 'Nombre Empleado',
+'Nombre Sucursal': 'Nombre Sucursal',
 'None': 'None',
 'Not authorized': 'No autorizado',
 'not in': 'no en',
