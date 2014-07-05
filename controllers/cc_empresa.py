@@ -15,15 +15,14 @@ def crear_cc(form):
             num_niv=int(niveles_cc['digitos_cc_aux'])
     
         num_cc= form.vars.num_cc
-        str(num_cc).zfill(num_niv)
-        
-        form.vars.num_cc = form.vars.cuenta_padre+'.'+ num_cc
+        num_cc= str(num_cc).zfill(num_niv)
+        form.vars.num_cc = db.cc_empresa(form.vars.cuenta_padre).num_cc +'.'+ num_cc
         print form.vars
     return
 
 def listar():
     form = SQLFORM.smartgrid(db.cc_empresa,
-                             ##onvalidation = crear_cc,
+                             onvalidation = crear_cc,
                              editable = True,
                              linked_tables=['empresa'])
     return dict(form=form)

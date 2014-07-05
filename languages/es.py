@@ -259,6 +259,7 @@
 'Invalid login': 'Inicio de sesión inválido',
 'invalid password': 'contraseña inválida',
 'Invalid Query': 'Consulta inválida',
+'Invalid query': 'Invalid query',
 'invalid request': 'solicitud inválida',
 'Invalid reset password': 'Reinicio de contraseña inválido',
 'invalid ticket': 'tiquete inválido',
