@@ -258,8 +258,8 @@ div.controls .error {
 
 @media (max-width: 767px) {
     .navbar {
-        margin-right: -20px;
-        margin-left: -20px;
+        margin-right: 0px;
+        margin-left: 0px;
     }
     #span-inicio{
       display: none;
