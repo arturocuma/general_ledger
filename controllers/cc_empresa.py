@@ -15,9 +15,8 @@ def crear_cc(form):
             num_niv=int(niveles_cc['digitos_cc_aux'])
     
         num_cc= form.vars.num_cc
-        str(num_cc).zfill(num_niv)
-        
-        form.vars.num_cc = form.vars.cuenta_padre+'.'+ num_cc
+        num_cc= str(num_cc).zfill(num_niv)
+        form.vars.num_cc = db.cc_empresa(form.vars.cuenta_padre).num_cc +'.'+ num_cc
         print form.vars
     return
 
@@ -29,6 +28,4 @@ def listar():
     return dict(form=form)
 
 def resumen():
-    query = db.cc_empresa.id==db.asiento.cc_empresa_id
-    form = SQLFORM.grid(query)
-    return dict(form=form)
+    return dict(message='resumen')
