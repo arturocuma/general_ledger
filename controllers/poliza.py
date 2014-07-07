@@ -47,9 +47,9 @@ def contabilizar():
         haber = haber + asiento.haber if asiento.haber else 0.0
     session.msgContabiliza = ''
     if debe!=haber:
-        session.msgContabiliza = 'Póliza no cuadrada.'
+        session.msgContabiliza = '\nPóliza no cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
     else:
-        session.msgContabiliza = 'Póliza cuadrada.'
+        session.msgContabiliza = '\nPóliza cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
     redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=(request.args)))
 
 
