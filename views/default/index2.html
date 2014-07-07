@@ -218,7 +218,25 @@ function cargarPaises() {
     };
 })( jQuery );
 
+/* geolocation */
+
+function getLocation() {
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        console.log("Geolocation is not supported by this browser");
+    }
+}
+
+function showPosition(position) {
+    console.log(position.coords.longitude);
+    console.log(position.coords.latitude);
+}
+
 $(document).ready(function(){
+
+    getLocation();
 
     $("#wizard").steps({
         headerTag: 'h2',
@@ -239,13 +257,12 @@ $(document).ready(function(){
 
             if (flag) {
                 $("#empresa").submit();
-                /*
-                $('[role="menuitem"]').click(function(e){
+                $('---[role="menuitem"]').click(function(e){
                     e.preventDefault();
 
                     console.log('¬¬');
 
-                    var $form = $("#-empresa");
+                    var $form = $("#empresa");
                     var serializedData = $form.serialize();
                     $.ajax({
                         url: "index2", //index2
@@ -264,7 +281,6 @@ $(document).ready(function(){
                         }
                     });
                 });
-                */
             } else {
                 console.log('You don\'t pass');
             }
@@ -289,7 +305,6 @@ $(document).ready(function(){
     });
 
     cargarPaises();
-
 
     $('#no_table_pais_id').change(function() {
         cargarEstados();

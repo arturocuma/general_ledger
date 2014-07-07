@@ -117,7 +117,7 @@ def cargar_paises():
                    )
                ]
 
-    opciones[:0] = [OPTION('TODOS', _value='')]
+    #opciones[:0] = [OPTION('TODOS', _value='')]
 
     resultado = SELECT(
         _id='pais_id',
@@ -141,7 +141,7 @@ def cargar_estados():
                    #cache=(cache.ram, 3600) #problemas SQLite
                    )
                ]
-    opciones[:0] = [OPTION('TODOS', _value='')]
+    #opciones[:0] = [OPTION('TODOS', _value='')]
 
     resultado = SELECT(
         _id='estado_id',
@@ -166,7 +166,7 @@ def cargar_municipios():
                    )
                ]
 
-    opciones[:0] = [OPTION('TODOS', _value='')]
+    #opciones[:0] = [OPTION('TODOS', _value='')]
 
     resultado = SELECT(
         _id='municipio_id',
@@ -191,7 +191,7 @@ def cargar_localidades():
                    )
                ]
 
-    opciones[:0] = [OPTION('TODOS', _value='')]
+    # opciones[:0] = [OPTION('TODOS', _value='')]
 
     resultado = SELECT(
         _id='localidad_id',
@@ -228,7 +228,6 @@ def index2():
     ]
 
     form = SQLFORM.factory(*campos)
-    response.flash = 'Response inicial'
 
     if form.process().accepted:
 
@@ -236,7 +235,9 @@ def index2():
         vars = {'empresa_id': empresa_id}
 
         # response.flash = 'Response han configurado correctamente los datos de la empresa'
+        session.flash = response.flash
         session.flash = 'Se han configurado correctamente los datos de la empresa'
+        print session
         redirect(URL('default', 'index3', vars=vars))
 
     elif form.errors:
