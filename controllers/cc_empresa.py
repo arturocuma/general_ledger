@@ -22,12 +22,10 @@ def crear_cc(form):
 
 def listar():
     form = SQLFORM.smartgrid(db.cc_empresa,
-                             onvalidation = crear_cc,
+                             ##onvalidation = crear_cc,
                              editable = True,
                              linked_tables=['empresa'])
     return dict(form=form)
 
 def resumen():
-    query = db.cc_empresa.id==db.asiento.cc_empresa_id
-    form = SQLFORM.grid(query)
-    return dict(form=form)
+    return dict(message='resumen')
