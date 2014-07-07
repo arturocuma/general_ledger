@@ -27,9 +27,10 @@ jQuery(document).ready(function(){
 
 <h1>Pólizas Contables</h1>
 
-
-
-{{=request.vars}}
-
+{{if session.msgContabiliza:}}
+{{=polizas[2].insert(-1,session.msgContabiliza)}}
+{{pass}}
 
 {{=polizas}}
+
+{{session.msgContabiliza=''}}
