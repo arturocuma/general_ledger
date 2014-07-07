@@ -1,7 +1,13 @@
 {{extend 'layout.html'}}
-
 {{include 'botones.html'}}
 
-<div id="stylized" class="myform">
-    {{=grupos}}
-</div>
+{{=grupos}}
+
+<script>
+jQuery(document).ready(function(){
+    jQuery('.name').editable("{{=URL('permisos', 'actualiza_permiso')}}",{                   
+                             tooltip: "Click para editar, ENTER para salvar.",
+                             indicator : "Actualizando...",
+    });
+})
+</script>

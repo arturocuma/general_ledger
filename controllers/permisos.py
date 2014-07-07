@@ -11,6 +11,27 @@ redirect(URL('default', 'user', args='login', vars=vars))
 import csv
 import sqlite3
 
+def crear_permisos():
+    """
+    Crear permisos por default
+    """
+    return dict()
+
+def crear_grupos():
+    """
+    Crear roles por default
+    """
+    db.auth_group.insert(
+            role = 'ADMIN',
+            description = 'Acceso a todas las funciones del sistema',
+            )
+
+    db.auth_group.insert(
+            role = 'AUXILIAR CONTABLE',
+            description = 'Acceso a pocas funciones del sistema',
+            )
+    return dict()
+
 def index():
     """
     Por default muestra `usuarios`
@@ -41,23 +62,29 @@ def grupos():
     Muestra los `grupos` de usuarios
     """
 
+    db.auth_permission.name.represent = lambda value, row: DIV(
+            value if value != '' else '-',
+            _class='name',
+            _id=str(row.id)+'.name'
+            )
+
     db.auth_group.id.readable = False
-    grupos = SQLFORM.grid(db.auth_group,
-                           searchable=True,
-                           create=True,
-                           editable=True,
-                           deletable=True,
-                           details=True,
-                           orderby= db.auth_group.role,
-                           user_signature=False,
-                           maxtextlengths={'auth_group.description' :100},
-                           exportclasses=dict(
-                               csv_with_hidden_cols=False,
-                               tsv_with_hidden_cols=False,
-                               tsv=False,
-                               xml=False)
-                               )
+
+    grupos = SQLFORM.smartgrid(
+            db.auth_group,
+            linked_tables=['auth_permission', 'auth_membership']
+            )
     return dict(grupos=grupos)
+
+def actualiza_permiso():
+    id, column = request.post_vars.id.split('.')
+    print 'id column'
+    print id, column
+    value = request.post_vars.value
+    print 'value'
+    print value
+    db(db.auth_permission.id == id).update(**{column:value})
+    return value
 
 #@auth.requires(auth.has_membership('ADMIN'))
 def membresia():
