@@ -43,8 +43,8 @@ def contabilizar():
     debe = 0.0
     haber = 0.0
     for asiento in asientos:
-        debe = debe + asiento.debe
-        haber = haber + asiento.haber
+        debe = debe + asiento.debe if asiento.debe else 0.0
+        haber = haber + asiento.haber if asiento.haber else 0.0
     session.msgContabiliza = ''
     if debe!=haber:
         session.msgContabiliza = 'Póliza no cuadrada.'
