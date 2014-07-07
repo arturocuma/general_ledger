@@ -1,5 +1,7 @@
 # coding: utf8
 # try something like
+
+# For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
 
 def listar():
@@ -10,24 +12,7 @@ def listar():
     db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
     db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
 
-    if request.args(-3) == 'poliza' and request.args(-2) == 'asiento.poliza_id':
-        links=[dict(header=T('Action'), 
-                        body=lambda row: DIV(A(I(_class='icon-print'), _title=T("Print invoice"), 
-                                               _target="_blank", _class="button", 
-                                               _href=URL("print", "print_invoice", args=[row.id])), 
-                                               A(I(_class='icon-envelope'), _title=T("Mail invoice"), 
-                                                 _target="_blank", _class="button", 
-                                                 _href="#"
-                                              )
-                        ))
-                      ]
-        links = [lambda row: A(SPAN(_class="glyphicon glyphicon-indent-left"),' Agregar Asiento', _class="button btn btn-default", _href=URL("poliza", "agregar_asiento" ,args=["poliza", request.args(-1)]))]
-
-    else:
-        links=None
-
     polizas = SQLFORM.smartgrid(db.poliza, linked_tables=['asiento'],
-                                links=links,
                                 onvalidation=valida,
                                 exportclasses=dict(
                                                   #csv=False,
@@ -39,11 +24,30 @@ def listar():
                                                   #xml=False
                                               )
                                 )
+
+    if request.args(-3) == 'poliza' and request.args(-2) == 'asiento.poliza_id':
+        boton_agregar_asiento = A(SPAN(_class="glyphicon glyphicon-indent-left"),' Agregar Asiento', _class="button btn btn-default", _href=URL("poliza", "agregar_asiento" ,args=["poliza", request.args(-1)]))
+        boton_contabilizar = A(SPAN(_class="glyphicon glyphicon-book"),' Contabilizar', _class="button btn btn-default", _href=URL("poliza", "contabilizar" ,args=["poliza", request.args(-1)]))
+        polizas[2].insert(-1, boton_agregar_asiento)
+        polizas[2].insert(-1, boton_contabilizar)
+
     return dict(polizas=polizas)
 
 def agregar_asiento():
     db.asiento.insert(poliza_id=request.args[1])
     redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=request.args))
+
+def contabilizar():
+    poliza = db.poliza(request.args[1])
+    asientos = db(db.asiento.poliza_id==request.args[1]).select()
+    debe = 0.0
+    haber = 0.0
+    for asiento in asientos:
+        debe = debe + asiento.debe
+        haber = haber + asiento.haber
+    print debe
+    print haber
+    redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=(request.args), vars=dict(mensaje='hola', hola='mundo') ))
 
 
 def valida(form):
