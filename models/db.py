@@ -132,7 +132,7 @@ db.define_table('persona',
     Field('dir_telefono', 'string', label='Teléfono'),
     Field('dir_movil', 'string', label='Móvil'),
     Field('dir_email', requires=IS_EMAIL(), label='Email'),
-    Field('localidad_id', 'reference localidad', requires=IS_NULL_OR(IS_IN_DB(db, 'localidad.id')), label='Localidad/Ciudad')
+    Field('localidad_id', 'reference localidad', label='Localidad/Ciudad')
     )
 
 db.define_table('empresa',
@@ -252,30 +252,34 @@ db.define_table('niveles_cc_empresa',
     format='%(niveles)s',
     )
 
-db.define_table('tipo_asiento',
+db.define_table('tipo_poliza',
     Field('nombre','string'),
     format='%(nombre)s'
     )
-if not db(db.tipo_asiento.id>0).count():
-    db.tipo_asiento.insert(
+if not db(db.tipo_poliza.id>0).count():
+    db.tipo_poliza.insert(
         nombre = 'INGRESO',
     )
-    db.tipo_asiento.insert(
+    db.tipo_poliza.insert(
         nombre = 'EGRESO',
     )
-    
+    db.tipo_poliza.insert(
+        nombre = 'DIARIO',
+    )
+
 db.define_table('poliza',
-    Field('f_poliza', 'datetime', label='Fecha de Póliza'),
+    Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
     Field('concepto_general', 'string'),
+    Field('tipo', 'reference tipo_poliza'),
+    Field('importe', 'double', default='0.0', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
     )
 db.poliza.id.label='#Póliza'
     
 db.define_table('asiento',
     Field('poliza_id', 'reference poliza', label='#Póliza'),
-    Field('tipo', 'reference tipo_asiento'),
-    Field('f_asiento', 'datetime', label='Fecha de Asiento'),
-    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
-    Field('concepto_movimiento','string'),
+    Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
+    Field('cc_empresa_id', 'reference cc_empresa',label='Cuenta Contable'),
+    Field('concepto_asiento','string'),
     Field('debe', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
     Field('haber', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
     )

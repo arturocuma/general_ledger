@@ -1,3 +1,29 @@
 {{extend 'layout.html'}}
-<h1>Asientos Contables</h1>
-{{=form}}
+
+<script>
+jQuery(document).ready(function(){
+    jQuery('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
+                             tooltip: "Click para editar, ENTER para salvar.",
+                             indicator : "Actualizando...",
+    });
+    jQuery('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
+                             tooltip: "Click para editar, ENTER para salvar.",
+                             indicator : "Actualizando...",
+    });
+    jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
+                             tooltip: "Click para editar, ENTER para salvar.",
+                             indicator : "Actualizando...",
+    });
+    jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
+                             tooltip: "Click para editar, ENTER para salvar.",
+                             indicator : "Actualizando...",
+    });
+    jQuery('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
+                             tooltip: "Click para editar, ENTER para salvar.",
+                             indicator : "Actualizando...",
+    });
+})
+</script>
+
+<h1>Pólizas Contables</h1>
+{{=polizas}}
