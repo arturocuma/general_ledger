@@ -327,28 +327,6 @@ div.error {
     font-weight:bold;
 }
 
-.web2py_breadcrumbs{
-    border-radius: 4px;
-    padding: 5px;
-    list-style: none;
-}
-
-.web2py_breadcrumbs ul {
-    list-style:none;
-    margin-left: 5px;
-    background-color: #F5F5F5;
-    border-radius: 5px;
-    padding: 5px;
-}
-.web2py_breadcrumbs ul li:before{
-    padding: 0 5px;
-    color: #5F6F81;
-    content: "\00a0";
-}
-.web2py_breadcrumbs ul li.active a{
-    color: #5F6F81;
-    text-decoration: none;
-}
 
 li.w2p_grid_breadcrumb_elem {
     display:inline-block;

@@ -478,6 +478,37 @@ p {
   font-weight: 200;
   line-height: 1.4;
 }
+
+/**************************MIGAS DE PAN**************************************************/
+
+.web2py_breadcrumbs{
+    border-radius: 4px;
+    padding: 5px;
+    list-style: none;
+}
+
+.w2p_grid_breadcrumb_elem span{
+    display: none;
+}
+
+.web2py_breadcrumbs ul {
+    list-style:none;
+    margin-left: 5px;
+    background-color: #F5F5F5;
+    border-radius: 5px;
+    padding: 5px;
+}
+.web2py_breadcrumbs ul li + li:before{
+    padding: 0 5px;
+    color: #428bca;
+    content: "\25b6";
+    cursor: default;
+}
+.web2py_breadcrumbs ul li.active a{
+    color: #5F6F81;
+    text-decoration: none;
+}
+/************************************************************************************/
 @media (min-width: 768px) {
   .lead {
     font-size: 21px;
@@ -3832,7 +3863,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     padding-bottom: 15px;
   }
   .navbar-nav.navbar-right:last-child {
-    margin-right: -15px;
+    margin-right: 0px;
   }
 }
 @media (min-width: 768px) {
