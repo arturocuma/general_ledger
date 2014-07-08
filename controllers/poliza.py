@@ -43,11 +43,14 @@ def contabilizar():
     debe = 0.0
     haber = 0.0
     for asiento in asientos:
-        debe = debe + asiento.debe
-        haber = haber + asiento.haber
-    print debe
-    print haber
-    redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=(request.args), vars=dict(mensaje='hola', hola='mundo') ))
+        debe = debe + asiento.debe if asiento.debe else 0.0
+        haber = haber + asiento.haber if asiento.haber else 0.0
+    session.msgContabiliza = ''
+    if debe!=haber:
+        session.msgContabiliza = '\nPóliza no cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
+    else:
+        session.msgContabiliza = '\nPóliza cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
+    redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=(request.args)))
 
 
 def valida(form):
