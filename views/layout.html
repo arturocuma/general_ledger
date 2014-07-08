@@ -50,9 +50,9 @@
   <!-- include stylesheets -->
     {{
         response.files.insert(0,URL('static','css/bootstrap.css'))
-        response.files.insert(2,URL('static','css/bootstrap-responsive.min.css'))
-        response.files.insert(0,URL('static','css/web2py.css'))
-        response.files.insert(3,URL('static','css/web2py_bootstrap.css'))
+        ##response.files.insert(2,URL('static','css/bootstrap-responsive.min.css'))
+        response.files.insert(1,URL('static','css/web2py.css'))
+        response.files.insert(2,URL('static','css/web2py_bootstrap.css'))
     }}
 
     {{include 'web2py_ajax.html'}}
@@ -87,6 +87,13 @@
                     <div class="panel-heading">
                         <h4 class="panel-title">
                             <a class="close-menu"><span class="glyphicon glyphicon-remove"></span> Cerrar </a>
+                        </h4>
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h4 class="panel-title">
+                            <a href="{{=URL('default','index')}}"><span class="glyphicon glyphicon-home"></span> Inicio </a>
                         </h4>
                     </div>
                 </div>
