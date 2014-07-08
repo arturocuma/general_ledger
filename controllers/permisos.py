@@ -17,9 +17,10 @@ def crear_permisos():
     """
     return dict()
 
+
 def crear_grupos():
     """
-    Crear roles por default
+    Crear roles por default en el sistema
     """
     db.auth_group.insert(
             role = 'ADMIN',
@@ -32,11 +33,15 @@ def crear_grupos():
             )
     return dict()
 
+
 def index():
     """
     Por default muestra `usuarios`
     """
+
+    db.auth_user.empleado_id.readable = False
     db.auth_user.id.readable = False
+
     usuarios = SQLFORM.grid(db.auth_user,
                            searchable=True,
                            create=True,
@@ -61,6 +66,17 @@ def grupos():
     """
     Muestra los `grupos` de usuarios
     """
+    db.auth_user.empleado_id.readable = False
+    db.auth_user.empleado_id.writable = False
+
+    db.auth_permission.name.widget = SQLFORM.widgets.autocomplete(
+            request,
+            db.auth_permission.name,
+            limitby = (0, 10),
+            min_length = 1
+            )
+
+    form = SQLFORM.factory(db.auth_permission)
 
     db.auth_permission.name.represent = lambda value, row: DIV(
             value if value != '' else '-',
@@ -77,14 +93,29 @@ def grupos():
     return dict(grupos=grupos)
 
 def actualiza_permiso():
+
+    print request.post_vars.value
+
     id, column = request.post_vars.id.split('.')
-    print 'id column'
-    print id, column
+
     value = request.post_vars.value
-    print 'value'
-    print value
     db(db.auth_permission.id == id).update(**{column:value})
     return value
+
+def jsontest():
+    return dict()
+
+def datos():
+
+    from json import loads, dumps
+
+    result = db(db.cc_empresa.id > 0).select(
+            db.cc_empresa.id,
+            db.cc_empresa.descripcion
+            )
+
+    return dumps(result.as_dict())
+
 
 #@auth.requires(auth.has_membership('ADMIN'))
 def membresia():

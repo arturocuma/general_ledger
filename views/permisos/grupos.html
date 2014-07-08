@@ -1,13 +1,33 @@
 {{extend 'layout.html'}}
 {{include 'botones.html'}}
 
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+
+<div class="ui-widget">
+    <label for="tags">Tags: </label>
+    <div id="tags" class="tags">
+</div>
+
 {{=grupos}}
 
 <script>
-jQuery(document).ready(function(){
-    jQuery('.name').editable("{{=URL('permisos', 'actualiza_permiso')}}",{                   
-                             tooltip: "Click para editar, ENTER para salvar.",
-                             indicator : "Actualizando...",
+$(document).ready(function(){
+    $.getJSON('{{=URL("datos")}}', function(json) {
+
+        var dataArray = [];
+        $.each(json, function (index, value) {
+            dataArray.push(value['descripcion']);
+        });
+
+        $('.name').editable("{{=URL('permisos', 'actualiza_permiso')}}", {
+            tooltip: 'Click para editar, ENTER para salvar.',
+            indicator: 'Actualizando...'
+        }).click(function() {
+            $(this).find('input').autocomplete({
+                source: dataArray
+            });
+        });
     });
-})
+});
 </script>
