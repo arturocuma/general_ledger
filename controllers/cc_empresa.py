@@ -29,3 +29,15 @@ def listar():
 
 def resumen():
     return dict(message='resumen')
+
+def arbol():
+    hojas = db.executesql("""WITH RECURSIVE arbol(id, level) \
+                                AS ( VALUES(1, 0) \
+                                     UNION ALL \
+                                     SELECT cc_empresa.id, arbol.level+1 \
+                                     FROM cc_empresa \
+                                     JOIN arbol \
+                                     ON cc_empresa.cuenta_padre=arbol.id \
+                                     ORDER BY 2 ) \
+                           SELECT substr('..........',1,level*3) || id FROM arbol """)
+    return dict(arbol=hojas)

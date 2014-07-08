@@ -26,4 +26,14 @@ jQuery(document).ready(function(){
 </script>
 
 <h1>Pólizas Contables</h1>
+
+
+{{if session.msgContabiliza:}}
+  <div class="flash flash-info">
+      {{= session.msgContabiliza}}
+ </div>
+{{pass}}
+
 {{=polizas}}
+
+{{session.msgContabiliza=''}}
