@@ -50,6 +50,7 @@ a:active,
 a:hover {
   text-decoration: none;
 }
+
 abbr[title] {
   border-bottom: 1px dotted;
 }
@@ -500,7 +501,7 @@ p {
 }
 .web2py_breadcrumbs ul li + li:before{
     padding: 0 5px;
-    color: #428bca;
+    color: #5B5B5B;
     content: "\25b6";
     cursor: default;
 }
@@ -1441,7 +1442,10 @@ table {
   background-color: transparent;
 }
 th {
-  text-align: left;
+  text-align: center;  
+}
+th a{
+  color: #777;
 }
 .table {
   width: 100%;
@@ -2028,7 +2032,7 @@ select[multiple].input-lg {
 }
 .btn {
   display: inline-block;
-  padding: 6px 12px;
+  padding: 3px 12px;
   margin-top: 2px;
   margin-bottom: 2px;
   font-size: 14px;
@@ -2045,7 +2049,7 @@ select[multiple].input-lg {
   background-image: none;
   border: 1px solid transparent;
   border-radius: 4px;
-}
+}/*
 .btn:focus,
 .btn:active:focus,
 .btn.active:focus {
@@ -2057,7 +2061,7 @@ select[multiple].input-lg {
 .btn:focus {
   color: #333;
   text-decoration: none;
-}
+}*/
 .btn:active,
 .btn.active {
   background-image: none;
@@ -2075,11 +2079,13 @@ fieldset[disabled] .btn {
           box-shadow: none;
   opacity: .65;
 }
+.btn,
 .btn-default {
   color: #333;
-  background-color: #fff;
+  background-color: #F5F5F5;
   border-color: #ccc;
 }
+.btn:hover,
 .btn-default:hover,
 .btn-default:focus,
 .btn-default:active,

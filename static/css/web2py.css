@@ -12,7 +12,7 @@ h5 {font-size:1.25em}
 h6 {font-size:1.12em}
 th,label {font-weight:bold; white-space:nowrap;}
 td,th {text-align:left; padding:2px 5px 2px 5px}
-th {vertical-align:middle; border-right:1px solid white}
+/*th {vertical-align:middle; border-right:1px solid white}*/
 td {vertical-align:top}
 form table tr td label {text-align:left}
 p,table,ol,ul {padding:0; margin: 0.75em 0}
@@ -77,8 +77,11 @@ td.w2p_fl,td.w2p_fw,td.w2p_fc {vertical-align:top}
 td.w2p_fl {text-align:left}
 td.w2p_fl, td.w2p_fw {padding-right:7px}
 td.w2p_fl,td.w2p_fc {padding-top:4px}
-div.w2p_export_menu {margin:5px 0}
-div.w2p_export_menu a, div.w2p_wiki_tags a, div.w2p_cloud a {margin-left:5px; padding:2px 5px; background-color:#f1f1f1; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;}
+div.w2p_export_menu {
+    margin:5px 0;
+     background-color:#F5F5F5;
+}
+div.w2p_export_menu a, div.w2p_wiki_tags a, div.w2p_cloud a {margin-left:5px; padding:2px 5px; border-radius:5px; -moz-border-radius:5px; -webkit-border-radius:5px;}
 
 /* tr#submit_record__row {border-top:1px solid #E5E5E5} */
 #submit_record__row td {padding-top:.5em}
@@ -139,7 +142,7 @@ div.flash.flash-alert{
     background-image: linear-gradient(top,#FFD537,#FFD537);
     background-repeat: repeat-x;
 }
-div.flash.flash-danger{
+div.flash.flash-error{
     color:#fff;
     background-color:#000;
     border:2px solid #B50E0A;
@@ -233,9 +236,11 @@ div.error {
 .web2py_grid tbody td {padding:2px 5px 2px 5px; vertical-align: middle;}
 .web2py_grid .web2py_form td {vertical-align: top;}
 
+.web2py_grid thead{
+    background-color:#F5F5F5;
+    }
 .web2py_grid thead th,.web2py_grid tfoot td {
-    background-color:#EAEAEA;
-    padding:10px 5px 10px 5px;
+    padding:5px 5px 5px 5px;
 }
 
 .web2py_grid tr.odd {background-color:#F9F9F9}
