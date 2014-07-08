@@ -78,6 +78,7 @@ nav.menu ul {
 }
 nav.menu a {
     font-weight: 200;
+    text-decoration: none;
 }
 .close-menu {
     cursor: pointer;
