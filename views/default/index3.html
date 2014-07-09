@@ -1,15 +1,31 @@
-<!-- CSS -->
-<link rel="stylesheet" href="{{=URL('static', 'css/jquery.steps.css')}}">
-<link rel="stylesheet" href="{{=URL('static', 'css/bootstrap.min.css')}}">
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{{=response.title or request.application}}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
 
-<!-- JS -->
-<script src="{{=URL('static', 'js/jquery.js')}}"></script>
-<script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
-<script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{=URL('static', 'css/jquery.steps.css')}}">
+        <link rel="stylesheet" href="{{=URL('static', 'css/bootstrap.css')}}">
+        <link rel="stylesheet" href="{{=URL('static', 'css/web2py.css')}}">
+
+        <!-- JS -->
+        <script src="{{=URL('static', 'js/jquery.js')}}"></script>
+        <script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
+        <script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
+        <script src="{{=URL('static', 'js/web2py.js')}}"></script>
+        <script src="{{=URL('static', 'js/misc.js')}}"></script>
+    </head>
+<body>
 
 <div class='container'>
-
-<h1>Configuración Inicial <span>Sucursal</span></h1>
+<h1>Sucursal<br> <small>Configuración inicial</small></h1>
 
 <form name='sucursal' action='' id='sucursal' method='post'>
 {{form.custom.begin}}
@@ -131,6 +147,8 @@
 {{=form.custom.end}}
 </form>
 </div>
+</body>
+</html>
 
 <script>
 
@@ -264,4 +282,3 @@ div.tab-content { overflow: visible; }
     border: 1px solid #0000FB;
 }
 </style>
-

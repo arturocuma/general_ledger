@@ -1,15 +1,41 @@
 {{extend 'layout.html'}}
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
 <script>
 jQuery(document).ready(function(){
-    jQuery('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
-                             tooltip: "Click para editar, ENTER para salvar.",
-                             indicator : "Actualizando...",
+
+    jQuery('.f_asiento').editable(
+    "{{=URL('poliza', 'actualiza_asiento')}}",
+    {
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator : "Actualizando...",
     });
+
+    $.getJSON('{{=URL("carga_cc")}}', function(json) {
+
+        var dataArray = [];
+        $.each(json, function (index, value) {
+            dataArray.push(value['descripcion']);
+        });
+
+        $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_asiento2')}}", {
+            tooltip: 'Click para editar, ENTER para salvar.',
+            indicator: 'Actualizando...'
+        }).click(function() {
+            $(this).find('input').autocomplete({
+                source: dataArray
+            });
+        });
+    });
+
+    /*
     jQuery('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
                              tooltip: "Click para editar, ENTER para salvar.",
                              indicator : "Actualizando...",
     });
+    */
+
     jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{                   
                              tooltip: "Click para editar, ENTER para salvar.",
                              indicator : "Actualizando...",
@@ -32,7 +58,6 @@ jQuery(document).ready(function(){
       {{= session.msgContabiliza}}
  </div>
 {{pass}}
-
 
 {{=polizas}}
 
