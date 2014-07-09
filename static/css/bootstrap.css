@@ -3868,7 +3868,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
     padding-bottom: 15px;
   }
   .navbar-nav.navbar-right:last-child {
-    margin-right: 0px;
+    margin-right: 5px;
   }
 }
 @media (min-width: 768px) {
@@ -5678,10 +5678,10 @@ button.close {
 }
 .pull-left {
   float: left !important;
-}
+}/*
 .hide {
   display: none !important;
-}
+}*/
 .show {
   display: block !important;
 }
@@ -5694,11 +5694,11 @@ button.close {
   text-shadow: none;
   background-color: transparent;
   border: 0;
-}
+}/*
 .hidden {
   display: none !important;
   visibility: hidden !important;
-}
+}*/
 .affix {
   position: fixed;
 }
