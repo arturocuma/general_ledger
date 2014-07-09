@@ -71,3 +71,32 @@ def actualiza_asiento():
     value = request.post_vars.value
     db(db.asiento.id == id).update(**{column:value})
     return value
+
+def actualiza_asiento2():
+
+    id, column = request.post_vars.id.split('.')
+
+    value = db(
+            db.cc_empresa.descripcion == request.post_vars.value
+            ).select(
+            db.cc_empresa.id
+            ).first()
+
+    value = value.id
+
+    db(db.asiento.id == id).update(**{column:value})
+    return value
+
+def carga_cc():
+    """
+    Carga el catálogo de cuentas a un objeto JSON
+    """
+
+    from json import loads, dumps
+
+    result = db(db.cc_empresa.id > 0).select(
+            db.cc_empresa.id,
+            db.cc_empresa.descripcion
+            )
+
+    return dumps(result.as_dict())
