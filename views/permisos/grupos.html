@@ -12,13 +12,23 @@
 {{=grupos}}
 
 <script>
+
 $(document).ready(function(){
-    $.getJSON('{{=URL("datos")}}', function(json) {
+    $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
         var dataArray = [];
+        var dataArray2 = [];
+
         $.each(json, function (index, value) {
-            dataArray.push(value['descripcion']);
+            dataArray.push(value);
+            dataArray2[index] = value;
         });
+
+        /*
+        $.each(dataArray2, function (index, value) {
+                alert( index + ' : ' + value );
+        });
+        */
 
         $('.name').editable("{{=URL('permisos', 'actualiza_permiso')}}", {
             tooltip: 'Click para editar, ENTER para salvar.',
@@ -30,4 +40,5 @@ $(document).ready(function(){
         });
     });
 });
+
 </script>
