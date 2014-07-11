@@ -105,7 +105,7 @@ db.define_table('municipio',
     Field('estado_id', 'reference estado'),
     format='%(nombre)s'
     )
-        
+
 db.define_table('localidad',
     Field('clave_interna', 'string'),
     Field('nombre', 'string'),
@@ -232,7 +232,7 @@ if not db(db.tipo_cc.id>0).count():
     db.tipo_cc.insert(
         nombre = 'DETALLE',
     )
-    
+
 db.define_table('cc_empresa',
     Field('empresa_id', 'reference empresa', label='Empresa'),
     Field('cuenta_padre', 'reference cc_empresa', represent = lambda id,row: db.cc_empresa(row.cuenta_padre).num_cc if row.cuenta_padre != None else 'Raíz', requires=IS_NULL_OR(IS_IN_DB(db, 'cc_empresa.id', '%(num_cc)s %(descripcion)s')), label='Cuenta Padre'),
@@ -274,7 +274,7 @@ db.define_table('poliza',
     Field('importe', 'double', default='0.0', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
     )
 db.poliza.id.label='#Póliza'
-    
+
 db.define_table('asiento',
     Field('poliza_id', 'reference poliza', label='#Póliza'),
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
