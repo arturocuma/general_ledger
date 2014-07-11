@@ -42,22 +42,17 @@ def index():
     db.auth_user.empleado_id.readable = False
     db.auth_user.id.readable = False
 
-    usuarios = SQLFORM.grid(db.auth_user,
-                           searchable=True,
-                           create=True,
-                           editable=True,
-                           deletable=True,
-                           details=True,
-                           orderby= db.auth_user.first_name,
-                           user_signature=False,
-                           maxtextlengths={'auth_user.email' : 50},
-                           exportclasses=dict(
-                               csv_with_hidden_cols=False,
-                               json=False,
-                               tsv_with_hidden_cols=False,
-                               tsv=False,
-                               xml=False)
-                               )
+    usuarios = SQLFORM.smartgrid(
+            db.auth_user,
+            linked_tables=[''],
+            exportclasses=dict(
+                csv_with_hidden_cols=False,
+                json=False,
+                tsv_with_hidden_cols=False,
+                tsv=False,
+                xml=False
+                )
+            )
 
     return dict(usuarios=usuarios)
 
@@ -92,29 +87,14 @@ def grupos():
             )
     return dict(grupos=grupos)
 
-def actualiza_permiso():
 
-    print request.post_vars.value
+def actualiza_permiso():
 
     id, column = request.post_vars.id.split('.')
 
     value = request.post_vars.value
     db(db.auth_permission.id == id).update(**{column:value})
     return value
-
-def jsontest():
-    return dict()
-
-def datos():
-
-    from json import loads, dumps
-
-    result = db(db.cc_empresa.id > 0).select(
-            db.cc_empresa.id,
-            db.cc_empresa.descripcion
-            )
-
-    return dumps(result.as_dict())
 
 
 #@auth.requires(auth.has_membership('ADMIN'))
@@ -160,3 +140,23 @@ def permisos():
                                )
 
     return dict(permisos=permisos)
+
+
+def carga_cc():
+    """
+    Carga el catálogo de cuentas a un objeto JSON
+    """
+
+    from json import loads, dumps
+
+    diccionario = dict()
+
+    result = db(db.cc_empresa.id > 0).select(
+            db.cc_empresa.id,
+            db.cc_empresa.descripcion
+            )
+
+    [diccionario.update({x[1]['id']: x[1]['descripcion']})\
+            for x in result.as_dict().items()]
+
+    return dumps(diccionario)
