@@ -1,5 +1,4 @@
 # coding: utf8
-# try something like
 
 # For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
@@ -34,7 +33,12 @@ def listar():
     return dict(polizas=polizas)
 
 def agregar_asiento():
-    db.asiento.insert(poliza_id=request.args[1])
+    db.asiento.insert(
+            poliza_id = request.args[1],
+            concepto_asiento = '',
+            debe = 0,
+            haber = 0
+            )
     redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=request.args))
 
 def contabilizar():
@@ -60,14 +64,50 @@ def valida(form):
     print "In onvalidation callback"
     print form.vars
     #form.errors= True  #this prevents the submission from completing
-    
+
     #...or to add messages to specific elements on the form
     #form.errors.first_name = "Do not name your child after prominent deities"
     #form.errors.last_name = "Last names must start with a letter"
     response.flash = "I don't like your submission"
+
 
 def actualiza_asiento():
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
     db(db.asiento.id == id).update(**{column:value})
     return value
+
+
+def actualiza_descripcion():
+    """
+    Actualiza el campo `descripcion` de la tabla `asiento`.
+    """
+    id, column = request.post_vars.id.split('.')
+    valor = request.post_vars.value
+    resultado = db(db.cc_empresa.id == valor).select(
+            db.cc_empresa.num_cc,
+            db.cc_empresa.descripcion
+            ).first()
+
+    db(db.asiento.id == id).update(**{column:valor})
+
+    return "%s %s" % (resultado.num_cc, resultado.descripcion)
+
+def carga_cc():
+    """
+    Carga el catálogo de cuentas a un objeto JSON
+    """
+
+    from json import loads, dumps
+
+    diccionario = dict()
+
+    result = db(db.cc_empresa.id > 0).select(
+            db.cc_empresa.id,
+            db.cc_empresa.descripcion
+            )
+
+    [diccionario.update({x[1]['id']: x[1]['descripcion']})\
+            for x in result.as_dict().items()]
+
+    return dumps(diccionario)

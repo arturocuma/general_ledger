@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -120,6 +120,7 @@
 'controllers': 'controladores',
 'Copyright': 'Copyright',
 'Correo electrónico': 'Correo electrónico',
+'Correo electrónico inválido': 'Correo electrónico inválido',
 'create file with filename:': 'cree archivo con nombre:',
 'Create new application': 'Cree una nueva aplicación',
 'create new application:': 'nombre de la nueva aplicación:',
@@ -393,6 +394,7 @@
 'Register': 'Regístrese',
 'Registration identifier': 'Identificador de Registro',
 'Registration key': 'Llave de registro',
+'Registration needs verification': 'Registration needs verification',
 'Registration successful': 'Registro con éxito',
 'Registro Fiscal': 'Registro Fiscal',
 'Regístrese': 'Regístrese',

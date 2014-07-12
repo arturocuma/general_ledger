@@ -278,11 +278,12 @@ db.poliza.id.label='#Póliza'
 db.define_table('asiento',
     Field('poliza_id', 'reference poliza', label='#Póliza'),
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
-    Field('cc_empresa_id', 'reference cc_empresa',label='Cuenta Contable'),
-    Field('concepto_asiento','string'),
+    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
+    Field('concepto_asiento', 'string'),
     Field('debe', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
     Field('haber', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
-    )
+)
+
 db.asiento.id.label='#Asiento'
 
 db.define_table('mes',

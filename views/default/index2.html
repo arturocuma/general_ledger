@@ -1,16 +1,33 @@
-{{#extend 'layout.html'}}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>{{=response.title or request.application}}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
 
-<!-- CSS -->
-<link rel="stylesheet" href="{{=URL('static', 'css/jquery.steps.css')}}">
-<link rel="stylesheet" href="{{=URL('static', 'css/bootstrap.css')}}">
+        <!-- CSS -->
+        <link rel="stylesheet" href="{{=URL('static', 'css/jquery.steps.css')}}">
+        <link rel="stylesheet" href="{{=URL('static', 'css/bootstrap.css')}}">
+        <link rel="stylesheet" href="{{=URL('static', 'css/web2py.css')}}">
 
-<!-- JS -->
-<script src="{{=URL('static', 'js/jquery.js')}}"></script>
-<script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
-<script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
+        <!-- JS -->
+        <script src="{{=URL('static', 'js/jquery.js')}}"></script>
+        <script src="{{=URL('static', 'js/bootstrap.min.js')}}"></script>
+        <script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
+        <script src="{{=URL('static', 'js/web2py.js')}}"></script>
+        <script src="{{=URL('static', 'js/misc.js')}}"></script>
+    </head>
+<body>
 
 <div class='container'>
-<h1>Configuración Inicial <span>Empresa</span></h1>
+<h1>Empresa<br> <small>Configuración inicial</small></h1>
+
+<div class='flash'></div>
 
 <form name='empresa' action='' id='empresa' method='post'>
 {{form.custom.begin}}
@@ -28,6 +45,7 @@
         <div class='col-md-5'>
             {{=form.custom.widget.razon_social}}
         </div>
+        <div class='col-md-3 razon_social'></div>
     </div>
     <div class='row'>
         <div class='col-md-3'><label>{{=form.custom.label.nombre_comercial}}</label></div>
@@ -96,6 +114,7 @@
         <div class='col-md-5'>
             {{=form.custom.widget.dir_cp}}
         </div>
+        <div class='col-md-3 codigo_postal'></div>
     </div>
 
     </fieldset>
@@ -139,6 +158,9 @@
 {{=form.custom.end}}
 </form>
 </div>
+
+</body>
+</html>
 
 <script>
 
@@ -196,7 +218,25 @@ function cargarPaises() {
     };
 })( jQuery );
 
+/* geolocation */
+
+function getLocation() {
+
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition);
+    } else {
+        console.log("Geolocation is not supported by this browser");
+    }
+}
+
+function showPosition(position) {
+    console.log(position.coords.longitude);
+    console.log(position.coords.latitude);
+}
+
 $(document).ready(function(){
+
+    getLocation();
 
     $("#wizard").steps({
         headerTag: 'h2',
@@ -217,6 +257,30 @@ $(document).ready(function(){
 
             if (flag) {
                 $("#empresa").submit();
+                $('---[role="menuitem"]').click(function(e){
+                    e.preventDefault();
+
+                    console.log('¬¬');
+
+                    var $form = $("#empresa");
+                    var serializedData = $form.serialize();
+                    $.ajax({
+                        url: "index2", //index2
+                        type: "post",
+                        data: serializedData,
+                        success: function(serializedData) {
+                            console.log('Inserción exitosa');
+                            $('.flash').addClass('flash-success');
+                            $('.flash').text('Insertado con éxito');
+                            window.location.url = 'index3';
+                        },
+                        error: function(request, status, error) {
+                            console.log('Ocurrió un error al agregar el dato nuevo');
+                            $('.flash').addClass('flash-danger');
+                            $('.flash').text('Ocurrió un error al insertar los datos');
+                        }
+                    });
+                });
             } else {
                 console.log('You don\'t pass');
             }
@@ -254,6 +318,29 @@ $(document).ready(function(){
         cargarLocalidades();
     });
 
+    /*funciones de validación*/
+
+    $('#no_table_dir_cp').on('blur keypress', function(){
+        var valor = $(this).esCodigoPostal();
+        $('.codigo_postal').marcarError(
+            'Este no es un código postal válido', valor
+        );
+    });
+
+    $('#no_table_razon_social').on('blur keypress', function(){
+        var valor = $(this).validarCampoObligatorio();
+        $('.razon_social').marcarError(
+            'Este campo es obligatorio', valor
+        );
+    });
+
+    $('#no_table_dir_email').on('blur keypress', function(){
+        var valor = $(this).esEmail();
+        $('.email').marcarError(
+            'Este no es un email válido', valor
+        );
+    });
+
 });
 
 </script>
@@ -272,4 +359,3 @@ div.tab-content { overflow: visible; }
     border: 1px solid #0000FB;
 }
 </style>
-

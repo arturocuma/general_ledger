@@ -104,7 +104,10 @@ span.highlighted{color:#d8d800;}
 ==============================================================*/
 
 /* reset to default */
-a{white-space:normal;}
+a{
+  white-space:normal;
+  text-decoration: none;
+}
 li{margin-bottom:0;}
 textarea,button{display:block;}
 /*reset ul padding */

@@ -1,0 +1,44 @@
+{{extend 'layout.html'}}
+{{include 'botones.html'}}
+
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+
+<div class="ui-widget">
+    <label for="tags">Tags: </label>
+    <div id="tags" class="tags">
+</div>
+
+{{=grupos}}
+
+<script>
+
+$(document).ready(function(){
+    $.getJSON('{{=URL("carga_cc")}}', function(json) {
+
+        var dataArray = [];
+        var dataArray2 = [];
+
+        $.each(json, function (index, value) {
+            dataArray.push(value);
+            dataArray2[index] = value;
+        });
+
+        /*
+        $.each(dataArray2, function (index, value) {
+                alert( index + ' : ' + value );
+        });
+        */
+
+        $('.name').editable("{{=URL('permisos', 'actualiza_permiso')}}", {
+            tooltip: 'Click para editar, ENTER para salvar.',
+            indicator: 'Actualizando...'
+        }).click(function() {
+            $(this).find('input').autocomplete({
+                source: dataArray
+            });
+        });
+    });
+});
+
+</script>
