@@ -6,7 +6,7 @@
 
 <div class="ui-widget">
     <label for="tags">Tags: </label>
-    <div id="tags" class="tags">
+    <input id="tags" class="selector">
 </div>
 
 {{=grupos}}
@@ -14,6 +14,15 @@
 <script>
 
 $(document).ready(function(){
+
+    var localSource = [[0,"c++"], [1,"java"], [2,"php"], [3,"coldfusion"],
+                         [4,"javascript"], [5,"asp"], [6,"ruby"]];
+
+    $(".selector").autocomplete({
+        //source: localSource,
+        source: '{{=URL("carga_cc")}}'
+    });
+
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
         var dataArray = [];
@@ -26,7 +35,7 @@ $(document).ready(function(){
 
         /*
         $.each(dataArray2, function (index, value) {
-                alert( index + ' : ' + value );
+                console.log( index + ' : ' + value );
         });
         */
 
@@ -35,7 +44,8 @@ $(document).ready(function(){
             indicator: 'Actualizando...'
         }).click(function() {
             $(this).find('input').autocomplete({
-                source: dataArray
+                //source: localSource,
+                source: '{{=URL("carga_cc")}}'
             });
         });
     });

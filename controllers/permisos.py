@@ -80,7 +80,6 @@ def grupos():
             )
 
     db.auth_group.id.readable = False
-
     grupos = SQLFORM.smartgrid(
             db.auth_group,
             linked_tables=['auth_permission', 'auth_membership']
@@ -101,44 +100,34 @@ def actualiza_permiso():
 def membresia():
 
     db.auth_membership.id.readable = False
-    membresia = SQLFORM.grid(db.auth_membership,
-                           create=True,
-                           editable=True,
-                           deletable=True,
-                           details=True,
-                           orderby= db.auth_membership.group_id,
-                           user_signature=False,
-                           maxtextlengths={'auth_membership.user_id' : 60},
-                           exportclasses=dict(
-                               csv_with_hidden_cols=False,
-                               json=False,
-                               tsv_with_hidden_cols=False,
-                               tsv=False,
-                               xml=False)
-                               )
-
+    membresia = SQLFORM.smartgrid(
+            db.auth_membership,
+            exportclasses=dict(
+                csv_with_hidden_cols=False,
+                json=False,
+                tsv_with_hidden_cols=False,
+                tsv=False,
+                xml=False
+                )
+            )
     return dict(membresia=membresia)
 
 #@auth.requires(auth.has_membership('ADMIN'))
 def permisos():
-
+    """
+    Muestra una lista de `permisos`
+    """
     db.auth_permission.id.readable = False
-    permisos = SQLFORM.grid(db.auth_permission,
-                           create=True,
-                           editable=True,
-                           deletable=True,
-                           details=True,
-                           # orderby= db.auth_permission.group_id,
-                           user_signature=False,
-                           # maxtextlengths={'auth_permiss.user_id' : 60},
-                           exportclasses=dict(
-                               csv_with_hidden_cols=False,
-                               json=False,
-                               tsv_with_hidden_cols=False,
-                               tsv=False,
-                               xml=False)
-                               )
-
+    permisos = SQLFORM.smartgrid(
+            db.auth_permission,
+            exportclasses=dict(
+                csv_with_hidden_cols=False,
+                json=False,
+                tsv_with_hidden_cols=False,
+                tsv=False,
+                xml=False
+                )
+            )
     return dict(permisos=permisos)
 
 

@@ -32,6 +32,7 @@ def listar():
 
     return dict(polizas=polizas)
 
+
 def agregar_asiento():
     db.asiento.insert(
             poliza_id = request.args[1],
@@ -40,6 +41,7 @@ def agregar_asiento():
             haber = 0
             )
     redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=request.args))
+
 
 def contabilizar():
     poliza = db.poliza(request.args[1])
@@ -100,13 +102,22 @@ def carga_cc():
 
     from json import loads, dumps
 
-    diccionario = dict()
 
-    result = db(db.cc_empresa.id > 0).select(
+    query = (db.cc_empresa.id > 0) &\
+            (db.cc_empresa.tipo_cc_id == 1) # esto es temporal
+            #(db.cc_empresa.tipo_cc_id == db.tipo_cc.id) &\
+            #(db.tipo_cc.nombre == 'DETALLE')
+
+    result = db(query).select(
             db.cc_empresa.id,
-            db.cc_empresa.descripcion
+            db.cc_empresa.descripcion,
             )
 
+    # query para cargar las hojas, `left join`
+    cc1 = db.cc_empresa.with_alias('cc1')
+    cc2 = db.cc_empresa.with_alias('cc2')
+
+    diccionario = dict()
     [diccionario.update({x[1]['id']: x[1]['descripcion']})\
             for x in result.as_dict().items()]
 
