@@ -89,11 +89,13 @@ def descendants(num_cc, *fields):
 
 def add_node(padre_id=None, empresa_id=None, num_cc=None, descripcion=None, clave_sat=None, cc_naturaleza_id=None, cc_vista_id=None):
     tabla = db['cc_empresa']
+    print padre_id
     if padre_id:
         if isinstance(padre_id, int):
             padre = db(tabla.id == padre_id).select().first()
         else:
             padre = db(tabla.num_cc == padre_id).select().first()
+        
         db(tabla.rgt >= padre.rgt).update(rgt=tabla.rgt+2)
         db(tabla.lft >= padre.rgt).update(lft=tabla.lft+2)
         node_id = tabla.insert(empresa_id=empresa_id, num_cc=num_cc, descripcion=descripcion, clave_sat=clave_sat,cc_naturaleza_id=cc_naturaleza_id, cc_vista_id=cc_vista_id, lft=padre.rgt, rgt=padre.rgt+1)
@@ -145,13 +147,18 @@ def wiz_cc():
     campos_cc=['empresa_id','num_cc','descripcion','clave_sat','cc_naturaleza_id', 'cc_vista_id','nivel', 'lft','rgt']
     for cuenta in cc_sat:
         num_cc=cuenta[1]
+        print num_cc
         len_num_cc=len(num_cc)
         if len_num_cc>1:
-            num_cc = num_cc[1:(len_num_cc-2)]
+            num_cc_i=num_cc[::-1]
+            ultimo_punto = num_cc_i.find(".")
+            num_cc = num_cc[:-(ultimo_punto+1)]
             padre = db(tabla.num_cc == num_cc).select().first()
-            padre_id=padre
+            padre_id=padre.id
+            padre_id=int(padre_id)
         else:
-            padre_id=''
+            padre_id=None
             
-        add_node(padre_id, cuenta[0], cuenta[1], cuenta[2],cuenta[3], cuenta[4], cuenta[5])
+        
+        add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
     return
