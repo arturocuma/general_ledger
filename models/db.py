@@ -1,8 +1,4 @@
 # -*- coding: utf-8 -*-
-import locale
-locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
-
-T.force('es')
 
 #########################################################################
 ## This scaffolding model makes your app work on Google App Engine too
@@ -49,7 +45,7 @@ auth = Auth(db)
 crud, service, plugins = Crud(db), Service(), PluginManager()
 
 ## create all tables needed by auth if not custom tables
-## auth.define_tables(username=False, signature=False) ##se comenta para que no se creee dado que agregaremos campos personalizados a esta tabla
+# auth.define_tables(username=False, signature=False)
 
 ## configure email
 mail = auth.settings.mailer
@@ -141,6 +137,7 @@ db.define_table('empresa',
     db.persona,
     format='%(razon_social)s'
     )
+
 db.define_table('empresa_banco',
     Field('empresa_id','reference empresa'),
     Field('banco_id','reference banco'),
@@ -163,12 +160,12 @@ db.define_table('departamento',
     )
 
 db.define_table('puesto',
+    Field('departamento_id', 'reference departamento', label='Departamento'),
     Field('nombre', 'string'),
     format='%(nombre)s'
     )
 
 db.define_table('empleado',
-    Field('departamento_id', 'reference departamento', label='Departamento Adscrito'),
     Field('puesto_id', 'reference puesto'),
     Field('nombre', 'string', label='Nombre'),
     Field('ap_paterno', 'string', label='Apellido Paterno'),
@@ -198,64 +195,64 @@ auth.settings.extra_fields['auth_user']= [
     ]
 
 auth.define_tables(username=False, signature=False)
-
 db.auth_user._format = '%(first_name)s %(last_name)s (%(email)s)'
 ## auth.settings.everybody_group_id = 1 ##asignar a nuevos usuarios a un grupo por default 1=ADMIN, 2=BASICO, 3=ETC
 ## auth.settings.create_user_groups = None
 
-db.define_table('tipo_naturaleza',
+db.define_table('cc_naturaleza',
    Field('nombre','string'),
    format='%(nombre)s'
    )
-if not db(db.tipo_naturaleza.id>0).count():
-    db.tipo_naturaleza.insert(
+
+# ##
+#Lo siguiente eliminar en PRODUCCION
+if not db(db.cc_naturaleza.id>0).count():
+    db.cc_naturaleza.insert(
         nombre = 'ACREEDORA',
     )
-    db.tipo_naturaleza.insert(
+    db.cc_naturaleza.insert(
         nombre = 'DEUDORA',
     )
-    db.tipo_naturaleza.insert(
+    db.cc_naturaleza.insert(
         nombre = 'CAPITAL',
     )
-    db.tipo_naturaleza.insert(
+    db.cc_naturaleza.insert(
         nombre = 'RESULTADO',
     )
 
-db.define_table('tipo_cc',
+db.define_table('cc_vista',
    Field('nombre','string'),
    format='%(nombre)s'
    )
-if not db(db.tipo_cc.id>0).count():
-    db.tipo_cc.insert(
+if not db(db.cc_vista.id>0).count():
+    db.cc_vista.insert(
         nombre = 'ACUMULATIVA',
     )
-    db.tipo_cc.insert(
+    db.cc_vista.insert(
         nombre = 'DETALLE',
     )
-    
+# ##
+
+# Nested Set Model
 db.define_table('cc_empresa',
     Field('empresa_id', 'reference empresa', label='Empresa'),
-    Field('cuenta_padre', 'reference cc_empresa', represent = lambda id,row: db.cc_empresa(row.cuenta_padre).num_cc if row.cuenta_padre != None else 'Raíz', requires=IS_NULL_OR(IS_IN_DB(db, 'cc_empresa.id', '%(num_cc)s %(descripcion)s')), label='Cuenta Padre'),
-    Field('num_cc', 'string', label='Número de Cuenta Contable'),
+    Field('num_cc', 'string', label='Número de Cuenta Contable'), #considerar como clave secundaria
     Field('descripcion', 'string', label='Descripción'),
-    Field('nivel', 'integer'),
-    Field('tipo_naturaleza_id', 'reference tipo_naturaleza'), ##ACREEDORA, DEUDORA, DE RESULTADO
-    Field('tipo_cc_id', 'reference tipo_cc'), ## DETALLE, ACUMULATIVA
+    Field('clave_sat', 'string', label='Clave SAT'),
+    Field('cc_naturaleza_id', 'reference cc_naturaleza'), ##ACREEDORA, DEUDORA, DE RESULTADO
+    Field('cc_vista_id', 'reference cc_vista'), ## DETALLE, ACUMULATIVA
+    Field('lft','integer', default=0),
+    Field('rgt','integer', default=0),
     format='%(num_cc)s %(descripcion)s'
-    )
-
-db.define_table('niveles_cc_empresa',
-    Field('empresa_id', 'reference empresa', label='Empresa'),
-    Field('niveles', 'integer', label='Niveles'),
-    Field('digitos_cc_acum', 'integer', label='Dígitos cuentas acum'),
-    Field('digitos_cc_aux', 'integer', label='Dígitos cuentas aux'),
-    format='%(niveles)s',
     )
 
 db.define_table('tipo_poliza',
     Field('nombre','string'),
     format='%(nombre)s'
     )
+
+# ///
+# Eliminar en PRODUCCION
 if not db(db.tipo_poliza.id>0).count():
     db.tipo_poliza.insert(
         nombre = 'INGRESO',
@@ -266,42 +263,22 @@ if not db(db.tipo_poliza.id>0).count():
     db.tipo_poliza.insert(
         nombre = 'DIARIO',
     )
+# ///
 
 db.define_table('poliza',
     Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
-    Field('concepto_general', 'string'),
+    Field('concepto_general', 'string', label='Concepto de la Póliza'),
     Field('tipo', 'reference tipo_poliza'),
-    Field('importe', 'double', default='0.0', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('importe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
     )
 db.poliza.id.label='#Póliza'
     
 db.define_table('asiento',
     Field('poliza_id', 'reference poliza', label='#Póliza'),
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
-    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
-    Field('concepto_asiento', 'string'),
-    Field('debe', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('haber', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
-)
-
+    Field('cc_empresa_id', 'reference cc_empresa',label='Cuenta Contable'),
+    Field('concepto_asiento','string', label='Concepto del Asiento'),
+    Field('debe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('haber', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
+    )
 db.asiento.id.label='#Asiento'
-
-db.define_table('mes',
-    Field('nombre','string'),
-    format='%(nombre)s'
-    )
-
-db.define_table('anio',
-    Field('numero','integer'),
-    format='%(numero)s'
-    )
-
-db.define_table('balanza',
-    Field('mes', 'reference mes'),
-    Field('anio', 'reference anio'),
-    Field('saldo_inicial', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('cargo', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('abono', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable')
-    )

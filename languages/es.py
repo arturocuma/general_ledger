@@ -1,4 +1,4 @@
-# coding: utf8
+# coding: utf-8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -112,6 +112,7 @@
 'compiled application removed': 'aplicación compilada eliminada',
 'Components and Plugins': 'Componentes y Plugins',
 'Concepto Asiento': 'Concepto Asiento',
+'Concepto de la Póliza': 'Concepto de la Póliza',
 'Concepto General': 'Concepto General',
 'Concepto Movimiento': 'Concepto Movimiento',
 'contains': 'contiene',
@@ -268,8 +269,8 @@
 'Invalid reset password': 'Reinicio de contraseña inválido',
 'invalid ticket': 'tiquete inválido',
 'Is Active': 'Está Activo',
-'json': 'json',
 'JSON': 'JSON',
+'json': 'json',
 'JSON export of visible columns': 'JSON export of visible columns',
 'Key': 'Llave',
 'language file "%(filename)s" created/updated': 'archivo de lenguaje "%(filename)s" creado/actualizado',
