@@ -32,6 +32,7 @@ def listar():
 
     return dict(polizas=polizas)
 
+
 def agregar_asiento():
     db.asiento.insert(
             poliza_id = request.args[1],
@@ -41,23 +42,59 @@ def agregar_asiento():
             )
     redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=request.args))
 
+
 def contabilizar():
+
     poliza = db.poliza(request.args[1])
-    asientos = db(db.asiento.poliza_id==request.args[1]).select()
+    asientos = db(db.asiento.poliza_id==request.args[1]).select(
+            db.asiento.debe,
+            db.asiento.haber
+            )
+
     debe = 0.0
     haber = 0.0
     for asiento in asientos:
-        debe = debe + asiento.debe if asiento.debe else 0.0
-        haber = haber + asiento.haber if asiento.haber else 0.0
-    session.msgContabiliza = ''
-    print debe
-    print haber
-    if debe!=haber:
-        session.msgContabiliza = '\nPóliza no cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
+        debe += asiento.debe if asiento.debe else 0.0
+        haber += asiento.haber if asiento.haber else 0.0
+
+    #deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
+    #hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
+
+    session.msgNot = ''
+    session.msgYes = ''
+
+    if debe != haber:
+        session.msgNot = '\nPóliza no cuadrada.\nDebe = %s Haber = %s'%(debe,haber)
     else:
-        session.msgContabiliza = '\nPóliza cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
+        session.msgYes = '\nPóliza cuadrada.\nDebe = %s Haber = %s'%(debe,haber)
 
     redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=(request.args)))
+
+
+def cuadrar_poliza():
+    """
+    Actualiza un debe/haber
+    Compara la suma de los `deberes` y `haberes`
+    """
+
+    poliza_id = request.vars.id
+
+    asientos = db(
+            db.asiento.poliza_id == poliza_id
+            ).select(
+            db.asiento.debe,
+            db.asiento.haber
+            )
+
+    deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
+    hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
+
+    if deb == hab:
+        resultado = DIV('Poliza Cuadrada %s %s' % (deb, hab), _class='verde')
+    else:
+        resultado = DIV('Poliza NO Cuadrada %s %s' % (deb, hab), _class='rojo')
+
+    return resultado
 
 
 def valida(form):
@@ -93,6 +130,7 @@ def actualiza_descripcion():
 
     return "%s %s" % (resultado.num_cc, resultado.descripcion)
 
+
 def carga_cc():
     """
     Carga el catálogo de cuentas a un objeto JSON
@@ -100,13 +138,22 @@ def carga_cc():
 
     from json import loads, dumps
 
-    diccionario = dict()
 
-    result = db(db.cc_empresa.id > 0).select(
+    query = (db.cc_empresa.id > 0) &\
+            (db.cc_empresa.tipo_cc_id == 1) # esto es temporal
+            #(db.cc_empresa.tipo_cc_id == db.tipo_cc.id) &\
+            #(db.tipo_cc.nombre == 'DETALLE')
+
+    result = db(query).select(
             db.cc_empresa.id,
-            db.cc_empresa.descripcion
+            db.cc_empresa.descripcion,
             )
 
+    # query para cargar las hojas, `left join`
+    cc1 = db.cc_empresa.with_alias('cc1')
+    cc2 = db.cc_empresa.with_alias('cc2')
+
+    diccionario = dict()
     [diccionario.update({x[1]['id']: x[1]['descripcion']})\
             for x in result.as_dict().items()]
 

@@ -1,4 +1,4 @@
-# coding: utf8
+# coding: utf-8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -91,12 +91,15 @@
 'cannot upload file "%(filename)s"': 'no es posible subir archivo "%(filename)s"',
 'Cc Empresa Id': 'Cc Empresa Id',
 'Cc empresas': 'Cc empresas',
+'Cc Naturaleza Id': 'Cc Naturaleza Id',
+'Cc Vista Id': 'Cc Vista Id',
 'Change Password': 'Cambie la Contraseña',
 'Change password': 'Cambie la contraseña',
 'change password': 'cambie la contraseña',
 'check all': 'marcar todos',
 'Check to delete': 'Marque para eliminar',
 'choose one': 'escoja uno',
+'Clave SAT': 'Clave SAT',
 'clean': 'limpiar',
 'Clear': 'Limpiar',
 'Clear CACHE?': '¿Limpiar CACHÉ?',
@@ -115,6 +118,7 @@
 'compiled application removed': 'aplicación compilada eliminada',
 'Components and Plugins': 'Componentes y Plugins',
 'Concepto Asiento': 'Concepto Asiento',
+'Concepto de la Póliza': 'Concepto de la Póliza',
 'Concepto General': 'Concepto General',
 'Concepto Movimiento': 'Concepto Movimiento',
 'contains': 'contiene',
@@ -289,6 +293,7 @@
 'Layout': 'Diseño de página',
 'Layout Plugins': 'Plugins de diseño',
 'Layouts': 'Diseños de páginas',
+'Lft': 'Lft',
 'License for': 'Licencia para',
 'Live Chat': 'Chat en vivo',
 'loading...': 'cargando...',
@@ -377,6 +382,7 @@
 'Polizas': 'Polizas',
 'Powered by': 'Este sitio usa',
 'Preface': 'Prefacio',
+'previous %s rows': 'previous %s rows',
 'previous 100 rows': '100 filas anteriores',
 'Print invoice': 'Print invoice',
 'Profile': 'Perfil',
@@ -416,7 +422,11 @@
 'restore': 'restaurar',
 'Retrieve username': 'Recuperar nombre de usuario',
 'revert': 'revertir',
+<<<<<<< HEAD
 'Rol': 'Rol',
+=======
+'Rgt': 'Rgt',
+>>>>>>> 9526b72aec97f2ef56b5bae9fbcf9b5cccb401e4
 'Role': 'Rol',
 'Rows in Table': 'Filas en la tabla',
 'Rows selected': 'Filas seleccionadas',
