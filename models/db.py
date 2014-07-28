@@ -101,7 +101,7 @@ db.define_table('municipio',
     Field('estado_id', 'reference estado'),
     format='%(nombre)s'
     )
-        
+
 db.define_table('localidad',
     Field('clave_interna', 'string'),
     Field('nombre', 'string'),
@@ -272,7 +272,7 @@ db.define_table('poliza',
     Field('importe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
     )
 db.poliza.id.label='#Póliza'
-    
+
 db.define_table('asiento',
     Field('poliza_id', 'reference poliza', label='#Póliza'),
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
