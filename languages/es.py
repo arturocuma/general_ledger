@@ -1,8 +1,4 @@
-<<<<<<< Updated upstream
 # coding: utf-8
-=======
-# -*- coding: utf-8 -*-
->>>>>>> Stashed changes
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -206,6 +202,7 @@
 'End of impersonation': 'Fin de suplantación',
 'enter a number between %(min)g and %(max)g': 'introduzca un número entre %(min)g y %(max)g',
 'Enter a number between %(min)g and %(max)g': 'Enter a number between %(min)g and %(max)g',
+'enter a valid email address': 'enter a valid email address',
 'Enter a valid email address': 'Enter a valid email address',
 'enter a value': 'introduzca un valor',
 'Enter an integer between %(min)g and %(max)g': 'Enter an integer between %(min)g and %(max)g',
@@ -431,11 +428,8 @@
 'restore': 'restaurar',
 'Retrieve username': 'Recuperar nombre de usuario',
 'revert': 'revertir',
-<<<<<<< Updated upstream
-'Rgt': 'Rgt',
-=======
 'Rol': 'Rol',
->>>>>>> Stashed changes
+'Rgt': 'Rgt',
 'Role': 'Rol',
 'Rows in Table': 'Filas en la tabla',
 'Rows selected': 'Filas seleccionadas',

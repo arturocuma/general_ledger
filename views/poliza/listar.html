@@ -126,6 +126,11 @@ cuadrarPoliza();
         font-weight: bold;
     }
 
+{{if session.msgContabiliza:}}
+  <div class="flash flash-info">
+      {{= session.msgContabiliza}}
+ </div>
+{{pass}}
     .rojo {
         color: red;
     }
