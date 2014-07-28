@@ -89,7 +89,7 @@ def descendants(num_cc, *fields):
 
 def add_node(padre_id=None, empresa_id=None, num_cc=None, descripcion=None, clave_sat=None, cc_naturaleza_id=None, cc_vista_id=None):
     tabla = db['cc_empresa']
-    print padre_id
+    
     if padre_id:
         if isinstance(padre_id, int):
             padre = db(tabla.id == padre_id).select().first()
@@ -162,3 +162,56 @@ def wiz_cc():
         
         add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
     return
+
+def crear_cc(form):
+    if form.record:
+        form.vars.num_cc = form.vars.num_cc
+    elif (form.vars.num_cc != ''):
+        empresa_id=1
+        niveles_cc_empresa=db(db.niveles_cc_empresa.empresa_id==empresa_id).select()
+        niveles_cc=niveles_cc_empresa[0]
+        if form.vars.tipo_cc_id=='1':#Acumulativa
+            num_niv=int(niveles_cc['digitos_cc_acum'])
+        elif form.vars.tipo_cc_id=='2':#Auxiliar
+            num_niv=int(niveles_cc['digitos_cc_aux'])
+    
+        num_cc= form.vars.num_cc
+        str(num_cc).zfill(num_niv)
+        
+        form.vars.num_cc = form.vars.cuenta_padre+'.'+ num_cc
+        print form.vars
+    return
+
+def listar():
+    db.cc_empresa.num_cc.represent = lambda value, row: DIV(value if value!='' else '-', _class='num_cc', _id=str(row.id)+'.num_cc')
+    form = SQLFORM.smartgrid(db.cc_empresa, 
+                            onvalidation = crear_cc,
+                            linked_tables=['empresa'])    
+    return dict(form=form)
+
+def actualiza_cc_empresa():
+    id, column = request.post_vars.id.split('.')
+    value = request.post_vars.value
+    db(db.cc_empresa.id == id).update(**{column:value})
+    return value
+
+def crear_cuenta():
+    cc_empresa=db(db.cc_empresa).select(db.cc_empresa.ALL)
+    cc_vista=db(db.cc_vista).select(db.cc_vista.ALL)
+    cc_naturaleza=db(db.cc_naturaleza).select(db.cc_naturaleza.ALL)
+    
+    msg="Nada"
+     
+    if request.vars.num_cc:
+        empresa_id = 1
+        padre_id=int(request.vars.num_cc_padre)
+        num_cc=request.vars.num_cc
+        descripcion=request.vars.descripcion
+        clave_sat=""
+        naturaleza_id=request.vars.cc_naturaleza_id
+        vista_id = request.vars.cc_vista_id
+        msg = 'Cuenta Creada'
+
+        #add_node(padre_id, empresa_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
+           
+    return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)

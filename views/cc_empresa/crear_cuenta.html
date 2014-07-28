@@ -1,0 +1,95 @@
+{{extend 'layout.html'}}
+<style>
+    #table {
+        display: inline;
+        padding-left:10px;
+        width:100%;
+    }
+    #row {
+        display: table-row; 
+        padding-left:5px;
+        width:100%;
+    }
+     #cell {
+        display: table-cell; 
+        padding-left:17px;
+        width:50%;
+    }
+</style>
+{{=msg}}
+<h1>Crear Cuenta</h1>
+<div>
+    <form enctype="multipart/form-data" action="" method="post">
+        <div id="table">
+           <div id="row">
+               <div id="row">
+               <div id="cell" >
+                <label for="num_cc_padre" >Cuenta Padre</label>
+               </div>
+               <div id="cell" >
+                <select  name='num_cc_padre' id='num_cc_padre'>
+                            {{for cc_padre in cc_empresa:}}
+                            <option value="{{=cc_padre.id}}"
+                                {{="selected='selected'" if str(cc_padre.id)==request.vars.num_cc_padre else ""}}>
+                            {{=cc_padre.descripcion}}
+                            </option>
+                            {{pass}}
+                  </select>
+               </div>
+            </div >
+            <div id="row">
+               <div id="cell" >
+                <label for="num_cc" >Número de Cuenta</label>
+               </div>
+               <div id="cell">
+                <input type="text" id="num_cc" value="">
+               </div>
+            </div>
+            <div id="row">
+               <div id="cell">
+                <label for="descripcion" >Descripción</label>
+               </div>
+               <div id="cell" >
+                <input type="text" id="descripcion" value="">
+               </div>
+            </div>
+            <div id="row">
+               <div id="cell" >
+                <label for="cc_naturaleza_id" >Naturaleza</label>
+               </div>
+               <div id="cell">
+                <select  name='cc_naturaleza_id' id='cc_naturaleza_id'>
+                            {{for naturaleza in cc_naturaleza:}}
+                            <option value="{{=naturaleza.id}}"
+                                {{="selected='selected'" if str(naturaleza.id)==request.vars.cc_naturaleza_id else ""}}>
+                            {{=naturaleza.nombre}}
+                            </option>
+                            {{pass}}
+                  </select>
+               </div>
+            </div>
+            <div id="row">
+               <div id="cell" >
+                <label for="cc_vista_id" >Vista</label>
+               </div>
+               <div id="cell">
+                <select  name='cc_vista_id' id='cc_vista_id'>
+                            {{for vista in cc_vista:}}
+                            <option value="{{=vista.id}}"
+                                {{="selected='selected'" if str(vista.id)==request.vars.cc_vista_id else ""}}>
+                            {{=vista.nombre}}
+                            </option>
+                            {{pass}}
+                  </select>
+               </div>
+            </div>
+            <div id="row">
+               <div id="cell" >
+                <input type="Submit" value="Enviar">
+               </div>
+            </div>
+        </div>
+        
+    </form>
+
+</div>
