@@ -1,17 +1,32 @@
 {{extend 'layout.html'}}
-<!--script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script-->
-<!--link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css"-->
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
 <script src="{{=URL('static','js/chosen.js')}}"></script>
 <link rel="stylesheet" href="{{=URL('static','css/chosen.css')}}">
 
+<p>Date: <input type="text" id="datepicker"></p>
+
 <script>
 jQuery(document).ready(function(){
 
+    /*
     jQuery('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",
     {
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
+    });
+    */
+
+    $("#datepicker").datepicker();
+
+    $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator : "Actualizando...",
+        onblur: 'ignore'
+    }).click(function(){
+        $(this).datepicker();
+        console.log(this.value());
     });
 
     $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_descripcion')}}",{

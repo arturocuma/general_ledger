@@ -276,9 +276,31 @@ db.poliza.id.label='#Póliza'
 db.define_table('asiento',
     Field('poliza_id', 'reference poliza', label='#Póliza'),
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
-    Field('cc_empresa_id', 'reference cc_empresa',label='Cuenta Contable'),
-    Field('concepto_asiento','string', label='Concepto del Asiento'),
-    Field('debe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('haber', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
+    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
+    Field('concepto_asiento', 'string'),
+    Field('debe', 'double', default=0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('haber', 'double', default=0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
+)
+
+db.asiento.id.label='#Asiento'
+
+db.define_table('mes',
+    Field('nombre','string'),
+    format='%(nombre)s'
+    )
+
+db.define_table('anio',
+    Field('numero','integer'),
+    format='%(numero)s'
+    )
+
+db.define_table('balanza',
+    Field('mes', 'reference mes'),
+    Field('anio', 'reference anio'),
+    Field('saldo_inicial', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('cargo', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('abono', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable')
     )
 db.asiento.id.label='#Asiento'
