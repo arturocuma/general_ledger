@@ -49,7 +49,7 @@ def ul_list():
         p.append(LI(A(cat.num_cc+' '+cat.descripcion, _href='/'+cat.num_cc), _class="leaf",))
         tree.append(branch)   
         rgt.append(cat.rgt)
-    seed = DIV(_class="root")
+    seed = DIV(_class="tree well")
     for branch in tree:
         seed.append(DIV(branch, _class="root_branch"))
     seed.components.extend([XML("""
