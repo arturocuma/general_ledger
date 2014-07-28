@@ -10,7 +10,6 @@
 <link rel="stylesheet" href="{{=URL('static','css/calendar.css')}}">
 
 <script>
-
 /* cuadrar las cuentas */
 function cuadrarPoliza() {
 
@@ -20,7 +19,7 @@ function cuadrarPoliza() {
     idPoliza = 'id=' + cadenitas.pop();
 
     $.post('{{=URL("cuadrar_poliza")}}', idPoliza).success(function(data){
-        $('.mensaje').html(data);
+        $('.indicador-poliza').html(data);
     });
 }
 
@@ -28,67 +27,29 @@ jQuery(document).ready(function(){
 
 cuadrarPoliza();
 
-/*
-$.editable.addInputType('datepicker', {
-    element : function(settings, original) {
-        var input = $('<input>');
-        if (settings.width  != 'none') { input.width(settings.width);  }
-        if (settings.height != 'none') { input.height(settings.height); }
-        input.attr('autocomplete','off');
-        $(this).append(input);
-        return(input);
-    },
-    plugin : function(settings, original) {
-        var form = this;
-        settings.onblur = 'ignore';
-        $(this).find('input').datepicker().bind('click', function() {
-            $(this).datepicker('show');
-            return false;
-        }).bind('dateSelected', function(e, selectedDate, $td) {
-            $(form).submit();
-        });
-    }
-});
-*/
-
+    /*
     jQuery('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",
     {
         tooltip: "Click para editar, ENTER para salvar.",
         indicator: "Actualizando...",
     });
+    */
 
-    /*
     $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
         onblur: 'ignore'
     }).click(function(){
-
+        console.log('¬|¬');
         var inputField = $(this).attr('id');
         var rcal = Calendar.setup({
             inputField: inputField,
             onSelect: function(cal) {
                 console.log(cal);
                 console.log(cal.dateStr);
-                alert(cal.dateStr);
             }
         });
-        console.log(rcal);
-        return rcal;
     });
-    */
-
-    /*
-    $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
-        tooltip: 'Click para editar, ENTER para salvar.',
-        indicator : 'Actualizando...',
-        submit: "OK",
-        type: 'datepicker',
-        onblur: 'ignore'
-    }).click(function() {
-    $(this).find('input').datepicker("option", "dateFormat", "yy-mm-dd");
-    });
-    */
 
     $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_descripcion')}}",{
         tooltip: 'Click para editar, ENTER para salvar.',
@@ -103,16 +64,16 @@ $.editable.addInputType('datepicker', {
     });
 
     jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-                             tooltip: "Click para editar, ENTER para salvar.",
-                             indicator : "Actualizando...",
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator : "Actualizando...",
     });
 
     jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-                             tooltip: "Click para editar, ENTER para salvar.",
-                             indicator : "Actualizando...",
-                             callback: function (value, settings) {
-                                 cuadrarPoliza();
-                             }
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator : "Actualizando...",
+        callback: function (value, settings) {
+            cuadrarPoliza();
+        }
     });
 
     jQuery('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
@@ -124,8 +85,23 @@ $.editable.addInputType('datepicker', {
     });
 
 });
-
 </script>
+
+<style>
+    .indicador-poliza {
+        float: right;
+        padding: 1em 0;
+        font-weight: bold;
+    }
+
+    .rojo {
+        color: red;
+    }
+
+    .verde {
+        color: green;
+    }
+</style>
 
 <h1>Pólizas Contables</h1>
 

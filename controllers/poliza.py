@@ -89,8 +89,10 @@ def cuadrar_poliza():
     deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
     hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
 
-    resultado = 'Poliza Cuadrada %s %s' % (deb, hab) if (deb == hab) else\
-            'Poliza NO Cuadrada %s %s' % (deb, hab)
+    if deb == hab:
+        resultado = DIV('Poliza Cuadrada %s %s' % (deb, hab), _class='verde')
+    else:
+        resultado = DIV('Poliza NO Cuadrada %s %s' % (deb, hab), _class='rojo')
 
     return resultado
 
