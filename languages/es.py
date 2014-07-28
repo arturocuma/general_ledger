@@ -1,4 +1,4 @@
-# coding: utf8
+# -*- coding: utf-8 -*-
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -268,8 +268,8 @@
 'Invalid reset password': 'Reinicio de contraseña inválido',
 'invalid ticket': 'tiquete inválido',
 'Is Active': 'Está Activo',
-'json': 'json',
 'JSON': 'JSON',
+'json': 'json',
 'JSON export of visible columns': 'JSON export of visible columns',
 'Key': 'Llave',
 'language file "%(filename)s" created/updated': 'archivo de lenguaje "%(filename)s" creado/actualizado',
@@ -492,6 +492,7 @@
 'unable to uninstall "%s"': 'no es posible instalar "%s"',
 'uncheck all': 'desmarcar todos',
 'uninstall': 'desinstalar',
+'Unknown': 'Unknown',
 'unknown': 'desconocido',
 'update': 'actualizar',
 'update all languages': 'actualizar todos los lenguajes',
