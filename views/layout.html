@@ -1,379 +1,657 @@
-<!--[if HTML5]><![endif]-->
 <!DOCTYPE html>
-<!-- paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
-<!--[if lt IE 7]><html class="ie ie6 ie-lte9 ie-lte8 ie-lte7 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
-<!--[if IE 7]><html class="ie ie7 ie-lte9 ie-lte8 ie-lte7 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
-<!--[if IE 8]><html class="ie ie8 ie-lte9 ie-lte8 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
-<!--[if IE 9]><html class="ie9 ie-lte9 no-js" lang="{{=T.accepted_language or 'en'}}"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html class="no-js" lang="{{=T.accepted_language or 'es'}}"> <!--<![endif]-->
-<head>
-    <title>{{=response.title or request.application}}</title>
-    <!--[if !HTML5]>
-        <meta http-equiv="X-UA-Compatible" content="IE=edge{{=not request.is_local and ',chrome=1' or ''}}">
-    <![endif]-->
-    <!-- www.phpied.com/conditional-comments-block-downloads/ -->
-    <!-- Always force latest IE rendering engine
-       (even in intranet) & Chrome Frame
-       Remove this if you use the .htaccess -->
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 
-    <meta charset="utf-8" />
+		<title>Sistema Contable</title>
+		<meta name="description" content="">
+		<meta name="author" content="">
 
-    <!-- http://dev.w3.org/html5/markup/meta.name.html -->
-    <meta name="application-name" content="{{=request.application}}" />
+		<!-- Use the correct meta names below for your web application
+			 Ref: http://davidbcalhoun.com/2010/viewport-metatag
 
-    <!-- Speaking of Google, don't forget to set your site up:
-       http://google.com/webmasters -->
-    <meta name="google-site-verification" content="" />
+		<meta name="HandheldFriendly" content="True">
+		<meta name="MobileOptimized" content="320">-->
 
-    <!--  Mobile Viewport Fix
-        j.mp/mobileviewport & davidbcalhoun.com/2010/viewport-metatag
-        device-width: Occupy full width of the screen in its current orientation
-        initial-scale = 1.0 retains dimensions instead of zooming out if page height > device height
-        user-scalable = yes allows the user to zoom in -->
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="shortcut icon" href="{{=URL('static','images/favicon.ico')}}" type="image/x-icon">
-    <link rel="apple-touch-icon" href="{{=URL('static','images/favicon.png')}}">
-    <!-- Bootstrap -->
-    <link href="{{=URL('static','css/bootstrap.min.css')}}" rel="stylesheet">
-    <link href="{{=URL('static','css/layout.css')}}" rel="stylesheet">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- Basic Styles -->
+		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/bootstrap.min.css')}}">
+		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/font-awesome.min.css')}}">
+
+		<!-- SmartAdmin Styles : Please note (smartadmin-production.css) was created using LESS variables -->
+		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/smartadmin-production.css')}}">
+		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/smartadmin-skins.css')}}">
+
+		<!-- SmartAdmin RTL Support is under construction
+		<link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-rtl.css"> -->
+
+		<!-- We recommend you use "your_style.css" to override SmartAdmin
+		     specific styles this will also ensure you retrain your customization with each SmartAdmin update.
+		<link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
+
+		<!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
+		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/demo.css')}}">
+
+		<!-- FAVICONS -->
+		<link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
+		<link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
+
+		<!-- GOOGLE FONT -->
+		<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,300,400,700">
 
   <!-- All JavaScript at the bottom, except for Modernizr which enables
-       HTML5 elements & feature detects -->
-  <script src="{{=URL('static','js/modernizr.custom.js')}}"></script>
-
-    <!-- jQuery -->
-    <script type="text/javascript" charset="utf8" src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+       HTML5 elements & feature detects
+  <script src="{{=URL('static','js/modernizr.custom.js')}}"></script> -->
 
   <!-- include stylesheets -->
-    {{
-        response.files.insert(0,URL('static','css/bootstrap.css'))
-        ##response.files.insert(2,URL('static','css/bootstrap-responsive.min.css'))
-        response.files.insert(1,URL('static','css/web2py.css'))
-        response.files.insert(2,URL('static','css/web2py_bootstrap.css'))
-    }}
+  {{
+  #response.files.insert(0,URL('static','css/web2py.css'))
+  #response.files.insert(1,URL('static','css/bootstrap.min.css'))
+  #response.files.insert(2,URL('static','css/bootstrap-responsive.min.css'))
+  #response.files.insert(3,URL('static','css/web2py_bootstrap.css'))
+  }}
 
-    {{include 'web2py_ajax.html'}}
+  {{#include 'web2py_ajax.html'}}
 
-    {{
-        # using sidebars need to know what sidebar you want to use
-        left_sidebar_enabled = globals().get('left_sidebar_enabled',False)
-        right_sidebar_enabled = globals().get('right_sidebar_enabled',False)
-        middle_columns = {0:'span12',1:'span9',2:'span6'}[
-        (left_sidebar_enabled and 1 or 0)+(right_sidebar_enabled and 1 or 0)]
-    }}
+  {{
+  # using sidebars need to know what sidebar you want to use
+  left_sidebar_enabled = globals().get('left_sidebar_enabled',False)
+  right_sidebar_enabled = globals().get('right_sidebar_enabled',False)
+  middle_columns = {0:'span12',1:'span9',2:'span6'}[
+    (left_sidebar_enabled and 1 or 0)+(right_sidebar_enabled and 1 or 0)]
+  }}
+  	<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+	<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script>
+  <!-- uncomment here to load jquery-ui
+       <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
+       <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.js" type="text/javascript"></script>
+          <script src="//code.jquery.com/jquery-1.9.1.js"></script>
 
-    <!-- uncomment here to load jquery-ui
-       <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/ui-lightness/jquery-ui.css" type="text/css" media="all" />
-       <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js" type="text/javascript"></script>
        uncomment to load jquery-ui //-->
-  {{block head}}
-  {{end}}
+
+  <noscript><link href="{{=URL('static', 'css/web2py_bootstrap_nojs.css')}}" rel="stylesheet" type="text/css" /></noscript>
+  {{block head}}{{end}}
 
   <!-- se agrega para hacer editables los GRID -->
 <!--  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript" charset="utf-8"></script> -->
   <script src="{{=URL('static','js/jeditable/jquery.jeditable.js')}}"></script>
-</head>
 
-<body>
 
-    <nav class="menu push-menu-left">
-        <div class="panel panel-group" id="main">
-            <div class="panel-body">
-            <!--<button class="close-menu">&larr; Close</button>-->
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a class="close-menu"><span class="glyphicon glyphicon-remove"></span> Cerrar </a>
-                        </h4>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a href="{{=URL('default','index')}}"><span class="glyphicon glyphicon-home"></span> Inicio </a>
-                        </h4>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne"><span class="glyphicon glyphicon-folder-close"></span> Pólizas <b class="caret"></b></a>
-                        </h4>
-                    </div>
-                    <div id="collapseOne" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('poliza','listar')}}" class="text-primary"><span class="glyphicon glyphicon-file"></span> Capturar</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-flash text-muted"></span> Recientes</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#"  class="text-muted"><span class="glyphicon glyphicon-question-sign"></span> Ayuda</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-comment"></span> Mensajes <span class="badge">4</span></a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseFour">
-                            <span class="glyphicon glyphicon-file"></span> Reportes <b class="caret"></b></a>
-                        </h4>
-                    </div>
-                    <div id="collapseFour" class="panel-collapse collapse">
-                        <div class="panel-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-usd"></span> Balance general</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-tasks"></span> Balanza</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('cc_empresa','resumen')}}"><span class="glyphicon glyphicon-signal"></span> Resumen de cuentas</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo"><span class="glyphicon glyphicon-cog"></span> Configurar <b class="caret"></b></a>
-                        </h4>
-                    </div>
-                    <div id="collapseTwo" class="panel-collapse collapse ">
-                        <div class="panel-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('default','index2')}}" class="glyphicon glyphicon-compressed"> Wizard Empresa</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('wizard_cat_cuentas','index')}}" class="glyphicon glyphicon-save"> Wizard Catalogo de Cuentas</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('permisos','index')}}" class="glyphicon glyphicon-user"> Usuarios <span class="label">1</span></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('permisos','grupos')}}" class="glyphicon glyphicon-briefcase"> Grupos</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('permisos','membresia')}}" class="glyphicon glyphicon-tags"> Membresía</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('permisos','permisos')}}" class="glyphicon glyphicon-book"> Permisos</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#SubMenu1"  data-toggle="collapse" data-parent="#SubMenu1">Empresa <b class="caret"></b></a>
-                                                <div class="collapse list-group-submenu" id="SubMenu1">
-                                                    <a href="{{=URL('empresa','listar')}}" class="list-group-item text-muted" data-parent="#SubMenu1">Sucursales</a>
-                                                    <a href="#" class="list-group-item text-muted" data-parent="#SubMenu1">Sucursales</a>
-                                                    <a href="#" class="list-group-item text-muted" data-parent="#SubMenu1">Departamentos</a>
-                                                </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseFive"><span class="glyphicon glyphicon-list-alt"></span> Catálogos <b class="caret"></b></a>
-                        </h4>
-                    </div>
-                    <div id="collapseFive" class="panel-collapse collapse ">
-                        <div class="panel-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted">Empleados <span class="label label-muted">42</span></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted">Proveedores</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="{{=URL('cc_empresa','listar')}}">Cuentas</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted">Empresa</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h4 class="panel-title">
-                            <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" disabled="disabled"><span class="glyphicon glyphicon-user"></span> Perfil <b class="caret"></b></a>
-                        </h4>
-                    </div>
-                    <div id="collapseThree" class="panel-collapse collapse ">
-                        <div class="panel-body">
-                            <table class="table">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted">Preferencias</a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted" >Notificaciones <span class="label label-muted">9</span></a>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <a href="#" class="text-muted"><span class="glyphicon glyphicon-trash "></span> Eliminar cuenta</a>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </nav>
+<style>
 
-    <div class="container-fluid">
-    <div id="wrapper">
-        <!-- BARRA DE NAVEGACION=========================================-->
-            <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
-                <!-- El logotipo y el icono que despliega el menú se agrupan
-                   para mostrarlos mejor en los dispositivos móviles -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-                        <span class="sr-only">Desplegar navegación</span>
-                        <span class="b-icon-bar"></span>
-                        <span class="b-icon-bar"></span>
-                        <span class="b-icon-bar"></span>
-                    </button>
-                    <button class="nav-toggler toggle-push-left navbar-brand" style="margin-top:0px; margin-bottom:0px;" >
-                      <span class="glyphicon glyphicon-align-justify"></span>
-                    </button>
-                    <a class="navbar-brand" href="{{=URL('default','index')}}">General Ledger</a>
+/* #MEDIA QUERIES SECTION */
 
-                </div>
-                <!-- Agrupar los enlaces de navegación, los formularios y cualquier
-                   otro elemento que se pueda ocultar al minimizar la barra -->
-                <div class="collapse navbar-collapse navbar-ex1-collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a href="#">Ayuda</a></li>
-                        <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                                 {{if auth.is_logged_in():
-                                        =auth.user['first_name']
-                                    else:
-                                        ='Sesión'
-                                    pass}}<b class="caret"></b>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li><a href="#"><span class="glyphicon glyphicon-eye-open"></span> Ver perfíl</a></li>
-                                <li class="divider"></li>
-                                {{if auth.is_logged_in():}}
-                                    <li><a href="{{=URL('default','user/logout')}}"><span class="glyphicon glyphicon-off"></span> Cerrar sesión</a></li>
-                                {{else:}}
-                                    <li><a href="{{=URL('default','user')}}"><span class="glyphicon glyphicon-off"></span> Iniciar sesión</a></li>
-                                {{pass}}
+/*
+*Grid
+*
+* The default style for SQLFORM.grid even using jquery-iu or another ui framework
+* will look better with the declarations below
+* if needed to remove base.css consider keeping these following lines in some css file.
+*/
+/* .web2py_table {border:1px solid #ccc} */
+.web2py_paginator {}
+.web2py_grid {width:100%}
+.web2py_grid table {width:100%}
+.web2py_grid tbody td {padding:4px 5px 2px 5px; vertical-align: middle;}
+.web2py_grid .web2py_form td {vertical-align: top;}
 
-                            </ul>
-                        </li>
-                    </ul>
-              </div>
-            </nav>
-            <!-- FIN-NAVERGACION=============================================== -->
-            <div class="row">
-                <div class="col-sm-12">
-                    <!-- CONTENIDO===================================================== -->
-                    {{include}}
-                    <!-- FIN-CONTENIDO================================================= -->
+.web2py_grid thead th,.web2py_grid tfoot td {
+	background-color: #DEDEDE;
+   padding:10px 5px 10px 5px;
+}
+.web2py_grid thead th a,.web2py_grid tfoot td a{
+    color:#22262E;
+}
 
-                    <!-- FOOTER======================================================== -->
-                    <footer class="modal-footer">
-                        <div class="col-sm-6 text-left">
-                          {{=T('Copyright')}} &#169; datawork.mx {{=request.now.year}}
-                        </div>
-                        <div class="col-sm-6 text-right">
-                          <a href="#">Grupo DG</a>
-                        </div>
-                    </footer>
-                    <!-- FIN-FOOTER==================================================== -->
+.web2py_grid tr.odd {background-color:#F1F1F1}
+.web2py_grid tr:hover {background-color:#F3F3F3}
 
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- The javascript =============================================-->
+.web2py_console form {
+    width: 100%;
+    display: inline;
+    vertical-align: middle;
+    margin: 0 0 0 5px;
+}
 
-    <script src="{{=URL('static','js/nav.js')}}"></script>
-    <script src="{{=URL('static','js/classie.js')}}"></script>
+.web2py_console form select {
+    margin:0;
+}
 
-    <script src="{{=URL('static','js/bootstrap.min.js')}}"></script>
-    <!--[if lt IE 7 ]>
-      <script src="{{=URL('static','js/dd_belatedpng.js')}}"></script>
-      <script> DD_belatedPNG.fix('img, .png_bg'); //fix any <img> or .png_bg background-images </script>
-      <![endif]-->
+.web2py_search_actions {
+    float:left;
+    text-align:left;
+}
 
-    {{if response.google_analytics_id:}}
-    <script src="{{=URL('static','js/analytics.min.js')}}"></script>
-    <script type="text/javascript">
-    analytics.initialize({
-    'Google Analytics':{trackingId:'{{=response.google_analytics_id}}'}
-    });</script>
-    {{pass}}
-    <script src="{{=URL('static','js/share.js',vars=dict(static=URL('static','images')))}}"></script>
+.web2py_grid .row_buttons {
+    min-height:25px;
+    vertical-align:middle;
+}
+.web2py_grid .row_buttons a {
+    margin:3px;
+}
 
-</body>
+.web2py_search_actions {
+    width:100%;
+}
+/*
+.web2py_grid .row_buttons a,
+.web2py_paginator ul li a,
+.web2py_search_actions a,
+.web2py_console input[type=submit],
+.web2py_console input[type=button],
+.web2py_console button {
+    line-height:20px;
+    margin-right:2px; display:inline-block;
+    padding:3px 5px 3px 5px;
+}*/
+
+.web2py_counter {
+    margin-top:5px;
+    margin-right:2px;
+    width:35%;
+    float:right;
+    text-align:right;
+}
+
+/*Fix firefox problem*/
+.web2py_table {clear:both; display:block}
+
+.web2py_paginator {
+    padding:5px;
+    text-align:right;
+    background-color:#f2f2f2;
+
+}
+.web2py_paginator ul {
+    list-style-type:none;
+    margin:0px;
+    padding:0px;
+}
+
+.web2py_paginator ul li {
+    display:inline;
+}
+
+.web2py_paginator .current {
+    font-weight:bold;
+}
+
+
+.web2py_breadcrumbs{
+    list-style: none;
+}
+span.divider{
+	display: none;
+}
+.w2p_grid_breadcrumb_elem {
+    display: inline-block;
+}
+.w2p_grid_breadcrumb_elem a{
+    color: #22262E;
+}
+.web2py_breadcrumbs ul {
+    list-style:none;
+    margin-left: 0px;
+    /*background-color: #F3F3F3;*/
+    padding: 5px;
+    padding-left: 10px;
+}
+.web2py_breadcrumbs ul li + li:before{
+    padding: 0 5px;
+    color: #22262E;
+    content: "\25b6";
+    cursor: default;
+}
+.web2py_breadcrumbs ul li.active a{
+    color: #5F6F81;
+    text-decoration: none;
+}
+.w2p_export_menu{
+	color: #22262E;
+}
+.w2p_export_menu a{
+	padding-left: 5px;
+	color: #22262E;
+}
+
+.web2py_console form { vertical-align: middle; }
+.web2py_console input, .web2py_console select,
+.web2py_console a { margin: 2px; }
+
+.web2py_htmltable {
+   width: 100%;
+   overflow-x: auto;
+   -ms-overflow-x:scroll;
+}
+
+.web2py_grid .row_buttons a,
+.web2py_paginator ul li a,
+.web2py_search_actions a,
+.web2py_console input[type=submit],
+.web2py_console input[type=button],
+.web2py_console button,
+.btn,.btn-default,button{
+	background-color: #FFFFFF;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 5px;
+	border-color: #CCC;
+	box-shadow: none;
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	color: #22262E;
+	margin-top: 0px;
+	text-decoration: none;
+}
+.web2py_grid .row_buttons a:hover,
+.web2py_paginator ul li a:hover,
+.web2py_search_actions a:hover,
+.web2py_console input[type=submit]:hover,
+.web2py_console input[type=button]:hover,
+.web2py_console button:hover,
+.btn:hover,.btn-default:hover,button:hover{
+	color:#333;
+	background-color:#ebebeb;
+	border-color:#adadad
+}
+.web2py_grid .row_buttons a:active,
+.web2py_paginator ul li a:active,
+.web2py_search_actions a:active,
+.web2py_console input[type=submit]:active,
+.web2py_console input[type=button]:active,
+.web2py_console button:active,
+.btn:active,.btn-default:active,button:active{
+	background-image: none;
+   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset;
+   outline-color: -moz-use-text-color;
+   outline-style: none;
+   outline-width: 0;
+}
+
+
+
+</style>
+
+	</head>
+	<body class="minified fixed-header fixed-navigation smart-style-1">
+		<!-- possible classes: minified, fixed-ribbon, fixed-header, fixed-width-->
+
+		<!-- HEADER -->
+		<header id="header">
+			<div id="logo-group">
+
+				<!-- PLACE YOUR LOGO HERE -->
+				<span id="logo"> <img src="{{=URL('static/smartadmin','img/1.png')}}" alt="Sistema Contable"> </span>
+				<!-- END LOGO PLACEHOLDER -->
+
+				<!-- Note: The activity badge color changes when clicked and resets the number to 0
+				Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
+				<span id="activity" class="activity-dropdown"> <i class="fa fa-user"></i> <b class="badge"> 10 </b> </span>
+
+				<!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
+				<div class="ajax-dropdown">
+
+					<!-- the ID links are fetched via AJAX to the ajax container "ajax-notifications" -->
+					<div class="btn-group btn-group-justified" data-toggle="buttons">
+						<label class="btn btn-default">
+							<input type="radio" name="activity" id="ajax/notify/mail.html">
+							Mensajes (14) </label>
+						<label class="btn btn-default">
+							<input type="radio" name="activity" id="ajax/notify/notifications.html">
+							Notificaciones (3) </label>
+						<label class="btn btn-default">
+							<input type="radio" name="activity" id="ajax/notify/tasks.html">
+							Tareas (4) </label>
+					</div>
+
+					<!-- notification content -->
+					<div class="ajax-notifications custom-scroll">
+
+						<div class="alert alert-transparent">
+							<h4>Click a button to show messages here</h4>
+							This blank page message helps protect your privacy, or you can show the first message here automatically.
+						</div>
+
+						<i class="fa fa-lock fa-4x fa-border"></i>
+
+					</div>
+					<!-- end notification content -->
+
+					<!-- footer: refresh area -->
+					<span> Last updated on: 12/12/2013 9:43AM
+						<button type="button" data-loading-text="<i class='fa fa-refresh fa-spin'></i> Loading..." class="btn btn-xs btn-default pull-right">
+							<i class="fa fa-refresh"></i>
+						</button> </span>
+					<!-- end footer -->
+
+				</div>
+				<!-- END AJAX-DROPDOWN -->
+			</div>
+
+
+
+			<!-- pulled right: nav area -->
+			<div class="pull-right">
+
+				<!-- collapse menu button -->
+				<div id="hide-menu" class="btn-header pull-right">
+					<span> <a href="javascript:void(0);" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
+				</div>
+				<!-- end collapse menu -->
+
+				<!-- logout button -->
+				<div id="logout" class="btn-header transparent pull-right">
+					<span> <a data-logout-msg="Cerrar sesión y salir." href="{{=URL('default/user','logout')}}" title="Cerrar sesión"><i class="fa fa-sign-out"></i></a> </span>
+				</div>
+				<!-- end logout button -->
+
+				<!-- search mobile button (this is hidden till mobile view port) -->
+				<div id="search-mobile" class="btn-header transparent pull-right">
+					<span> <a href="javascript:void(0)" title="Search"><i class="fa fa-search"></i></a> </span>
+				</div>
+				<!-- end search mobile button -->
+
+				<!-- input: search field
+				<form action="#search.html" class="header-search pull-right">
+					<input type="text" placeholder="Buscar" id="search-fld">
+					<button type="submit">
+						<i class="fa fa-search"></i>
+					</button>
+					<a href="javascript:void(0);" id="cancel-search-js" title="Cancel Search"><i class="fa fa-times"></i></a>
+				</form>-->
+				<!-- end input: search field -->
+			</div>
+			<!-- end pulled right: nav area -->
+
+		</header>
+		<!-- END HEADER -->
+
+		<!-- Left panel : Navigation area -->
+		<!-- Note: This width of the aside area can be adjusted through LESS variables -->
+		<aside id="left-panel">
+
+			<!-- User info -->
+			<div class="login-info">
+				<span> <!-- User image size is adjusted inside CSS, it should stay as it -->
+
+					<a href="javascript:void(0);" id="show-shortcut">
+                      {{if session.auth:}}
+                          <img src='{{=session.picture}}' alt=" yo" class="online" />
+                          <span>{{=auth.user['first_name']}}</span>
+                          <i class="fa fa-angle-down"></i>
+                      {{else:}}
+                      <a class="gn-icon gn-icon-login" href={{=URL('default/user','login')}}>
+                          <img src="{{=URL('static/smartadmin','img/avatars/male.png')}}" alt="me" class="online" />
+
+                          <span>Iniciar sesión</span></a>
+                      {{pass}}
+					</a>
+
+				</span>
+			</div>
+			<!-- end user info -->
+
+			<!-- NAVIGATION : This navigation is also responsive
+
+			To make this navigation dynamic please make sure to link the node
+			(the reference to the nav > ul) after page load. Or the navigation
+			will not initialize.
+			-->
+			<nav>
+				<!-- NOTE: Notice the gaps after each icon usage <i></i>..
+				Please note that these links work a bit different than
+				traditional hre="" links. See documentation for details.
+				-->
+
+				<ul>
+					<li class="">
+						<a href="{{=URL('default','index.html')}}" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
+					</li>
+					<li>
+						<a href="#">
+							<i class="fa fa-lg fa-fw fa-book"></i>
+							<span class="menu-item-parent">Pólizas</span>
+						</a>
+						<ul>
+							<li>
+								<a href="{{=URL('poliza','listar')}}">
+									<i class="fa fa-lg fa-fw fa-edit"></i>
+									Listar
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent">Reportes</span></a>
+						<ul>
+							<li>
+								<a href="#">
+									<i class="fa fa-lg fa-fw fa-bar-chart-o"></i>
+									Balance general
+								</a>
+								<a href="#">
+									<i class="fa fa-lg fa-fw fa-usd"></i>
+									Balanza
+								</a>
+								<a href="{{=URL('cc_empresa','resumen')}}">
+									<i class="fa fa-lg fa-fw fa-list-alt"></i>
+									Resumen de cuentas
+								</a>
+							</li>
+						</ul>
+					</li>
+					<li>
+						<a href="#"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configuraciones</span></a>
+						<ul>
+							<li>
+								<a href="{{=URL('default','index2')}}">
+									<i class="fa fa-fw fa-gears"></i> Wizard empresa
+								</a>
+							</li>
+							<li>
+								<a href="{{=URL('wizard_cat_cuentas','index')}}">
+									<i class="fa fa-fw fa-gears"></i> Wizard Catálogos de Cuentas
+								</a>
+							</li>
+							<li>
+								<a href="#">
+									<i class="fa fa-fw fa-user"></i> Usuarios
+								</a>
+								<ul>
+									<li>
+										<a href="{{=URL('permisos','index')}}"> Listar usuarios </a>
+									</li>
+                           <li>
+										<a href="{{=URL('permisos','grupos')}}"> Grupos </a>
+									</li>
+                           <li>
+										<a href="{{=URL('permisos','membresia')}}"> Membresía </a>
+									</li>
+									<li>
+										<a href="{{=URL('permisos','permisos')}}"> Permisos </a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</nav>
+			<span class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>
+
+		</aside>
+		<!-- END NAVIGATION -->
+
+		<!-- MAIN PANEL -->
+		<div id="main" role="main">
+
+			<!-- RIBBON -->
+			<!--<div id="ribbon">-->
+
+				<!--<span class="ribbon-button-alignment"> <span id="refresh" class="btn btn-ribbon" data-title="refresh"  rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Resetear las configuraciones de los widgets." data-html="true"><i class="fa fa-refresh"></i></span> </span>-->
+
+				<!-- breadcrumb -->
+
+				<!-- end breadcrumb -->
+
+				<!-- You can also add more buttons to the
+				ribbon for further usability
+
+				Example below:
+
+				<span class="ribbon-button-alignment pull-right">
+				<span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
+				<span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
+				<span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
+				</span> -->
+
+			<!--</div>-->
+			<!-- END RIBBON -->
+			<!-- MAIN CONTENT -->
+			<div id="content">
+		        {{if left_sidebar_enabled:}}
+		            {{block left_sidebar}}
+		            <h3>Left Sidebar</h3>
+		            <p></p>
+		            {{end}}
+
+		        {{pass}}
+		        <div class="{{=middle_columns}}">
+		            {{block center}}
+		            {{include}}
+		            {{end}}
+		        </div>
+		        {{if right_sidebar_enabled:}}
+		            {{block right_sidebar}}
+		            <h3>Right Sidebar</h3>
+		            <p></p>
+		            {{end}}
+		        {{pass}}
+
+
+			</div>
+			<!-- END MAIN CONTENT -->
+		</div>
+		<!-- END MAIN PANEL -->
+		<!-- SHORTCUT AREA : With large tiles (activated via clicking user name tag)
+		Note: These tiles are completely responsive,
+		you can add as many as you like
+		-->
+		<div id="shortcut">
+			<ul>
+				<li>
+					<a href="#calendar.html" class="jarvismetro-tile big-cubes bg-color-orangeDark"> <span class="iconbox"> <i class="fa fa-calendar fa-4x"></i> <span>Calendario</span> </span> </a>
+				</li>
+				<li>
+					<a href="javascript:void(0);" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Mi Pérfil </span> </span> </a>
+				</li>
+			</ul>
+		</div>
+		<!-- END SHORTCUT AREA -->
+
+		<!--================================================== -->
+
+		<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
+		<script data-pace-options='{ "restartOnRequestAfter": true }' src="{{=URL('static/smartadmin','js/plugin/pace/pace.min.js')}}"></script>
+
+		<!-- Link to Google CDN's jQuery + jQueryUI; fall back to local -->
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js"></script>
+		<script>
+			if (!window.jQuery) {
+				document.write('<script src="{{=URL('static/smartadmin','js/libs/jquery-2.0.2.min.js')}}"><\/script>');
+			}
+		</script>
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+		<script>
+			if (!window.jQuery.ui) {
+				document.write('<script src="{{=URL('static/smartadmin','js/libs/jquery-ui-1.10.3.min.js')}}"><\/script>');
+			}
+		</script>
+
+		<!-- JS TOUCH : include this plugin for mobile drag / drop touch events
+		<script src="js/plugin/jquery-touch/jquery.ui.touch-punch.min.js"></script> -->
+
+		<!-- BOOTSTRAP JS -->
+		<script src="{{=URL('static/smartadmin','js/bootstrap/bootstrap.min.js')}}"></script>
+
+		<!-- CUSTOM NOTIFICATION -->
+		<script src="{{=URL('static/smartadmin','js/notification/SmartNotification.min.js')}}"></script>
+
+		<!-- JARVIS WIDGETS -->
+		<script src="{{=URL('static/smartadmin','js/smartwidgets/jarvis.widget.min.js')}}"></script>
+
+		<!-- EASY PIE CHARTS -->
+		<script src="{{=URL('static/smartadmin','js/plugin/easy-pie-chart/jquery.easy-pie-chart.min.js')}}"></script>
+
+		<!-- SPARKLINES -->
+		<script src="{{=URL('static/smartadmin','js/plugin/sparkline/jquery.sparkline.min.js')}}"></script>
+
+		<!-- JQUERY VALIDATE -->
+		<script src="{{=URL('static/smartadmin','js/plugin/jquery-validate/jquery.validate.min.js')}}"></script>
+
+		<!-- JQUERY MASKED INPUT -->
+		<script src="{{=URL('static/smartadmin','js/plugin/masked-input/jquery.maskedinput.min.js')}}"></script>
+
+		<!-- JQUERY SELECT2 INPUT -->
+		<script src="{{=URL('static/smartadmin','js/plugin/select2/select2.min.js')}}"></script>
+
+		<!-- JQUERY UI + Bootstrap Slider -->
+		<script src="{{=URL('static/smartadmin','js/plugin/bootstrap-slider/bootstrap-slider.min.js')}}"></script>
+
+		<!-- browser msie issue fix -->
+		<script src="{{=URL('static/smartadmin','js/plugin/msie-fix/jquery.mb.browser.min.js')}}"></script>
+
+		<!-- FastClick: For mobile devices -->
+		<script src="{{=URL('static/smartadmin','js/plugin/fastclick/fastclick.js')}}"></script>
+
+		<!--[if IE 7]>
+
+		<h1>Your browser is out of date, please update your browser by going to www.microsoft.com/download</h1>
+
+		<![endif]-->
+
+		<!-- Demo purpose only
+		<script src="{{=URL('static/smartadmin','js/demo.js')}}"></script>  -->
+
+		<!-- MAIN APP JS FILE -->
+		<script src="{{=URL('static/smartadmin','js/app.js')}}"></script>
+
+		<!-- PAGE RELATED PLUGIN(S) -->
+
+		<!-- Flot Chart Plugin: Flot Engine, Flot Resizer, Flot Tooltip -->
+		<script src="{{=URL('static/smartadmin','js/plugin/flot/jquery.flot.cust.js')}}"></script>
+		<script src="{{=URL('static/smartadmin','js/plugin/flot/jquery.flot.resize.js')}}"></script>
+		<script src="{{=URL('static/smartadmin','js/plugin/flot/jquery.flot.tooltip.js')}}"></script>
+
+		<!-- Vector Maps Plugin: Vectormap engine, Vectormap language -->
+		<script src="{{=URL('static/smartadmin','js/plugin/vectormap/jquery-jvectormap-1.2.2.min.js')}}"></script>
+		<script src="{{=URL('static/smartadmin','js/plugin/vectormap/jquery-jvectormap-world-mill-en.js')}}"></script>
+
+		<!-- Full Calendar -->
+		<script src="{{=URL('static/smartadmin','js/plugin/fullcalendar/jquery.fullcalendar.min.js')}}"></script>
+
+
+		<!-- Your GOOGLE ANALYTICS CODE Below -->
+		<script type="text/javascript">
+			var _gaq = _gaq || [];
+			_gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
+			_gaq.push(['_trackPageview']);
+
+			(function() {
+				var ga = document.createElement('script');
+				ga.type = 'text/javascript';
+				ga.async = true;
+				ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+				var s = document.getElementsByTagName('script')[0];
+				s.parentNode.insertBefore(ga, s);
+			})();
+
+		</script>
+
+	</body>
+
 </html>
