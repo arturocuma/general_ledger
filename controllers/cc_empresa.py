@@ -47,7 +47,7 @@ def ul_list():
             p.append(LI(child, _class="leaf"))
             p=child
         p.append(LI(A(cat.num_cc+' '+cat.descripcion, _href='/'+cat.num_cc), _class="leaf",))
-        tree.append(branch)   
+        tree.append(branch)
         rgt.append(cat.rgt)
     seed = DIV(_class="root")
     for branch in tree:
@@ -89,17 +89,14 @@ def descendants(num_cc, *fields):
 
 def add_node(padre_id=None, empresa_id=None, num_cc=None, descripcion=None, clave_sat=None, cc_naturaleza_id=None, cc_vista_id=None):
     tabla = db['cc_empresa']
-<<<<<<< HEAD
     print padre_id
-=======
-    
->>>>>>> 9526b72aec97f2ef56b5bae9fbcf9b5cccb401e4
+
     if padre_id:
         if isinstance(padre_id, int):
             padre = db(tabla.id == padre_id).select().first()
         else:
             padre = db(tabla.num_cc == padre_id).select().first()
-        
+
         db(tabla.rgt >= padre.rgt).update(rgt=tabla.rgt+2)
         db(tabla.lft >= padre.rgt).update(lft=tabla.lft+2)
         node_id = tabla.insert(empresa_id=empresa_id, num_cc=num_cc, descripcion=descripcion, clave_sat=clave_sat,cc_naturaleza_id=cc_naturaleza_id, cc_vista_id=cc_vista_id, lft=padre.rgt, rgt=padre.rgt+1)
@@ -124,7 +121,7 @@ def delete_node(num_cc):
 
         children.delete() #se eliminan los hijos
         db(tabla.id == node.id).delete() #se elimina el nodo deseado
-            
+
         db(tabla.lft > rgt).update(lft=tabla.lft - diff)
         db(tabla.rgt > rgt).update(rgt=tabla.rgt - diff)
         return True
@@ -134,7 +131,7 @@ def cat_cuentas_sat(empresa_id):
     cc_sat=[]
     with open('applications/general_ledger/private/cuentas_sat.csv', 'rb') as f:
         reader = csv.reader(f)
-        for row in reader:        
+        for row in reader:
             row[0]=str(empresa_id)
             cc_sat.append(row)
     return cc_sat
@@ -144,11 +141,10 @@ def wiz_cc():
     #empresa_id=int(request.vars.empresa_id)
     empresa_id=1
     cc_sat=cat_cuentas_sat(empresa_id)
-<<<<<<< HEAD
-    
+
     db(db.cc_empresa).delete()
     db.executesql('delete from sqlite_sequence where name="cc_empresa";')
-    
+
     campos_cc=['empresa_id','num_cc','descripcion','clave_sat','cc_naturaleza_id', 'cc_vista_id','nivel', 'lft','rgt']
     for cuenta in cc_sat:
         num_cc=cuenta[1]
@@ -163,15 +159,14 @@ def wiz_cc():
             padre_id=int(padre_id)
         else:
             padre_id=None
-            
-        
+
+
         add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
     return
-=======
-    
+
     db(db.cc_empresa).delete()
     db.executesql('delete from sqlite_sequence where name="cc_empresa";')
-    
+
     campos_cc=['empresa_id','num_cc','descripcion','clave_sat','cc_naturaleza_id', 'cc_vista_id','nivel', 'lft','rgt']
     for cuenta in cc_sat:
         num_cc=cuenta[1]
@@ -186,8 +181,8 @@ def wiz_cc():
             padre_id=int(padre_id)
         else:
             padre_id=None
-            
-        
+
+
         add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
     return
 
@@ -202,19 +197,19 @@ def crear_cc(form):
             num_niv=int(niveles_cc['digitos_cc_acum'])
         elif form.vars.tipo_cc_id=='2':#Auxiliar
             num_niv=int(niveles_cc['digitos_cc_aux'])
-    
+
         num_cc= form.vars.num_cc
         str(num_cc).zfill(num_niv)
-        
+
         form.vars.num_cc = form.vars.cuenta_padre+'.'+ num_cc
         print form.vars
     return
 
 def listar():
     db.cc_empresa.num_cc.represent = lambda value, row: DIV(value if value!='' else '-', _class='num_cc', _id=str(row.id)+'.num_cc')
-    form = SQLFORM.smartgrid(db.cc_empresa, 
+    form = SQLFORM.smartgrid(db.cc_empresa,
                             onvalidation = crear_cc,
-                            linked_tables=['empresa'])    
+                            linked_tables=['empresa'])
     return dict(form=form)
 
 def actualiza_cc_empresa():
@@ -227,9 +222,9 @@ def crear_cuenta():
     cc_empresa=db(db.cc_empresa).select(db.cc_empresa.ALL)
     cc_vista=db(db.cc_vista).select(db.cc_vista.ALL)
     cc_naturaleza=db(db.cc_naturaleza).select(db.cc_naturaleza.ALL)
-    
+
     msg="Nada"
-     
+
     if request.vars.num_cc:
         empresa_id = 1
         padre_id=int(request.vars.num_cc_padre)
@@ -241,6 +236,5 @@ def crear_cuenta():
         msg = 'Cuenta Creada'
 
         #add_node(padre_id, empresa_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
-           
+
     return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)
->>>>>>> 9526b72aec97f2ef56b5bae9fbcf9b5cccb401e4

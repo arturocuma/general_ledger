@@ -422,11 +422,8 @@
 'restore': 'restaurar',
 'Retrieve username': 'Recuperar nombre de usuario',
 'revert': 'revertir',
-<<<<<<< HEAD
 'Rol': 'Rol',
-=======
 'Rgt': 'Rgt',
->>>>>>> 9526b72aec97f2ef56b5bae9fbcf9b5cccb401e4
 'Role': 'Rol',
 'Rows in Table': 'Filas en la tabla',
 'Rows selected': 'Filas seleccionadas',
