@@ -44,23 +44,55 @@ def agregar_asiento():
 
 
 def contabilizar():
+
     poliza = db.poliza(request.args[1])
-    asientos = db(db.asiento.poliza_id==request.args[1]).select()
+    asientos = db(db.asiento.poliza_id==request.args[1]).select(
+            db.asiento.debe,
+            db.asiento.haber
+            )
+
     debe = 0.0
     haber = 0.0
     for asiento in asientos:
-
         debe += asiento.debe if asiento.debe else 0.0
         haber += asiento.haber if asiento.haber else 0.0
 
-    session.msgContabiliza = ''
+    #deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
+    #hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
 
-    if debe!=haber:
-        session.msgContabiliza = '\nPóliza no cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
+    session.msgNot = ''
+    session.msgYes = ''
+
+    if debe != haber:
+        session.msgNot = '\nPóliza no cuadrada.\nDebe = %s Haber = %s'%(debe,haber)
     else:
-        session.msgContabiliza = '\nPóliza cuadrada.\n Debe = %s Haber = %s'%(debe,haber)
+        session.msgYes = '\nPóliza cuadrada.\nDebe = %s Haber = %s'%(debe,haber)
 
     redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=(request.args)))
+
+
+def cuadrar_poliza():
+    """
+    Actualiza un debe/haber
+    Compara la suma de los `deberes` y `haberes`
+    """
+
+    poliza_id = request.vars.id
+
+    asientos = db(
+            db.asiento.poliza_id == poliza_id
+            ).select(
+            db.asiento.debe,
+            db.asiento.haber
+            )
+
+    deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
+    hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
+
+    resultado = 'Poliza Cuadrada %s %s' % (deb, hab) if (deb == hab) else\
+            'Poliza NO Cuadrada %s %s' % (deb, hab)
+
+    return resultado
 
 
 def valida(form):
@@ -95,6 +127,7 @@ def actualiza_descripcion():
     db(db.asiento.id == id).update(**{column:valor})
 
     return "%s %s" % (resultado.num_cc, resultado.descripcion)
+
 
 def carga_cc():
     """

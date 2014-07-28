@@ -1,33 +1,94 @@
 {{extend 'layout.html'}}
+
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
 <script src="{{=URL('static','js/chosen.js')}}"></script>
 <link rel="stylesheet" href="{{=URL('static','css/chosen.css')}}">
 
-<p>Date: <input type="text" id="datepicker"></p>
+<script src="{{=URL('static','js/calendar.js')}}"></script>
+<link rel="stylesheet" href="{{=URL('static','css/calendar.css')}}">
 
 <script>
+
+/* cuadrar las cuentas */
+function cuadrarPoliza() {
+
+    var url = window.location.pathname;
+    var cadenitas = url.split('/');
+
+    idPoliza = 'id=' + cadenitas.pop();
+
+    $.post('{{=URL("cuadrar_poliza")}}', idPoliza).success(function(data){
+        $('.mensaje').html(data);
+    });
+}
+
 jQuery(document).ready(function(){
 
-    /*
+cuadrarPoliza();
+
+/*
+$.editable.addInputType('datepicker', {
+    element : function(settings, original) {
+        var input = $('<input>');
+        if (settings.width  != 'none') { input.width(settings.width);  }
+        if (settings.height != 'none') { input.height(settings.height); }
+        input.attr('autocomplete','off');
+        $(this).append(input);
+        return(input);
+    },
+    plugin : function(settings, original) {
+        var form = this;
+        settings.onblur = 'ignore';
+        $(this).find('input').datepicker().bind('click', function() {
+            $(this).datepicker('show');
+            return false;
+        }).bind('dateSelected', function(e, selectedDate, $td) {
+            $(form).submit();
+        });
+    }
+});
+*/
+
     jQuery('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",
     {
         tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
+        indicator: "Actualizando...",
     });
-    */
 
-    $("#datepicker").datepicker();
-
+    /*
     $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
         onblur: 'ignore'
     }).click(function(){
-        $(this).datepicker();
-        console.log(this.value());
+
+        var inputField = $(this).attr('id');
+        var rcal = Calendar.setup({
+            inputField: inputField,
+            onSelect: function(cal) {
+                console.log(cal);
+                console.log(cal.dateStr);
+                alert(cal.dateStr);
+            }
+        });
+        console.log(rcal);
+        return rcal;
     });
+    */
+
+    /*
+    $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
+        tooltip: 'Click para editar, ENTER para salvar.',
+        indicator : 'Actualizando...',
+        submit: "OK",
+        type: 'datepicker',
+        onblur: 'ignore'
+    }).click(function() {
+    $(this).find('input').datepicker("option", "dateFormat", "yy-mm-dd");
+    });
+    */
 
     $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_descripcion')}}",{
         tooltip: 'Click para editar, ENTER para salvar.',
@@ -45,25 +106,29 @@ jQuery(document).ready(function(){
                              tooltip: "Click para editar, ENTER para salvar.",
                              indicator : "Actualizando...",
     });
+
     jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
                              tooltip: "Click para editar, ENTER para salvar.",
                              indicator : "Actualizando...",
+                             callback: function (value, settings) {
+                                 cuadrarPoliza();
+                             }
     });
+
     jQuery('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-                             tooltip: "Click para editar, ENTER para salvar.",
-                             indicator : "Actualizando...",
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator: "Actualizando...",
+        callback: function (value, settings) {
+            cuadrarPoliza();
+        }
     });
-})
+
+});
+
 </script>
 
 <h1>Pólizas Contables</h1>
 
-{{if session.msgContabiliza:}}
-  <div class="flash flash-info">
-      {{= session.msgContabiliza}}
- </div>
-{{pass}}
-
 {{=polizas}}
 
-{{session.msgContabiliza=''}}
+<div class="indicador-poliza"></div>
