@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import locale
+locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 
 #########################################################################
 ## This scaffolding model makes your app work on Google App Engine too

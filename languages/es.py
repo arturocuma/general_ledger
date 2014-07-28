@@ -1,4 +1,8 @@
+<<<<<<< Updated upstream
 # coding: utf-8
+=======
+# -*- coding: utf-8 -*-
+>>>>>>> Stashed changes
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -70,6 +74,11 @@
 'ATTENTION: Login requires a secure (HTTPS) connection or running on localhost.': 'ATENCION: Inicio de sesión requiere una conexión segura (HTTPS) o localhost.',
 'ATTENTION: TESTING IS NOT THREAD SAFE SO DO NOT PERFORM MULTIPLE TESTS CONCURRENTLY.': 'ATENCION: NO EJECUTE VARIAS PRUEBAS SIMULTANEAMENTE, NO SON THREAD SAFE.',
 'ATTENTION: you cannot edit the running application!': 'ATENCION: no puede modificar la aplicación que está ejecutandose!',
+'Auth cases': 'Auth cases',
+'Auth events': 'Auth events',
+'Auth groups': 'Auth groups',
+'Auth memberships': 'Auth memberships',
+'Auth permissions': 'Auth permissions',
 'Auth users': 'Auth users',
 'Authentication': 'Autenticación',
 'Authentication failed at client DB!': '¡La autenticación ha fallado en la BDD cliente!',
@@ -246,6 +255,9 @@
 'HTML export of visible columns': 'HTML export of visible columns',
 'htmledit': 'htmledit',
 'Id': 'Id',
+'ID de Grupo': 'ID de Grupo',
+'ID de Registro': 'ID de Registro',
+'ID de Usuario': 'ID de Usuario',
 'Impersonate': 'Suplantar',
 'import': 'importar',
 'Import/Export': 'Importar/Exportar',
@@ -271,6 +283,7 @@
 'invalid request': 'solicitud inválida',
 'Invalid reset password': 'Reinicio de contraseña inválido',
 'invalid ticket': 'tiquete inválido',
+'IP del Cliente': 'IP del Cliente',
 'Is Active': 'Está Activo',
 'JSON': 'JSON',
 'json': 'json',
@@ -306,6 +319,7 @@
 'Mail invoice': 'Mail invoice',
 'Main Menu': 'Menú principal',
 'Manage Cache': 'Gestionar la Caché',
+'Marca de tiempo': 'Marca de tiempo',
 'Menu Model': 'Modelo "menu"',
 'merge': 'combinar',
 'Models': 'Modelos',
@@ -338,6 +352,7 @@
 'Nombre de Administrador': 'Nombre de Administrador',
 'Nombre de Departamento': 'Nombre de Departamento',
 'Nombre de la Sucursal': 'Nombre de la Sucursal',
+'Nombre del objeto o tabla': 'Nombre del objeto o tabla',
 'Nombre Empleado': 'Nombre Empleado',
 'Nombre Sucursal': 'Nombre Sucursal',
 'None': 'None',
@@ -354,6 +369,7 @@
 'Or': 'O',
 'or import from csv file': 'o importar desde archivo CSV',
 'or provide application url:': 'o provea URL de la aplicación:',
+'Origen': 'Origen',
 'Origin': 'Origen',
 'Original/Translation': 'Original/Traducción',
 'Other Plugins': 'Otros Plugins',
@@ -407,6 +423,7 @@
 'reload': 'recargar',
 'Remember me (for 30 days)': 'Recuérdame (durante 30 días)',
 'remove compiled': 'eliminar compiladas',
+'Renew': 'Renew',
 'Request reset password': 'Solicitar reinicio de contraseña',
 'Reset password': 'Reiniciar contraseña',
 'Reset Password key': 'Restaurar Llave de la Contraseña',
@@ -414,7 +431,11 @@
 'restore': 'restaurar',
 'Retrieve username': 'Recuperar nombre de usuario',
 'revert': 'revertir',
+<<<<<<< Updated upstream
 'Rgt': 'Rgt',
+=======
+'Rol': 'Rol',
+>>>>>>> Stashed changes
 'Role': 'Rol',
 'Rows in Table': 'Filas en la tabla',
 'Rows selected': 'Filas seleccionadas',
@@ -422,6 +443,7 @@
 'Saved file hash:': 'Hash del archivo guardado:',
 'Search': 'Buscar',
 'Semantic': 'Semántica',
+'Service': 'Service',
 'Services': 'Servicios',
 'session expired': 'sesión expirada',
 'shell': 'terminal',
@@ -499,6 +521,7 @@
 'unable to uninstall "%s"': 'no es posible instalar "%s"',
 'uncheck all': 'desmarcar todos',
 'uninstall': 'desinstalar',
+'Unknown': 'Unknown',
 'unknown': 'desconocido',
 'update': 'actualizar',
 'update all languages': 'actualizar todos los lenguajes',

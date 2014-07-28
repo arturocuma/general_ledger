@@ -135,14 +135,9 @@ def carga_cc():
     """
     Carga el catálogo de cuentas a un objeto JSON
     """
-
     from json import loads, dumps
 
-
-    query = (db.cc_empresa.id > 0) &\
-            (db.cc_empresa.tipo_cc_id == 1) # esto es temporal
-            #(db.cc_empresa.tipo_cc_id == db.tipo_cc.id) &\
-            #(db.tipo_cc.nombre == 'DETALLE')
+    query = (db.cc_empresa.id > 0)
 
     result = db(query).select(
             db.cc_empresa.id,
@@ -150,8 +145,8 @@ def carga_cc():
             )
 
     # query para cargar las hojas, `left join`
-    cc1 = db.cc_empresa.with_alias('cc1')
-    cc2 = db.cc_empresa.with_alias('cc2')
+    #cc1 = db.cc_empresa.with_alias('cc1')
+    #cc2 = db.cc_empresa.with_alias('cc2')
 
     diccionario = dict()
     [diccionario.update({x[1]['id']: x[1]['descripcion']})\
