@@ -33,88 +33,32 @@ $(function (){
         labels: {
             next: 'Siguiente',
             previous: 'Anterior',
-            finish: 'Finalizar',
+            finish:'Terminar',
             cancel: 'Cancelar'
         },
         autofocus: true,
         titleTemplate: "<center>#title#</center>",
         transitionEffect: 'slideLeft',
-        
+        onFinishing: function(event, newIndex) {
+            
+            window.location.href ='#modal1'
+            return true;
+        }, 
     });
+   
+        
 });
 </script>
     <div id='wizard'>
-    <h2>Cat Cuentas</h2>
-    <section>
-     <h1>
-        Pre-configuración del Catálogo de Cuentas
-     </h1>   
-     <p>
-       <div>
-    Para configurar el catálogo de cuentas debe elegir un número de niveles preconfigurados y un número de niveles que usted desea llenar con cuentas específicas.
-    </div>
-        <br>
-     <div class="table">
-        <div class="fila">
-          <div class="cell">Elija el número de niveles preconfigurados: </div>
-          <div class="cell"><select name='sel_preconf_cc' id='sel_preconf_cc'>
-            {{for i in range(1, 4):}}
-            <option value='{{=i}}'>
-                {{=i}}
-            </option>
-            {{pass}}
-            </select>
-            </div>
-         </div>
-         <div class="fila">
-             <div class="cell">Elija el número de niveles a configurar: </div>
-             <div class="cell"> 
-                 <select name='sel_conf_cc' id='sel_conf_cc'>
-            {{for i in range(1, 10):}}
-            <option value='{{=i}}'>
-                {{=i}}
-            </option>
-            {{pass}}
-                </select>
-             </div>
-         </div>
-       
-         <div class="fila">
-             <div class="cell">Elija el número de dígitos en los niveles de cuentas mayores y acumulativas: </div>
-             <div class="cell"> 
-                 <select name='sel_dig_acum' id='sel_dig_acum'>
-            {{for i in range(1, 10):}}
-            <option value='{{=i}}'>
-                {{=i}}
-            </option>
-            {{pass}}
-                </select>
-             </div>
-         </div>
-         
-         <div class="fila">
-             <div class="cell">Elija el número de dígitos en los niveles de cuentas auxiliares: </div>
-             <div class="cell"> 
-                 <select name='sel_dig_aux' id='sel_dig_aux'>
-            {{for i in range(1, 10):}}
-            <option value='{{=i}}'>
-                {{=i}}
-            </option>
-            {{pass}}
-                </select>
-             </div>
-         </div>
-         
-         <div class="fila">
-             <div class="cell"><button name='btn_enviar'  id='btn_enviar'>Crear Catálogo</button> </div>
-             <div class="cell"><div id='resultado'></div></div>
-         </div>
-    </div>
-     </p>
-     </section>
+    
      
     <h2>Nivel 1</h2>
+        
     <section>
+        <p>
+        Le presentamos las cuentas del nivel 1 que podría utilizar para su catálogo:        
+        </p>
+        
        <div class="table">
         <div class="fila-cabecera">
           <div class="cell">Num cc</div>
@@ -134,7 +78,12 @@ $(function (){
     </section>
 
     <h2>Nivel 2</h2>
+        
     <section>
+        <p>
+        Le presentamos las cuentas del nivel 2 que podría utilizar para su catálogo:    
+        </p>
+        
        <div class="table">
         <div class="fila-cabecera">
           <div class="cell">Num cc</div>
@@ -157,7 +106,12 @@ $(function (){
     </section>
 
     <h2>Nivel 3</h2>
+        
     <section>
+        <p>
+            Le presentamos las cuentas del nivel 3 que podría utilizar para su catálogo:
+        </p>
+        
        <div class="table">
         <div class="fila-cabecera">
           <div class="cell">Num cc</div>
@@ -178,6 +132,84 @@ $(function (){
          {{pass}}
        </div>
     </section>
+        
+    <h2>Cat Cuentas</h2>
+    <section>
+     <h1>
+        Pre-configuración del Catálogo de Cuentas
+     </h1>   
+     <p>
+       <div>
+    Para configurar el catálogo de cuentas debe elegir un número de niveles preconfigurados y un número de niveles que usted desea llenar con cuentas específicas.
+    </div>
+        <br>
+     <div class="table">
+        <div class="fila_form">
+          <div class="cell">Elija el número de niveles preconfigurados: </div>
+          <div class="cell"><select name='sel_preconf_cc' id='sel_preconf_cc'>
+            {{for i in range(1, 4):}}
+            <option value='{{=i}}'>
+                {{=i}}
+            </option>
+            {{pass}}
+            </select>
+            </div>
+         </div>
+         <div class="fila_form">
+             <div class="cell">Elija el número de niveles a configurar: </div>
+             <div class="cell"> 
+                 <select name='sel_conf_cc' id='sel_conf_cc'>
+            {{for i in range(1, 10):}}
+            <option value='{{=i}}'>
+                {{=i}}
+            </option>
+            {{pass}}
+                </select>
+             </div>
+         </div>
+       
+         <div class="fila_form">
+             <div class="cell">Elija el número de dígitos en los niveles de cuentas mayores y acumulativas: </div>
+             <div class="cell"> 
+                 <select name='sel_dig_acum' id='sel_dig_acum'>
+            {{for i in range(1, 10):}}
+            <option value='{{=i}}'>
+                {{=i}}
+            </option>
+            {{pass}}
+                </select>
+             </div>
+         </div>
+         
+         <div class="fila_form">
+             <div class="cell">Elija el número de dígitos en los niveles de cuentas auxiliares: </div>
+             <div class="cell"> 
+                 <select name='sel_dig_aux' id='sel_dig_aux'>
+            {{for i in range(1, 10):}}
+            <option value='{{=i}}'>
+                {{=i}}
+            </option>
+            {{pass}}
+                </select>
+             </div>
+         </div>
+         
+        
+    </div>
+      
+     </p>
+        
+    
+<div id="modal1" class="modalmask">
+    <div class="modalbox movedown">
+        <a href="#close" title="Cerrar" class="close">X</a>
+        <h2>Crear Catálogo</h2>
+        <p>El catálogo se creará de acuerdo a las opciones elegidas</p>
+        <p><button name='btn_enviar'  id='btn_enviar'>Confirmar</p>
+    </div>
+</div>   
+     </section>
+        
     </div>
 
 <script>
@@ -192,7 +224,7 @@ $(function (){
               dig_aux = jQuery('#sel_dig_aux').val();
                 
                 jQuery.post('{{=URL('wiz_cc')}}',{empresa_id:empresa_id,cc_preconf:cc_preconf, cc_conf:cc_conf,dig_acum:dig_acum,dig_aux:dig_aux}).success(function(data){
-                jQuery('#resultado').html(data);
+                    window.location = "{{=URL('default','index')}}"
                     
                 
               });
