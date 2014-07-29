@@ -1,4 +1,5 @@
 # coding: utf8
+from datetime import datetime
 
 # For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
@@ -123,7 +124,7 @@ def valida(form):
 def actualiza_asiento():
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
-    db(db.asiento.id == id).update(**{column:value})
+    db(db.asiento.id == id).update(**{column:value, 'f_asiento':datetime.now()})
     return value
 
 
@@ -139,7 +140,7 @@ def actualiza_descripcion_before():
             db.cc_empresa.descripcion
             ).first()
 
-    db(db.asiento.id == id).update(**{column:valor})
+    db(db.asiento.id == id).update(**{column:valor, 'f_asiento':datetime.now()})
 
     return "%s %s" % (resultado.num_cc, resultado.descripcion)
 
@@ -159,7 +160,7 @@ def actualiza_descripcion():
             db.cc_empresa.descripcion
             ).first()
 
-    db(db.asiento.id == id).update(**{column:resultado.id})
+    db(db.asiento.id == id).update(**{column:resultado.id, 'f_asiento':datetime.now()})
 
     return "%s %s" % (resultado.num_cc, resultado.descripcion)
 
@@ -178,13 +179,9 @@ def carga_cc():
             db.cc_empresa.descripcion,
             )
 
-    # query para cargar las hojas, `left join`
-    #cc1 = db.cc_empresa.with_alias('cc1')
-    #cc2 = db.cc_empresa.with_alias('cc2')
-
     diccionario = dict()
-    [diccionario.update({x[1]['id']:\
-            "%s %s" % (x[1]['num_cc'], x[1]['descripcion'])})\
-            for x in result.as_dict().items()]
+
+    [diccionario.update({r.id: '{} {}'.format(r.num_cc, r.descripcion)})\
+            for r in result]
 
     return dumps(diccionario)
