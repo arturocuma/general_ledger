@@ -1,5 +1,4 @@
 {{extend 'layout.html'}}
-<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
 <script>
     $(function () {
     $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
@@ -16,5 +15,7 @@
     });
 });
 </script>
+<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
+
 <h1>Configuración de Catalogo de Cuentas Contables</h1>
 {{=cc_empresa}}

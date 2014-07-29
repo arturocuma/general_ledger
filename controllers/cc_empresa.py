@@ -26,7 +26,56 @@ def index():
     cc_empresa = ul_list()
     return dict(cc_empresa=cc_empresa)
 
+
+def anidar_lista(lista,cat,indice_ant, indice, cont):
+    if isinstance(lista, list):
+        p=len(lista)-1
+    else:
+        p=0
+        
+    if cont<indice:
+        if p>0:
+            anidar_lista(lista[p],cat, indice_ant,indice, cont+1)
+    else:
+        if indice > indice_ant:
+            lista = UL(LI(SPAN(I(_class="icon-minus-sign"),cat[0]+' '+cat[1]+' '+str(cat[2]))))
+            return lista
+        else :
+            lista=LI(SPAN(I(_class="icon-minus-sign"),cat[0]+' '+cat[1]+' '+str(cat[2])))
+            return lista
+            
 def ul_list():
+    categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth "\
+                   "FROM cc_empresa AS node, cc_empresa AS parent "\
+                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   "GROUP BY node.num_cc "\
+                   "ORDER BY node.lft;")
+
+   
+    seed = DIV(_class="tree well")
+    child = UL()
+    seed.append(UL())
+    n=0
+    cadena='<div class="tree well"><ul>'
+    for cat in categories:
+        if cat[2]>n:
+            cadena+='<ul><li>'
+        elif cat[2]==n:
+            if n>0:
+                cadena+='</li><li>'
+            else:
+                cadena+='<li>'
+        else:
+            for i in range(cat[2],n):
+                cadena+='</li></ul>'
+            cadena+='<li>'
+        cadena+='<span icon-minus-sign>'+cat[0]+' '+cat[1]+'</span>'    
+        n=cat[2]
+    cadena+=cadena+'</li></ul></div>'
+    cadena=XML(cadena)
+    return cadena
+
+def ul_list_back():
     categories = db(db.cc_empresa.id>0).select(db.cc_empresa.ALL, orderby=db.cc_empresa.lft)
 
     rgt = []
