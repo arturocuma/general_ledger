@@ -3,8 +3,8 @@
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
-<script src="{{=URL('static','js/chosen.js')}}"></script>
-<link rel="stylesheet" href="{{=URL('static','css/chosen.css')}}">
+<!--script src="{{=URL('static','js/chosen.js')}}"></script>
+<link rel="stylesheet" href="{{=URL('static','css/chosen.css')}}"-->
 
 <script src="{{=URL('static','js/calendar.js')}}"></script>
 <link rel="stylesheet" href="{{=URL('static','css/calendar.css')}}">
@@ -19,54 +19,13 @@ function cuadrarPoliza() {
     idPoliza = 'id=' + cadenitas.pop();
 
     $.post('{{=URL("cuadrar_poliza")}}', idPoliza).success(function(data){
-        $('.indicador-poliza').html(data);
+        $('.fila-final').replaceWith(data);
     });
 }
 
 jQuery(document).ready(function(){
 
-cuadrarPoliza();
-
-    /*
-    jQuery('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",
-    {
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
-    });
-    */
-
-    /*
-    $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-        onblur: 'ignore'
-    }).click(function(){
-        console.log('¬|¬');
-        var inputField = $(this).attr('id');
-        var rcal = Calendar.setup({
-            inputField: inputField,
-            onSelect: function(cal) {
-                console.log(cal);
-                console.log(cal.dateStr);
-            }
-        });
-    });
-    */
-
-    /*
-    $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_descripcion')}}",{
-        tooltip: 'Click para editar, ENTER para salvar.',
-        indicator: 'Actualizando...',
-        type: 'select',
-        cancel: "Cancelar",
-        onblur: 'ignore',
-        style: 'inherit',
-        loadurl: "{{=URL('poliza', 'carga_cc')}}",
-    }).click(function() {
-        $(this).find('select').chosen();
-    });
-    */
-
+    cuadrarPoliza();
 
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
@@ -82,22 +41,13 @@ cuadrarPoliza();
         }).click(function() {
             $(this).find('input').autocomplete({
                 source: dataArray
-                //source: '{{=URL("carga_cc")}}'
             });
         });
     });
 
-
     jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: 'Click para editar, ENTER para salvar.',
-        indicator: 'Actualizando...',
-        type: 'select',
-        cancel: "Cancelar",
-        onblur: 'ignore',
-        style: 'inherit',
-        loadurl: "{{=URL('poliza', 'carga_cc')}}",
-    }).click(function() {
-        $(this).find('select').chosen();
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator : "Actualizando...",
     });
 
     jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
@@ -120,17 +70,12 @@ cuadrarPoliza();
 </script>
 
 <style>
-    .indicador-poliza {
-        float: right;
-        padding: 1em 0;
+
+    tr.fila-final td {
+        padding: 1.2em 0;
         font-weight: bold;
     }
 
-{{if session.msgContabiliza:}}
-  <div class="flash flash-info">
-      {{= session.msgContabiliza}}
- </div>
-{{pass}}
     .rojo {
         color: red;
     }
@@ -143,5 +88,3 @@ cuadrarPoliza();
 <h1>Pólizas Contables</h1>
 
 {{=polizas}}
-
-<div class="indicador-poliza"></div>
