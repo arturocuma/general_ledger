@@ -5,12 +5,15 @@ from datetime import datetime
 def index(): return dict(message="hello from poliza.py")
 
 def listar():
+
     db.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
     db.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db.cc_empresa.descripcion, id_field=db.cc_empresa.id, limitby=(0,10), min_length=1)
     db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
     db.asiento.concepto_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
     db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
     db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
+
+    db.poliza.importe.writable = False
 
     polizas = SQLFORM.smartgrid(db.poliza, linked_tables=['asiento'],
                                 onvalidation=valida,
@@ -82,9 +85,7 @@ def cuadrar_poliza():
 
     poliza_id = request.vars.id
 
-    asientos = db(
-            db.asiento.poliza_id == poliza_id
-            ).select(
+    asientos = db(db.asiento.poliza_id == poliza_id).select(
             db.asiento.debe,
             db.asiento.haber
             )
