@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en-us">
+<html lang="es">
 	<head>
 		<meta charset="utf-8">
 		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
@@ -108,8 +108,25 @@
     color:#22262E;
 }
 
-.web2py_grid tr.odd {background-color:#F1F1F1}
-.web2py_grid tr:hover {background-color:#F3F3F3}
+/*Estilo de las filas del grid*/
+.web2py_grid tr.odd {
+	background-color:#DEDEDE;
+	border-top-style:solid;
+	border-color: #CCC;
+	border-width: 1px;
+}
+.web2py_grid tr.even {
+	background-color:#EBEBEB;
+	border-top-style:solid;
+	border-color: #CCC;
+	border-width: 1px;
+}
+.web2py_grid tr.odd:hover,
+.web2py_grid tr.even:hover {
+	background-color:#FFFFFF;
+}
+/*Fin Estilo de las filas del grid*/
+
 
 .web2py_console form {
     width: 100%;
@@ -162,9 +179,10 @@
 .web2py_table {clear:both; display:block}
 
 .web2py_paginator {
-    padding:5px;
-    text-align:right;
-    background-color:#f2f2f2;
+	margin-top: 2px;
+   padding:5px;
+   text-align:right;
+   background-color:#f2f2f2;
 
 }
 .web2py_paginator ul {
@@ -229,9 +247,11 @@ span.divider{
    -ms-overflow-x:scroll;
 }
 
+/*Estilos de botones*/
 .web2py_grid .row_buttons a,
 .web2py_paginator ul li a,
 .web2py_search_actions a,
+input[type=submit],
 .web2py_console input[type=submit],
 .web2py_console input[type=button],
 .web2py_console button,
@@ -248,6 +268,7 @@ span.divider{
 	padding-bottom: 5px;
 	color: #22262E;
 	margin-top: 0px;
+	margin-right: 2px;
 	text-decoration: none;
 }
 .web2py_grid .row_buttons a:hover,
@@ -274,9 +295,67 @@ span.divider{
    outline-style: none;
    outline-width: 0;
 }
+/*Fin estilos de botones*/
 
+/*Estilo botones submit*/
+input[type=submit] {
+  	color: #ffffff;
+  	background-color: #3E78FD;
+  	border-color: #2c699d;
+}
+input[type=submit]:hover{
+  color: #ffffff;
+  background-color: #296191;
+  border-color: #1f496d;
+}
 
+input[type=submit]:active {
+  background-image: none;
+}
+/*Fin estilo Botones submit*/
 
+/*Estilos de input*/
+input[type=text],
+input[type=password]{
+  /*display: block;
+  font-size: 13px;
+  line-height: 1.428571429;*/
+  padding: 5px 3px;
+  color: #555555;
+  background-color: #ffffff;
+  background-image: none;
+  border: 1px solid #cccccc;
+  border-radius: 5px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+  -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+  transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+}
+input[type=text]:focus,
+input[type=password]:focus {
+  border-color: #66afe9;
+  outline: 0;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+  box-shadow: inset 0 100px 100px rgba(0,0,0,.075), 0 0 8px rgba(102, 175, 233, 0.6);
+}
+input[type=button]{
+	margin-top: -3px;
+}
+/*Fin estilos input*/
+
+/*Estilos de errores en los campos*/
+.error_wrapper{
+	background-color: #d9534f;
+	border-style: solid;
+   border-color: #d43f3a;
+   border-width: 2px;
+   border-radius: 4px;
+   padding: 2px 2px;
+   margin-top: 2px;
+   margin-bottom: 2px;
+   color: #FFFFFF
+}
+/*Fin Estilos de errores en los campos*/
 </style>
 
 	</head>
@@ -340,7 +419,7 @@ span.divider{
 			<!-- pulled right: nav area -->
 			<div class="pull-right">
 
-				<!-- collapse menu button -->
+				<!-- collapse menu button-->
 				<div id="hide-menu" class="btn-header pull-right">
 					<span> <a href="javascript:void(0);" title="Collapse Menu"><i class="fa fa-reorder"></i></a> </span>
 				</div>
@@ -352,11 +431,11 @@ span.divider{
 				</div>
 				<!-- end logout button -->
 
-				<!-- search mobile button (this is hidden till mobile view port) -->
+				<!-- search mobile button (this is hidden till mobile view port)
 				<div id="search-mobile" class="btn-header transparent pull-right">
 					<span> <a href="javascript:void(0)" title="Search"><i class="fa fa-search"></i></a> </span>
 				</div>
-				<!-- end search mobile button -->
+				end search mobile button -->
 
 				<!-- input: search field
 				<form action="#search.html" class="header-search pull-right">
@@ -383,7 +462,7 @@ span.divider{
 
 					<a href="javascript:void(0);" id="show-shortcut">
                       {{if session.auth:}}
-                          <img src='{{=session.picture}}' alt=" yo" class="online" />
+                          <img src='{{=session.picture}}' alt=" Yo" class="online" />
                           <span>{{=auth.user['first_name']}}</span>
                           <i class="fa fa-angle-down"></i>
                       {{else:}}
@@ -440,9 +519,9 @@ span.divider{
 									<i class="fa fa-lg fa-fw fa-usd"></i>
 									Balanza
 								</a>
-								<a href="{{=URL('cc_empresa','resumen')}}">
+								<a href="{{=URL('cc_empresa','listar')}}">
 									<i class="fa fa-lg fa-fw fa-list-alt"></i>
-									Resumen de cuentas
+									Listar cuentas
 								</a>
 							</li>
 						</ul>
