@@ -272,7 +272,7 @@ db.define_table('poliza',
     Field('concepto_general', 'string', label='Concepto de la Póliza'),
     Field('tipo', 'reference tipo_poliza'),
     Field('importe', 'double', default=0.0,\
-            represent = lambda value, row: calcula_importe(row.id)
+            represent = lambda value, row: calcula_importe(row.id) if row else 0.0
             )
 )
 
