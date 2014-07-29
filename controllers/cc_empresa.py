@@ -25,24 +25,6 @@ def index():
     """
     cc_empresa = ul_list()
     return dict(cc_empresa=cc_empresa)
-
-
-def anidar_lista(lista,cat,indice_ant, indice, cont):
-    if isinstance(lista, list):
-        p=len(lista)-1
-    else:
-        p=0
-        
-    if cont<indice:
-        if p>0:
-            anidar_lista(lista[p],cat, indice_ant,indice, cont+1)
-    else:
-        if indice > indice_ant:
-            lista = UL(LI(SPAN(I(_class="icon-minus-sign"),cat[0]+' '+cat[1]+' '+str(cat[2]))))
-            return lista
-        else :
-            lista=LI(SPAN(I(_class="icon-minus-sign"),cat[0]+' '+cat[1]+' '+str(cat[2])))
-            return lista
             
 def ul_list():
     categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth "\
