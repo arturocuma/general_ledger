@@ -176,6 +176,7 @@ def delete_node(num_cc):
         return True
     return False
 
+
 def cat_cuentas_sat(empresa_id):
     cc_sat=[]
     with open('applications/general_ledger/private/cuentas_sat.csv', 'rb') as f:
@@ -184,6 +185,7 @@ def cat_cuentas_sat(empresa_id):
             row[0]=str(empresa_id)
             cc_sat.append(row)
     return cc_sat
+
 
 def wiz_cc():
     tabla = db['cc_empresa']
