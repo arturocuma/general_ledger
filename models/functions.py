@@ -12,6 +12,7 @@ def agrega_cuadrar(items):
 
     return items
 
+
 def calcula_importe(poliza_id):
     """
     calcula el importe de la póliza, esto es, la suma de los asientos
