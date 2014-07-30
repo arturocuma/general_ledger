@@ -10,6 +10,7 @@
 <link rel="stylesheet" href="{{=URL('static','css/calendar.css')}}">
 
 <script>
+
 /* cuadrar las cuentas */
 function cuadrarPoliza() {
 
@@ -18,9 +19,11 @@ function cuadrarPoliza() {
 
     idPoliza = 'id=' + cadenitas.pop();
 
-    $.post('{{=URL("cuadrar_poliza")}}', idPoliza).success(function(data){
-        $('.fila-final').replaceWith(data);
-    });
+    if (cadenitas.pop() == 'asiento.poliza_id') {
+        $.post('{{=URL("cuadrar_poliza")}}', idPoliza).success(function(data){
+            $('.fila-final').replaceWith(data);
+        });
+    }
 }
 
 jQuery(document).ready(function(){
