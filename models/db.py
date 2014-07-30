@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import locale
+locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 
 #########################################################################
 ## This scaffolding model makes your app work on Google App Engine too
@@ -269,8 +271,11 @@ db.define_table('poliza',
     Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
     Field('concepto_general', 'string', label='Concepto de la Póliza'),
     Field('tipo', 'reference tipo_poliza'),
-    Field('importe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    )
+    Field('importe', 'double', default=0.0,\
+            represent = lambda value, row: calcula_importe(row.id) if row else 0.0
+            )
+)
+
 db.poliza.id.label='#Póliza'
 
 db.define_table('asiento',
