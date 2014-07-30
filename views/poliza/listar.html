@@ -1,13 +1,13 @@
 {{extend 'layout.html'}}
 
+<!--script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script-->
+
+<!--script src="{{=URL('static', 'js/jeditable/jquery.jeditable.js')}}"></script-->
+
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
 
-<!--script src="{{=URL('static','js/chosen.js')}}"></script>
-<link rel="stylesheet" href="{{=URL('static','css/chosen.css')}}"-->
-
-<script src="{{=URL('static','js/calendar.js')}}"></script>
-<link rel="stylesheet" href="{{=URL('static','css/calendar.css')}}">
 
 <script>
 
@@ -40,7 +40,11 @@ jQuery(document).ready(function(){
 
         $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
             tooltip: 'Click para editar, ENTER para salvar.',
-            indicator: 'Actualizando...'
+            indicator: 'Actualizando...',
+            onerror: function(settings,original,xhr){
+                alert("It wasn't possible to edit. Try again");
+                console.log("XHR Status: " + xhr.status);
+            }
         }).click(function() {
             $(this).find('input').autocomplete({
                 source: dataArray
