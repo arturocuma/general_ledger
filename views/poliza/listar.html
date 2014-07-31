@@ -26,26 +26,6 @@ jQuery(document).ready(function(){
 
     /* Funciones para modificar los valores de los asientos */
 
-    $.getJSON('{{=URL("carga_cc")}}', function(json) {
-    /*
-    $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-        onblur: 'ignore'
-    }).click(function(){
-        console.log('¬|¬');
-        var inputField = $(this).attr('id');
-        var rcal = Calendar.setup({
-            inputField: inputField,
-            onSelect: function(cal) {
-                console.log(cal);
-                console.log(cal.dateStr);
-            }
-        });
-    });
-    */
-
-    /*
     $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_descripcion')}}",{
         tooltip: 'Click para editar, ENTER para salvar.',
         indicator: 'Actualizando...',
@@ -71,8 +51,6 @@ jQuery(document).ready(function(){
             });
         });
     });
-    */
-
 
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
