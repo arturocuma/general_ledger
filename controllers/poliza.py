@@ -29,7 +29,6 @@ def listar():
                 _id=str(row.id)+'.tipo_poliza'
                 )
 
-
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
@@ -191,10 +190,6 @@ def carga_cc():
             db.cc_empresa.num_cc,
             db.cc_empresa.descripcion,
             )
-
-    # query para cargar las hojas, `left join`
-    #cc1 = db.cc_empresa.with_alias('cc1')
-    #cc2 = db.cc_empresa.with_alias('cc2')
 
     diccionario = dict()
 
