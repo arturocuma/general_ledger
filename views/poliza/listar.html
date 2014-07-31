@@ -1,13 +1,7 @@
 {{extend 'layout.html'}}
 
-<!--script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
-<script src="//code.jquery.com/jquery-migrate-1.2.1.min.js"></script-->
-
-<!--script src="{{=URL('static', 'js/jeditable/jquery.jeditable.js')}}"></script-->
-
 <script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-
 
 <script>
 
@@ -30,6 +24,56 @@ jQuery(document).ready(function(){
 
     cuadrarPoliza();
 
+    /* Funciones para modificar los valores de los asientos */
+
+    $.getJSON('{{=URL("carga_cc")}}', function(json) {
+    /*
+    $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator : "Actualizando...",
+        onblur: 'ignore'
+    }).click(function(){
+        console.log('¬|¬');
+        var inputField = $(this).attr('id');
+        var rcal = Calendar.setup({
+            inputField: inputField,
+            onSelect: function(cal) {
+                console.log(cal);
+                console.log(cal.dateStr);
+            }
+        });
+    });
+    */
+
+    /*
+    $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_descripcion')}}",{
+        tooltip: 'Click para editar, ENTER para salvar.',
+        indicator: 'Actualizando...',
+        type: 'select',
+        cancel: "Cancelar",
+        onblur: 'ignore',
+        style: 'inherit',
+        loadurl: "{{=URL('poliza', 'carga_cc')}}",
+    }).click(function() {
+        $(this).find('select').chosen();
+        var dataArray = [];
+
+        $.each(json, function (index, value) {
+            dataArray.push(value);
+        });
+
+        $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
+            tooltip: 'Click para editar, ENTER para salvar.',
+            indicator: 'Actualizando...',
+        }).click(function() {
+            $(this).find('input').autocomplete({
+                source: dataArray
+            });
+        });
+    });
+    */
+
+
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
         var dataArray = [];
@@ -40,21 +84,26 @@ jQuery(document).ready(function(){
 
         $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
             tooltip: 'Click para editar, ENTER para salvar.',
-            indicator: 'Actualizando...',
-            onerror: function(settings,original,xhr){
-                alert("It wasn't possible to edit. Try again");
-                console.log("XHR Status: " + xhr.status);
-            }
+            indicator: 'Actualizando...'
         }).click(function() {
             $(this).find('input').autocomplete({
                 source: dataArray
+                //source: '{{=URL("carga_cc")}}'
             });
         });
     });
 
+
     jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
+        tooltip: 'Click para editar, ENTER para salvar.',
+        indicator: 'Actualizando...',
+        type: 'select',
+        cancel: "Cancelar",
+        onblur: 'ignore',
+        style: 'inherit',
+        loadurl: "{{=URL('poliza', 'carga_cc')}}",
+    }).click(function() {
+        $(this).find('select').chosen();
     });
 
     jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
@@ -65,12 +114,37 @@ jQuery(document).ready(function(){
         }
     });
 
-    jQuery('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+    $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator: "Actualizando...",
         callback: function (value, settings) {
             cuadrarPoliza();
         }
+    });
+
+    /* Funciones para modificar los valores de las pólizas */
+
+    $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator: "Actualizando...",
+    });
+
+    $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
+
+        var dataArray = [];
+
+        $.each(json, function (index, value) {
+            dataArray.push(value);
+        });
+
+        $('.tipo_poliza').editable("{{=URL('poliza', 'actualiza_tipo_poliza')}}",{
+            tooltip: "Click para editar, ENTER para salvar.",
+            indicator : "Actualizando...",
+        }).click(function() {
+            $(this).find('input').autocomplete({
+                source: dataArray
+            });
+        });
     });
 
 });

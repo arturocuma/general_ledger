@@ -6,7 +6,7 @@ def index(): return dict(message="hello from poliza.py")
 
 def listar():
 
-    #db.asiento.id.represent = lambda value, row: 100
+    # modificaciones a campos de la tabla `asiento`
     db.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
     db.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db.cc_empresa.descripcion, id_field=db.cc_empresa.id, limitby=(0,10), min_length=1)
     db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
@@ -14,12 +14,30 @@ def listar():
     db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
     db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
 
+    # modificaciones a campos de la tabla `poliza`
     db.poliza.importe.writable = False
+    db.poliza.concepto_general.represent = lambda value, row:\
+            DIV(
+                value if value != '' else '-',
+                _class='concepto_general',
+                _id=str(row.id)+'.concepto_general'
+                )
+    db.poliza.tipo.represent = lambda value, row:\
+            DIV(
+                obtener_tipo_poliza(value) if value != None else '-',
+                _class='tipo_poliza',
+                _id=str(row.id)+'.tipo_poliza'
+                )
+
 
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
             onvalidation=valida,
+            deletable=False,
+            searchable=False,
+            editable=False,
+            create=False,
             exportclasses=dict(
                 #csv=False,
                 csv_with_hidden_cols=False,
@@ -43,22 +61,27 @@ def listar():
                     args=["poliza", request.args(-1)]
                     )
                 )
-
         polizas[2].insert(-1, boton_agregar_asiento)
         polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
+    else:
+        boton_agregar_poliza = A(
+                SPAN(_class="glyphicon glyphicon-indent-left"),
+                'Agregar Póliza',
+                _class="button btn btn-default",
+                _href=URL(
+                    "poliza",
+                    "agregar_poliza",
+                    )
+                )
+        polizas[2].insert(-1, boton_agregar_poliza)
 
     return dict(polizas=polizas)
 
 
 def agregar_asiento():
-
-    print
-    print 'agregar asiento'
-    print '<---------------------->'
-    print request.args
-    print request.args[1]
-    print '<---------------------->'
-    print
+    """
+    Agrega un elemento a la tabla `asiento`
+    """
 
     db.asiento.insert(
             poliza_id = request.args[1],
@@ -123,27 +146,13 @@ def valida(form):
 
 
 def actualiza_asiento():
+    """
+    Actualiza un campo de la tabla `asiento`
+    """
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
     db(db.asiento.id == id).update(**{column:value, 'f_asiento':datetime.now()})
     return value
-
-
-def actualiza_descripcion_before():
-    """
-    Actualiza el campo `descripcion` de la tabla `asiento`.
-    Funciona con chosen
-    """
-    id, column = request.post_vars.id.split('.')
-    valor = request.post_vars.value
-    resultado = db(db.cc_empresa.id == valor).select(
-            db.cc_empresa.num_cc,
-            db.cc_empresa.descripcion
-            ).first()
-
-    db(db.asiento.id == id).update(**{column:valor, 'f_asiento':datetime.now()})
-
-    return "%s %s" % (resultado.num_cc, resultado.descripcion)
 
 
 def actualiza_descripcion():
@@ -161,14 +170,17 @@ def actualiza_descripcion():
             db.cc_empresa.descripcion
             ).first()
 
-    db(db.asiento.id == id).update(**{column:resultado.id, 'f_asiento':datetime.now()})
+    db(db.asiento.id == id).update(**{
+        column:resultado.id,
+        'f_asiento':datetime.now()
+        })
 
     return "%s %s" % (resultado.num_cc, resultado.descripcion)
 
 
 def carga_cc():
     """
-    Carga el catálogo de cuentas a un objeto JSON
+    Carga el catálogo de cuentas a un objeto JSON, función auxiliar
     """
     from json import loads, dumps
 
@@ -180,9 +192,79 @@ def carga_cc():
             db.cc_empresa.descripcion,
             )
 
+    # query para cargar las hojas, `left join`
+    #cc1 = db.cc_empresa.with_alias('cc1')
+    #cc2 = db.cc_empresa.with_alias('cc2')
+
     diccionario = dict()
 
     [diccionario.update({r.id: '{} {}'.format(r.num_cc, r.descripcion)})\
             for r in result]
+
+    return dumps(diccionario)
+
+
+def agregar_poliza():
+    """
+    Agrega un elemento a la tabla `póliza`
+    """
+
+    db.poliza.insert(
+            concepto_general = '',
+            tipo = '',
+            importe = 0,
+            )
+
+    redirect(URL('poliza', 'listar'))
+
+
+def actualiza_poliza():
+    """
+    Actualiza un campo de la tabla `poliza`
+    """
+    id, column = request.post_vars.id.split('.')
+    value = request.post_vars.value
+    db(db.poliza.id == id).update(**{column:value, 'f_poliza':datetime.now()})
+    return value
+
+
+def actualiza_tipo_poliza():
+    """
+    Actualiza el campo `tipo` de la tabla `poliza`
+    """
+    id, column = request.post_vars.id.split('.')
+    value = request.post_vars.value
+
+    resultado = db(db.tipo_poliza.nombre == value).select(
+            db.tipo_poliza.id,
+            ).first()
+
+    print resultado.id
+
+    db(db.poliza.id == id).update(**{
+        'tipo':resultado.id,
+        'f_poliza':datetime.now()
+        })
+
+    return value
+
+
+def carga_tipo_poliza():
+    """
+    Carga el catálogo de los tipos de póliza a un objeto JSON, función auxiliar
+    """
+    from json import loads, dumps
+
+    query = (db.tipo_poliza.id > 0)
+
+    resultado = db(query).select(
+            db.tipo_poliza.id,
+            db.tipo_poliza.nombre
+            )
+
+    diccionario = dict()
+
+    [diccionario.update({r.id: '{}'.format(r.nombre)})\
+            for r in resultado]
 
     return dumps(diccionario)
