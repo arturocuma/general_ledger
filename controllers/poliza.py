@@ -1,9 +1,12 @@
 # coding: utf8
+from datetime import datetime
 
 # For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
 
 def listar():
+
+    #db.asiento.id.represent = lambda value, row: 100
     db.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
     db.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db.cc_empresa.descripcion, id_field=db.cc_empresa.id, limitby=(0,10), min_length=1)
     db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
@@ -11,64 +14,66 @@ def listar():
     db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
     db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
 
-    polizas = SQLFORM.smartgrid(db.poliza, linked_tables=['asiento'],
-                                onvalidation=valida,
-                                exportclasses=dict(
-                                                  #csv=False,
-                                                  csv_with_hidden_cols=False,
-                                                  #html=False,
-                                                  json=False,
-                                                  tsv_with_hidden_cols=False,
-                                                  tsv=False,
-                                                  #xml=False
-                                              )
-                                )
+    db.poliza.importe.writable = False
+
+    polizas = SQLFORM.smartgrid(
+            db.poliza,
+            linked_tables=['asiento'],
+            onvalidation=valida,
+            exportclasses=dict(
+                #csv=False,
+                csv_with_hidden_cols=False,
+                #html=False,
+                json=False,
+                tsv_with_hidden_cols=False,
+                tsv=False,
+                #xml=False
+                )
+            )
 
     if request.args(-3) == 'poliza' and request.args(-2) == 'asiento.poliza_id':
-        boton_agregar_asiento = A(SPAN(_class="glyphicon glyphicon-indent-left"),' Agregar Asiento', _class="button btn btn-default", _href=URL("poliza", "agregar_asiento" ,args=["poliza", request.args(-1)]))
-        boton_contabilizar = A(SPAN(_class="glyphicon glyphicon-book"),' Contabilizar', _class="button btn btn-default", _href=URL("poliza", "contabilizar" ,args=["poliza", request.args(-1)]))
+
+        boton_agregar_asiento = A(
+                SPAN(_class="glyphicon glyphicon-indent-left"),
+                'Agregar Asiento',
+                _class="button btn btn-default",
+                _href=URL(
+                    "poliza",
+                    "agregar_asiento",
+                    args=["poliza", request.args(-1)]
+                    )
+                )
+
         polizas[2].insert(-1, boton_agregar_asiento)
-        polizas[2].insert(-1, boton_contabilizar)
+        polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
 
     return dict(polizas=polizas)
 
 
 def agregar_asiento():
+
+    print
+    print 'agregar asiento'
+    print '<---------------------->'
+    print request.args
+    print request.args[1]
+    print '<---------------------->'
+    print
+
     db.asiento.insert(
             poliza_id = request.args[1],
             concepto_asiento = '',
             debe = 0,
             haber = 0
             )
-    redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=request.args))
 
-
-def contabilizar():
-
-    poliza = db.poliza(request.args[1])
-    asientos = db(db.asiento.poliza_id==request.args[1]).select(
-            db.asiento.debe,
-            db.asiento.haber
+    redirect(
+            URL(
+                'poliza/listar/poliza',
+                'asiento.poliza_id',
+                args=request.args[1]
+                )
             )
-
-    debe = 0.0
-    haber = 0.0
-    for asiento in asientos:
-        debe += asiento.debe if asiento.debe else 0.0
-        haber += asiento.haber if asiento.haber else 0.0
-
-    #deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
-    #hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
-
-    session.msgNot = ''
-    session.msgYes = ''
-
-    if debe != haber:
-        session.msgNot = '\nPóliza no cuadrada.\nDebe = %s Haber = %s'%(debe,haber)
-    else:
-        session.msgYes = '\nPóliza cuadrada.\nDebe = %s Haber = %s'%(debe,haber)
-
-    redirect(URL('poliza/listar/poliza', 'asiento.poliza_id', args=(request.args)))
 
 
 def cuadrar_poliza():
@@ -79,22 +84,31 @@ def cuadrar_poliza():
 
     poliza_id = request.vars.id
 
-    asientos = db(
-            db.asiento.poliza_id == poliza_id
-            ).select(
+    asientos = db(db.asiento.poliza_id == poliza_id).select(
             db.asiento.debe,
             db.asiento.haber
             )
 
-    deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
-    hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
+    if asientos:
+        deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
+        hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
 
-    if deb == hab:
-        resultado = DIV('Poliza Cuadrada %s %s' % (deb, hab), _class='verde')
-    else:
-        resultado = DIV('Poliza NO Cuadrada %s %s' % (deb, hab), _class='rojo')
+        row = TR(_class='fila-final')
+        for x in xrange(4):
+            row.append(TD(''))
 
-    return resultado
+        if deb == hab:
+            row.append(TD('Póliza Cuadrada', _class='verde'))
+            row.append(TD(deb, _class='verde'))
+            row.append(TD(hab, _class='verde'))
+        else:
+            row.append(TD('Póliza No Cuadrada', _class='rojo'))
+            row.append(TD(deb, _class='rojo'))
+            row.append(TD(hab, _class='rojo'))
+
+        row.append(TD(''))
+
+        return row
 
 
 def valida(form):
@@ -111,13 +125,14 @@ def valida(form):
 def actualiza_asiento():
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
-    db(db.asiento.id == id).update(**{column:value})
+    db(db.asiento.id == id).update(**{column:value, 'f_asiento':datetime.now()})
     return value
 
 
-def actualiza_descripcion():
+def actualiza_descripcion_before():
     """
     Actualiza el campo `descripcion` de la tabla `asiento`.
+    Funciona con chosen
     """
     id, column = request.post_vars.id.split('.')
     valor = request.post_vars.value
@@ -126,7 +141,27 @@ def actualiza_descripcion():
             db.cc_empresa.descripcion
             ).first()
 
-    db(db.asiento.id == id).update(**{column:valor})
+    db(db.asiento.id == id).update(**{column:valor, 'f_asiento':datetime.now()})
+
+    return "%s %s" % (resultado.num_cc, resultado.descripcion)
+
+
+def actualiza_descripcion():
+    """
+    Actualiza el campo `descripcion` de la tabla `asiento`.
+    """
+    id, column = request.post_vars.id.split('.')
+    valor = request.post_vars.value
+
+    num_cc = valor.split()[0]
+
+    resultado = db(db.cc_empresa.num_cc == num_cc).select(
+            db.cc_empresa.id,
+            db.cc_empresa.num_cc,
+            db.cc_empresa.descripcion
+            ).first()
+
+    db(db.asiento.id == id).update(**{column:resultado.id, 'f_asiento':datetime.now()})
 
     return "%s %s" % (resultado.num_cc, resultado.descripcion)
 
@@ -141,6 +176,7 @@ def carga_cc():
 
     result = db(query).select(
             db.cc_empresa.id,
+            db.cc_empresa.num_cc,
             db.cc_empresa.descripcion,
             )
 
@@ -149,7 +185,8 @@ def carga_cc():
     #cc2 = db.cc_empresa.with_alias('cc2')
 
     diccionario = dict()
-    [diccionario.update({x[1]['id']: x[1]['descripcion']})\
-            for x in result.as_dict().items()]
+
+    [diccionario.update({r.id: '{} {}'.format(r.num_cc, r.descripcion)})\
+            for r in result]
 
     return dumps(diccionario)

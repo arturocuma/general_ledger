@@ -1,3 +1,54 @@
 {{extend 'layout.html'}}
+<script>
+    $(function () {
+        $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+        $('.tree li.parent_li > span').on('click', function (e) {
+            var children = $(this).parent('li.parent_li').find(' > ul > li');
+            if (children.is(":visible")) {
+                children.hide('fast');
+                $(this).attr('title', 'Expand this branch').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
+            } else {
+                children.show('fast');
+                $(this).attr('title', 'Collapse this branch').find(' > i').addClass('fa-minus-circle').removeClass('fa-plus-circle');
+            }
+            e.stopPropagation();
+        });
+    });
+    function editar_cuenta(cc_id)
+    {
+        window.location.href ='#modal_editar';
+        $( "#form_editar" ).load( '{{=URL('editar_cuenta')}}', { id: cc_id } );
+    } 
+    function crear_cuenta(num_cc_padre, cc_vista_id)
+    {
+        if (cc_vista_id==1){
+            window.location.href ='#modal_crear';
+            $( "#form_crear" ).load( '{{=URL('crear_cuenta')}}', { num_cc_padre: num_cc_padre } );
+        }else{
+            alert('No se puede crear una subcuenta en una cuenta de detalle');
+        }
+    } 
+</script>
+<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
+
+
 <h1>Configuración de Catalogo de Cuentas Contables</h1>
 {{=cc_empresa}}
+
+<div id="modal_editar" class="modalmask">
+    <div class="modalbox movedown">
+        <a href="#close" title="Cerrar" class="close">X</a>
+        <h2>Editar Cuenta</h2>
+        <div id="form_editar">
+        </div>
+    </div>
+</div> 
+
+<div id="modal_crear" class="modalmask">
+    <div class="modalbox movedown">
+        <a href="#close" title="Cerrar" class="close">X</a>
+        <h2>Crear Cuenta</h2>
+        <div id="form_crear">
+        </div>
+    </div>
+</div>

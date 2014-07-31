@@ -25,8 +25,43 @@ def index():
     """
     cc_empresa = ul_list()
     return dict(cc_empresa=cc_empresa)
-
+            
 def ul_list():
+    categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth, node.id, node.cc_vista_id "\
+                   "FROM cc_empresa AS node, cc_empresa AS parent "\
+                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   "GROUP BY node.id "\
+                   "ORDER BY node.lft;")
+
+   
+    seed = DIV(_class="tree well")
+    child = UL()
+    seed.append(UL())
+    n=0
+    cadena='<div class="tree well"><ul>'
+    for cat in categories:
+        if cat[2]>n:
+            cadena+='<ul><li>'
+        elif cat[2]==n:
+            if n>0:
+                cadena+='</li><li>'
+            else:
+                cadena+='<li>'
+        else:
+            for i in range(cat[2],n):
+                cadena+='</li></ul>'
+            cadena+='<li>'
+        cadena+='<span><i class="fa fa-minus-circle"></i></span> '
+        
+        cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
+                
+        
+        n=cat[2]
+    cadena+='</li></ul></div>'
+    cadena=XML(cadena)
+    return cadena
+
+def ul_list_back():
     categories = db(db.cc_empresa.id>0).select(db.cc_empresa.ALL, orderby=db.cc_empresa.lft)
 
     rgt = []
@@ -49,7 +84,7 @@ def ul_list():
         p.append(LI(A(cat.num_cc+' '+cat.descripcion, _href='/'+cat.num_cc), _class="leaf",))
         tree.append(branch)
         rgt.append(cat.rgt)
-    seed = DIV(_class="root")
+    seed = DIV(_class="tree well")
     for branch in tree:
         seed.append(DIV(branch, _class="root_branch"))
     seed.components.extend([XML("""
@@ -221,11 +256,14 @@ def actualiza_cc_empresa():
     return value
 
 def crear_cuenta():
-    cc_empresa=db(db.cc_empresa).select(db.cc_empresa.ALL)
+    if request.vars.num_cc_padre:
+        cc_empresa=db(db.cc_empresa.id==request.vars.num_cc_padre).select(db.cc_empresa.ALL)
+    else:
+        cc_empresa=db(db.cc_empresa).select(db.cc_empresa.ALL)
     cc_vista=db(db.cc_vista).select(db.cc_vista.ALL)
     cc_naturaleza=db(db.cc_naturaleza).select(db.cc_naturaleza.ALL)
 
-    msg="Nada"
+    msg=""
 
     if request.vars.num_cc:
         empresa_id = 1
@@ -233,10 +271,16 @@ def crear_cuenta():
         num_cc=request.vars.num_cc
         descripcion=request.vars.descripcion
         clave_sat=""
-        naturaleza_id=request.vars.cc_naturaleza_id
-        vista_id = request.vars.cc_vista_id
+        naturaleza_id=int(request.vars.cc_naturaleza_id)
+        vista_id = int(request.vars.cc_vista_id)
         msg = 'Cuenta Creada'
-
-        #add_node(padre_id, empresa_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
+        add_node(padre_id, empresa_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
+        redirect(URL('index'))
 
     return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)
+
+def editar_cuenta():
+    form=crud.update(db.cc_empresa, request.vars.id)
+    if request.vars.num_cc:
+        redirect(URL('index'))
+    return dict(form=form)
