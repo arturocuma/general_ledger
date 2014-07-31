@@ -27,7 +27,35 @@ jQuery(document).ready(function(){
     /* Funciones para modificar los valores de los asientos */
 
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
+    /*
+    $('.f_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}", {
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator : "Actualizando...",
+        onblur: 'ignore'
+    }).click(function(){
+        console.log('¬|¬');
+        var inputField = $(this).attr('id');
+        var rcal = Calendar.setup({
+            inputField: inputField,
+            onSelect: function(cal) {
+                console.log(cal);
+                console.log(cal.dateStr);
+            }
+        });
+    });
+    */
 
+    /*
+    $('.cc_empresa_id').editable("{{=URL('poliza', 'actualiza_descripcion')}}",{
+        tooltip: 'Click para editar, ENTER para salvar.',
+        indicator: 'Actualizando...',
+        type: 'select',
+        cancel: "Cancelar",
+        onblur: 'ignore',
+        style: 'inherit',
+        loadurl: "{{=URL('poliza', 'carga_cc')}}",
+    }).click(function() {
+        $(this).find('select').chosen();
         var dataArray = [];
 
         $.each(json, function (index, value) {
@@ -43,10 +71,39 @@ jQuery(document).ready(function(){
             });
         });
     });
+    */
+
+
+    $.getJSON('{{=URL("carga_cc")}}', function(json) {
+
+        var dataArray = [];
+
+        $.each(json, function (index, value) {
+            dataArray.push(value);
+        });
+
+        $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
+            tooltip: 'Click para editar, ENTER para salvar.',
+            indicator: 'Actualizando...'
+        }).click(function() {
+            $(this).find('input').autocomplete({
+                source: dataArray
+                //source: '{{=URL("carga_cc")}}'
+            });
+        });
+    });
+
 
     jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
+        tooltip: 'Click para editar, ENTER para salvar.',
+        indicator: 'Actualizando...',
+        type: 'select',
+        cancel: "Cancelar",
+        onblur: 'ignore',
+        style: 'inherit',
+        loadurl: "{{=URL('poliza', 'carga_cc')}}",
+    }).click(function() {
+        $(this).find('select').chosen();
     });
 
     jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{

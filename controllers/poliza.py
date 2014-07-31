@@ -192,6 +192,10 @@ def carga_cc():
             db.cc_empresa.descripcion,
             )
 
+    # query para cargar las hojas, `left join`
+    #cc1 = db.cc_empresa.with_alias('cc1')
+    #cc2 = db.cc_empresa.with_alias('cc2')
+
     diccionario = dict()
 
     [diccionario.update({r.id: '{} {}'.format(r.num_cc, r.descripcion)})\
