@@ -1,4 +1,3 @@
-{{extend 'layout.html'}}
 <style>
     #table {
         display: inline;
@@ -17,12 +16,11 @@
     }
 </style>
 {{=msg}}
-<h1>Crear Cuenta</h1>
 <div>
-    <form enctype="multipart/form-data" action="" method="post">
+    <form enctype="multipart/form-data" action="{{=URL('cc_empresa','crear_cuenta')}}" method="post">
         <div id="table">
+           
            <div id="row">
-               <div id="row">
                <div id="cell" >
                 <label for="num_cc_padre" >Cuenta Padre</label>
                </div>
@@ -31,7 +29,7 @@
                             {{for cc_padre in cc_empresa:}}
                             <option value="{{=cc_padre.id}}"
                                 {{="selected='selected'" if str(cc_padre.id)==request.vars.num_cc_padre else ""}}>
-                            {{=cc_padre.descripcion}}
+                                {{=cc_padre.num_cc}} {{=cc_padre.descripcion}} 
                             </option>
                             {{pass}}
                   </select>
@@ -42,7 +40,7 @@
                 <label for="num_cc" >Número de Cuenta</label>
                </div>
                <div id="cell">
-                <input type="text" id="num_cc" value="">
+                <input type="text" id="num_cc" name="num_cc" value="">
                </div>
             </div>
             <div id="row">
@@ -50,7 +48,7 @@
                 <label for="descripcion" >Descripción</label>
                </div>
                <div id="cell" >
-                <input type="text" id="descripcion" value="">
+                <input type="text" name="descripcion" id="descripcion" value="">
                </div>
             </div>
             <div id="row">
@@ -84,6 +82,9 @@
                </div>
             </div>
             <div id="row">
+                <div id="cell">
+                    
+                </div>
                <div id="cell" >
                 <input type="Submit" value="Enviar">
                </div>
