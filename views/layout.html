@@ -246,6 +246,11 @@ span.divider{
    overflow-x: auto;
    -ms-overflow-x:scroll;
 }
+/*Estilos del select*/
+select{
+	padding: 3px;
+}
+/*Fin del estilo del select*/
 
 /*Estilos de botones*/
 .web2py_grid .row_buttons a,
@@ -345,15 +350,15 @@ input[type=button]{
 
 /*Estilos de errores en los campos*/
 .error_wrapper{
-	background-color: #d9534f;
+  background-color: #f2dede;
 	border-style: solid;
-   border-color: #d43f3a;
-   border-width: 2px;
+  	border-color: #a94442;
+   border-width: 1px;
    border-radius: 4px;
-   padding: 2px 2px;
+   padding: 2px 3px;
    margin-top: 2px;
    margin-bottom: 2px;
-   color: #FFFFFF
+   color: #a94442;
 }
 /*Fin Estilos de errores en los campos*/
 </style>
@@ -381,13 +386,13 @@ input[type=button]{
 					<div class="btn-group btn-group-justified" data-toggle="buttons">
 						<label class="btn btn-default">
 							<input type="radio" name="activity" id="ajax/notify/mail.html">
-							Mensajes (14) </label>
+							Mensajes (4) </label>
 						<label class="btn btn-default">
 							<input type="radio" name="activity" id="ajax/notify/notifications.html">
-							Notificaciones (3) </label>
+							Notificaciones (4) </label>
 						<label class="btn btn-default">
 							<input type="radio" name="activity" id="ajax/notify/tasks.html">
-							Tareas (4) </label>
+							Tareas (2) </label>
 					</div>
 
 					<!-- notification content -->
@@ -404,7 +409,10 @@ input[type=button]{
 					<!-- end notification content -->
 
 					<!-- footer: refresh area -->
-					<span> Last updated on: 12/12/2013 9:43AM
+					<span> Last updated on:
+						{{	from datetime import *
+							=datetime.today()
+						}}
 						<button type="button" data-loading-text="<i class='fa fa-refresh fa-spin'></i> Loading..." class="btn btn-xs btn-default pull-right">
 							<i class="fa fa-refresh"></i>
 						</button> </span>
@@ -512,16 +520,16 @@ input[type=button]{
 						<ul>
 							<li>
 								<a href="#">
-									<i class="fa fa-lg fa-fw fa-bar-chart-o"></i>
+									<i class="fa fa-bar-chart-o"></i>
 									Balance general
 								</a>
 								<a href="#">
 									<i class="fa fa-lg fa-fw fa-usd"></i>
 									Balanza
 								</a>
-								<a href="{{=URL('cc_empresa','listar')}}">
+								<a href="{{=URL('cc_empresa','index')}}">
 									<i class="fa fa-lg fa-fw fa-list-alt"></i>
-									Listar cuentas
+									Catálogo de cuentas
 								</a>
 							</li>
 						</ul>
