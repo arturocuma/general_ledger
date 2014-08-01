@@ -27,15 +27,20 @@ def index():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
-def listar_cc_wizard():
+def cc_wizard():
     tipo="wizard"
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
 def ul_list(tipo):
+    if tipo=='wizard':
+        empresa_id='1'
+    else:
+        empresa_id='1'
+        
     categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth, node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node, cc_empresa AS parent "\
-                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt AND node.empresa_id="+empresa_id+" "\
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
 
@@ -171,21 +176,25 @@ def delete_node(num_cc):
     return False
 
 
-def cat_cuentas_sat(empresa_id):
+def cat_cuentas_sat(empresa_id,cc_preconf):
     cc_sat=[]
-    with open('applications/general_ledger/private/cuentas_sat.csv', 'rb') as f:
+    if cc_preconf=='1':
+        archivo='cuentas_sat'
+    else:
+        archivo='cuentas_sat_nivel1'
+        
+    with open('applications/general_ledger/private/'+archivo+'.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
             row[0]=str(empresa_id)
             cc_sat.append(row)
     return cc_sat
 
-
 def wiz_cc():
     tabla = db['cc_empresa']
-    #empresa_id=int(request.vars.empresa_id)
-    empresa_id=1
-    cc_sat=cat_cuentas_sat(empresa_id)
+    empresa_id=int(request.vars.empresa_id)
+    cc_preconf=request.vars.cc_preconf
+    cc_sat=cat_cuentas_sat(empresa_id, cc_preconf)
 
     db(db.cc_empresa).delete()
     db.executesql('delete from sqlite_sequence where name="cc_empresa";')
@@ -289,6 +298,10 @@ def crear_cuenta():
     return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)
 
 def editar_cuenta():
+    db.cc_empresa.lft.writable=False
+    db.cc_empresa.lft.readable=False
+    db.cc_empresa.rgt.writable=False
+    db.cc_empresa.rgt.readable=False
     form=crud.update(db.cc_empresa, request.vars.id)
     if request.vars.num_cc:
         redirect(URL('index'))
