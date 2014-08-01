@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
+import urllib2
+from gluon.storage import Storage
 import locale
 locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 
@@ -59,12 +62,67 @@ mail.settings.login = 'username:password'
 auth.settings.registration_requires_verification = False
 auth.settings.registration_requires_approval = False
 auth.settings.reset_password_requires_verification = True
+auth.settings.expiration = 3600 * 24 * 30
+auth.settings.remember_me_form = True
 
 ## if you need to use OpenID, Facebook, MySpace, Twitter, Linkedin, etc.
 ## register with janrain.com, write your domain:api_key in private/janrain.key
 #from gluon.contrib.login_methods.janrain_account import use_janrain
 #use_janrain(auth, filename='private/janrain.key')
 
+## if you need to use OpenID, Facebook, MySpace, Twitter, Linkedin, etc.
+## register with janrain.com, write your domain:api_key in private/janrain.key
+#from gluon.contrib.login_methods.rpx_account import use_janrain
+#use_janrain(auth, filename='private/janrain.key')
+
+from gluon.contrib.login_methods.oauth20_account import OAuthAccount
+
+try:
+    import json
+except ImportError:
+    from gluon.contrib import simplejson as json
+
+"""
+class GoogleAccount(OAuthAccount):
+    "OAuth 2.0 for Google"
+
+    def __init__(self):
+        with open(os.path.join(request.folder, 'private/json.json'), 'rb') as f:
+            gai = Storage(json.load(f)['web'])
+
+        OAuthAccount.__init__(self, None, gai.client_id, gai.client_secret,
+                              gai.auth_uri, gai.token_uri,
+                              scope='https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+                              approval_prompt='force', state="auth_provider=google")
+
+    def get_user(self):
+
+        token = self.accessToken()
+        if not token:
+            return None
+
+        uinfo_url = 'https://www.googleapis.com/oauth2/v1/userinfo?access_token=%s' % urllib2.quote(token, safe='')
+
+        uinfo = None
+
+        try:
+            uinfo_stream = urllib2.urlopen(uinfo_url)
+        except:
+            session.token = None
+            return
+        data = uinfo_stream.read()
+        uinfo = json.loads(data)
+
+        username = uinfo['id']
+        if 'picture' in uinfo:
+            session.picture = uinfo['picture']
+
+        return dict(first_name = uinfo['given_name'],
+                    last_name = uinfo['family_name'],
+                    username = username,
+                    email = uinfo['email'])
+
+#auth.settings.login_form=GoogleAccount()"""
 #########################################################################
 ## Define your tables below (or better in another model file) for example
 ##
