@@ -1,3 +1,8 @@
+# coding: utf8
+
+"""
+Colección de funciones/hacks
+"""
 
 def agrega_cuadrar(items):
     """
@@ -34,3 +39,14 @@ def calcula_importe(poliza_id):
         flag = DIV('Póliza sin asientos', _class='rojo')
 
     return flag
+
+
+def obtener_tipo_poliza(tipo_poliza_id):
+    """
+    Retorna el tipo de poliza a partir de un id
+    """
+    resultado = db(db.tipo_poliza.id == tipo_poliza_id).select(
+            db.tipo_poliza.nombre
+            ).first()
+
+    return resultado.nombre
