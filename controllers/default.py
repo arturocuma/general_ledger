@@ -405,8 +405,8 @@ def index():
                     'client_id' : '251271738083-u26hh6bhakts3d9svu8jb69qsk0hd07a.apps.googleusercontent.com',
                     'client_secret' : '9gzoHOg81ayJJGrORFsVsTgj',
                     #'redirect_uri' : 'http://127.0.0.1:8000/general_ledger/default/index',
-                    'redirect_uri' : 'https://develop.datawork.mx:9001/general_ledger/default/index',
-                    #'redirect_uri' : 'http://develop.datawork.mx:9000/general_ledger/default/index',
+                    #'redirect_uri' : 'https://develop.datawork.mx:9001/general_ledger/default/index',
+                    'redirect_uri' : 'http://develop.datawork.mx:9000/general_ledger/default/index',
                     'grant_type' : 'authorization_code' }
         headers = { 'Content-Type' : 'application/x-www-form-urlencoded' }
         data = urllib.urlencode(values)
