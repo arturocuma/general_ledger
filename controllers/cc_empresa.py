@@ -23,10 +23,16 @@ def index():
     for x in XXX:
         print x[0]
     """
-    cc_empresa = ul_list()
+    tipo="config"
+    cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
-            
-def ul_list():
+
+def listar_cc_wizard():
+    tipo="wizard"
+    cc_empresa = ul_list(tipo)
+    return dict(cc_empresa=cc_empresa)
+
+def ul_list(tipo):
     categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth, node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node, cc_empresa AS parent "\
                    "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
@@ -34,11 +40,11 @@ def ul_list():
                    "ORDER BY node.lft;")
 
    
-    seed = DIV(_class="tree well")
+    seed = DIV(_class="tree")
     child = UL()
     seed.append(UL())
     n=0
-    cadena='<div class="tree well"><ul>'
+    cadena='<div class="tree"><ul>'
     for cat in categories:
         if cat[2]>n:
             cadena+='<ul><li>'
@@ -51,10 +57,12 @@ def ul_list():
             for i in range(cat[2],n):
                 cadena+='</li></ul>'
             cadena+='<li>'
-        cadena+='<span><i class="fa fa-minus-circle"></i></span> '
         
-        cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
-                
+        if tipo=="config":
+            cadena+='<span><i class="fa fa-minus-circle"></i></span> '
+            cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
+        elif tipo=="wizard":
+            cadena+='<span><i class="fa fa-minus-circle"></i> '+cat[0]+' '+cat[1]+'</span> '
         
         n=cat[2]
     cadena+='</li></ul></div>'
@@ -255,6 +263,7 @@ def actualiza_cc_empresa():
     db(db.cc_empresa.id == id).update(**{column:value})
     return value
 
+@auth.requires_login()
 def crear_cuenta():
     if request.vars.num_cc_padre:
         cc_empresa=db(db.cc_empresa.id==request.vars.num_cc_padre).select(db.cc_empresa.ALL)
@@ -284,3 +293,7 @@ def editar_cuenta():
     if request.vars.num_cc:
         redirect(URL('index'))
     return dict(form=form)
+
+def obtener_empresa(usuario_id):
+    empresa_id=1
+    return empresa_id
