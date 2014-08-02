@@ -1,7 +1,12 @@
 {{extend 'layout.html'}}
 
-<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<!--script src="//code.jquery.com/jquery-1.11.1.min.js"></script-->
+<!--script src="{{=URL('static','js/web2py.js')}}"></script-->
+
+<!--script src="//code.jquery.com/ui/1.11.1/jquery-ui.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.1/themes/smoothness/jquery-ui.css"-->
+
+<!--script src="{{=URL('static', 'js/jeditable/jquery.jeditable.js')}}"></script-->
 
 <script>
 
@@ -20,12 +25,24 @@ function cuadrarPoliza() {
     }
 }
 
-jQuery(document).ready(function(){
+$(document).ready(function(){
 
     cuadrarPoliza();
 
-    /* Funciones para modificar los valores de los asientos */
+    /*$('.button').click(function(e) {*/
+    $('input[type="submit"]').click(function(e) {
+        //e.preventDefault();
 
+        var $form = $('.web2py_form');
+        var serializedData = $form.serialize();
+
+        $.each(serializedData.split('&'), function (index, elem) {
+            console.log(elem);
+        });
+
+    });
+
+    /* Funciones para modificar los valores de los asientos */
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
         var dataArray = [];
@@ -44,12 +61,12 @@ jQuery(document).ready(function(){
         });
     });
 
-    jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+    $('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
     });
 
-    jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+    $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
         callback: function (value, settings) {
@@ -66,7 +83,6 @@ jQuery(document).ready(function(){
     });
 
     /* Funciones para modificar los valores de las pólizas */
-
     $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator: "Actualizando...",
@@ -107,6 +123,7 @@ jQuery(document).ready(function(){
     .verde {
         color: green;
     }
+
 </style>
 
 <h1>Pólizas Contables</h1>
