@@ -1,0 +1,11 @@
+{{extend 'layout.html'}}
+<div class="jumbotron">
+	<p>Inicia sesión</p>
+	{{=form}}
+	<div class="note">
+		<a href="{{=URL('default','user/retrieve_password')}}">¿Olvidó la contraseña?</a>
+	</div>
+	<br>
+    <p>Inicia sessión con Google</p>
+    <p><a href={{=URL('default/user','login')}} class="btn "><i class="fa fa-google-plus"></i> Google</a></p>
+</div>
