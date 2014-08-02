@@ -74,7 +74,6 @@ auth.settings.remember_me_form = True
 ## register with janrain.com, write your domain:api_key in private/janrain.key
 #from gluon.contrib.login_methods.rpx_account import use_janrain
 #use_janrain(auth, filename='private/janrain.key')
-
 from gluon.contrib.login_methods.oauth20_account import OAuthAccount
 
 try:
@@ -82,12 +81,12 @@ try:
 except ImportError:
     from gluon.contrib import simplejson as json
 
-"""
+
 class GoogleAccount(OAuthAccount):
     "OAuth 2.0 for Google"
 
     def __init__(self):
-        with open(os.path.join(request.folder, 'private/json.json'), 'rb') as f:
+        with open(os.path.join(request.folder, 'private/google_auth.json'), 'rb') as f:
             gai = Storage(json.load(f)['web'])
 
         OAuthAccount.__init__(self, None, gai.client_id, gai.client_secret,
@@ -122,7 +121,8 @@ class GoogleAccount(OAuthAccount):
                     username = username,
                     email = uinfo['email'])
 
-#auth.settings.login_form=GoogleAccount()"""
+auth.settings.login_form=GoogleAccount()
+
 #########################################################################
 ## Define your tables below (or better in another model file) for example
 ##

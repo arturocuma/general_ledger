@@ -475,7 +475,7 @@ input[type=button]{
                           <span>{{=auth.user['first_name']}}</span>
                           <i class="fa fa-angle-down"></i>
                       {{else:}}
-                      <a class="gn-icon gn-icon-login" href={{=URL('default/user','login')}}>
+                      <a class="gn-icon gn-icon-login" href={{=URL('default','login')}}>
                           <img src="{{=URL('static/smartadmin','img/avatars/male.png')}}" alt="me" class="online" />
 
                           <span>Iniciar sesión</span></a>
@@ -544,7 +544,7 @@ input[type=button]{
 								</a>
 							</li>
 							<li>
-								<a href="{{=URL('wizard_cat_cuentas','index')}}">
+								<a href="{{=URL('cc_empresa','cc_wizard')}}">
 									<i class="fa fa-fw fa-gears"></i> Wizard Catálogos de Cuentas
 								</a>
 							</li>
