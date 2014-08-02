@@ -354,6 +354,33 @@ def index4():
 
     return dict(form=form)
 
+def cookieCreate():
+        response.cookies['login_compras'] = auth.user['email']
+        response.cookies['login_compras']['expires'] = 24 * 3600
+        response.cookies['login_compras']['path'] = '/'
+
+        response.cookies['picture_usr'] = session.picture
+        response.cookies['picture_usr']['expires'] = 24 * 3600
+        response.cookies['picture_usr']['path'] = '/'
+
+        response.cookies['id_usuario']= auth.user['id']
+        response.cookies['id_usuario']['expires'] = 24 * 3600
+        response.cookies['id_usuario']['path'] = '/'
+
+def cookieDelete():
+        response.cookies['login_compras'] = 'invalid'
+        response.cookies['login_compras']['expires'] = -10
+        response.cookies['login_compras']['path'] = '/'
+
+        response.cookies['id_usuario']= 'invalid'
+        response.cookies['id_usuario']['expires'] = 24 * 3600
+        response.cookies['id_usuario']['path'] = '/'
+
+        response.cookies['picture_usr'] = 'invalid'
+        response.cookies['picture_usr']['expires'] = -10
+        response.cookies['picture_usr']['path'] = '/'
+
+
 def index():
     """
     example action using the internationalization operator T and flash
@@ -361,9 +388,52 @@ def index():
 
     if you need a simple wiki simply replace the two lines below with:
     return auth.wiki()
-    """
+
     response.flash = T("Welcome to web2py!")
-    return dict(message=T('Hello World'))
+    return dict(message=T('Hello World'))"""
+    import urllib
+    import urllib2
+    import os
+    import gluon.contrib.simplejson
+    from gluon.storage import Storage
+    from uuid import uuid4
+    from gluon.storage import Storage
+
+    if request.get_vars.code:
+        url = 'https://accounts.google.com/o/oauth2/token'
+        values = {'code' : request.get_vars.code,
+                    'client_id' : '251271738083-u26hh6bhakts3d9svu8jb69qsk0hd07a.apps.googleusercontent.com',
+                    'client_secret' : '9gzoHOg81ayJJGrORFsVsTgj',
+                    #'redirect_uri' : 'http://127.0.0.1:8000/general_ledger/default/index',
+                    #'redirect_uri' : 'https://develop.datawork.mx:9001/general_ledger/default/index',
+                    'redirect_uri' : 'http://develop.datawork.mx:9000/general_ledger/default/index',
+                    'grant_type' : 'authorization_code' }
+        headers = { 'Content-Type' : 'application/x-www-form-urlencoded' }
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url, data, headers)
+        response = urllib2.urlopen(req)
+        the_page = response.read()
+        data = gluon.contrib.simplejson.loads(the_page) ##obtenemos el token a partir del code
+        the_page = urllib2.urlopen('https://www.googleapis.com/oauth2/v1/userinfo?access_token='+data['access_token']).read()
+        data = gluon.contrib.simplejson.loads(the_page) ##obtenemos los datos del usuario
+        usuario = db(db.auth_user.email==data['email']).select()
+        if 'picture' in data:
+            session.picture = data['picture']
+        if not usuario:
+            user_nuevo_id = db.auth_user.insert(email = data['email'],first_name = data['given_name'],last_name = data['family_name'])
+            auth.add_membership('Basico', user_nuevo_id)
+            user = db(db.auth_user.id==user_nuevo_id).select().first()
+            auth.user = Storage(auth.settings.table_user._filter_fields(user, id=True))
+            auth.environment.session.auth = Storage(user=user, last_visit=request.now,expiration=auth.settings.expiration)
+            ##auth.settings.long_expiration = 3600*24*30
+            ##auth.settings.remember_me_form = True
+        else:
+            user = db(db.auth_user.id==usuario[0].id).select().first()
+            user.update_record(first_name = data['given_name'],last_name = data['family_name'])
+            auth.user = Storage(auth.settings.table_user._filter_fields(user, id=True))
+            auth.environment.session.auth = Storage(user=user, last_visit=request.now,expiration=auth.settings.expiration)
+    ##response.flash = T("Welcome!")
+    return dict()
 
 
 def user():
