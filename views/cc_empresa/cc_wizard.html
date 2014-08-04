@@ -15,8 +15,9 @@
     <script src="{{=URL('static', 'js/jquery.steps.js')}}"></script>
         
     <link rel="stylesheet" href="{{=URL('static', 'css/jquery.steps.css')}}">
-    <link rel="stylesheet" href="{{=URL('static', 'smartadmin/css/bootstrap-combined.min.css')}}">    
+    <link rel="stylesheet" href="{{=URL('static', 'smartadmin/css/bootstrap-combined.min.css')}}">
     <link rel="stylesheet" href="{{=URL('static', 'css/bootstrap.css')}}">
+    
     <!-- Basic Styles -->
 		
 		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/font-awesome.min.css')}}">
@@ -25,10 +26,19 @@
 		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/smartadmin-production.css')}}">
 		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/smartadmin-skins.css')}}">
 
+		<!-- SmartAdmin RTL Support is under construction
+		<link rel="stylesheet" type="text/css" media="screen" href="css/smartadmin-rtl.css"> -->
+
+		<!-- We recommend you use "your_style.css" to override SmartAdmin
+		     specific styles this will also ensure you retrain your customization with each SmartAdmin update.
+		<link rel="stylesheet" type="text/css" media="screen" href="css/your_style.css"> -->
+
+		<!-- Demo purpose only: goes with demo.js, you can delete this css when designing your own WebApp -->
+		<link rel="stylesheet" type="text/css" media="screen" href="{{=URL('static/smartadmin','css/demo.css')}}">
+
 		<!-- FAVICONS -->
 		<link rel="shortcut icon" href="img/favicon/favicon.ico" type="image/x-icon">
 		<link rel="icon" href="img/favicon/favicon.ico" type="image/x-icon">
-
     <link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
         <style>
         .wizard > .content
@@ -46,8 +56,9 @@
 <body>
 <script>
 $(function (){
+    
     $( document ).ready(function() {
-        $('.tree li:has(li)').addClass('parent_li').find(' > span').attr('title', 'Colapsar esta rama');
+        $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Colapsar esta rama');
         var children = $('.tree li.parent_li > span').parent('li.parent_li').find(' > ul > li');
         if (children.is(":visible")) {
             children.hide('fast');
@@ -73,7 +84,7 @@ $(function (){
             return true;
         }, 
     });
-   
+   $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Colapsar esta rama');
     $('.tree li.parent_li > span').on('click', function (e) {
             var children = $(this).parent('li.parent_li').find(' > ul > li');
             if (children.is(":visible")) {
@@ -81,11 +92,10 @@ $(function (){
                 $(this).attr('title', 'Expandir esta rama').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
             } else {
                 children.show('fast');
-                $(this).attr('title', 'Colapsar estar rama').find(' > i').addClass('fa-minus-circle').removeClass('fa-plus-circle');
+                $(this).attr('title', 'Colapsar esta rama').find(' > i').addClass('fa-minus-circle').removeClass('fa-plus-circle');
             }
             e.stopPropagation();
-     });
-        
+        });
 });
 </script>
     <div id='wizard'>

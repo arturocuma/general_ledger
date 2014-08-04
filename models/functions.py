@@ -50,3 +50,17 @@ def obtener_tipo_poliza(tipo_poliza_id):
             ).first()
 
     return resultado.nombre
+
+
+def eliminar(ids):
+    """
+    Recibe una lista de ids y los elimina
+    """
+    [db(db.poliza.id == id).delete() for id in ids]
+
+
+def editar(ids):
+    """
+    Recibe una lista de ids, edita el primero que toma
+    """
+    print ids[0]
