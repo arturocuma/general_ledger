@@ -47,11 +47,11 @@ def ul_list(tipo):
                    "ORDER BY node.lft;")
 
    
-    seed = DIV(_class="tree")
+    seed = DIV(_class="tree well")
     child = UL()
     seed.append(UL())
     n=0
-    cadena='<div class="tree"><ul>'
+    cadena='<div class="tree well"><ul>'
     for cat in categories:
         if cat[2]>n:
             cadena+='<ul><li>'
