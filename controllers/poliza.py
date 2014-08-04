@@ -42,8 +42,8 @@ def listar():
             deletable=True,
             searchable=False,
             editable=True,
-            create=False,
-            user_signature=False,
+            create=True,
+            user_signature=True,
             exportclasses=dict(
                 #csv=False,
                 csv_with_hidden_cols=False,
