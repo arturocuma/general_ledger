@@ -471,7 +471,8 @@ input[type=button]{
 
 					<a href="javascript:void(0);" id="show-shortcut">
                       {{if session.auth:}}
-                          <img src='{{=session.picture}}' alt=" Yo" class="online" />
+                          {{pic = 'http://pbs.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png'}}
+                          <img src="{{=session.picture if session.picture else pic}}" alt='Yo' class="online" />
                           <span>{{=auth.user['first_name']}}</span>
                           <i class="fa fa-angle-down"></i>
                       {{else:}}

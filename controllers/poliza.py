@@ -31,14 +31,20 @@ def listar():
                 _id=str(row.id)+'.tipo_poliza'
                 )
 
+    #selectable = [
+    #        ('Eliminar', lambda ids: [eliminar(ids)]),
+    #        ]
+
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
             onvalidation=valida,
-            deletable=False,
+            #selectable=selectable,
+            deletable=True,
             searchable=False,
-            editable=False,
+            editable=True,
             create=False,
+            user_signature=True,
             exportclasses=dict(
                 #csv=False,
                 csv_with_hidden_cols=False,
