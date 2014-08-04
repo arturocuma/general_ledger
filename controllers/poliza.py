@@ -43,7 +43,7 @@ def listar():
             deletable=True,
             searchable=False,
             editable=True,
-            #create=True,
+            create=False,
             user_signature=True,
             exportclasses=dict(
                 #csv=False,
