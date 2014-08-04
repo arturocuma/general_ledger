@@ -264,7 +264,6 @@ db.define_table('cc_naturaleza',
    format='%(nombre)s'
    )
 
-# ##
 #Lo siguiente eliminar en PRODUCCION
 if not db(db.cc_naturaleza.id>0).count():
     db.cc_naturaleza.insert(
@@ -284,6 +283,7 @@ db.define_table('cc_vista',
    Field('nombre','string'),
    format='%(nombre)s'
    )
+
 if not db(db.cc_vista.id>0).count():
     db.cc_vista.insert(
         nombre = 'ACUMULATIVA',
@@ -311,7 +311,6 @@ db.define_table('tipo_poliza',
     format='%(nombre)s'
     )
 
-# ///
 # Eliminar en PRODUCCION
 if not db(db.tipo_poliza.id>0).count():
     db.tipo_poliza.insert(
@@ -329,11 +328,9 @@ db.define_table('poliza',
     Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
     Field('concepto_general', 'string', label='Concepto de la Póliza'),
     Field('tipo', 'reference tipo_poliza'),
-    Field('importe', 'double', default=0.0,\
-            represent = lambda value, row: calcula_importe(row.id) if row else 0.0
+    Field('importe', 'double', default=0.0, represent = lambda value, row: calcula_importe(row.id) if row else 0.0
             )
 )
-
 db.poliza.id.label='#Póliza'
 
 db.define_table('asiento',
@@ -341,10 +338,9 @@ db.define_table('asiento',
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
     Field('concepto_asiento', 'string'),
-    Field('debe', 'double', default=0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('haber', 'double', default=0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
+    Field('debe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+    Field('haber', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
 )
-
 db.asiento.id.label='#Asiento'
 
 db.define_table('mes',
