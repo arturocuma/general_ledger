@@ -29,19 +29,6 @@ $(document).ready(function(){
 
     cuadrarPoliza();
 
-    /*$('.button').click(function(e) {*/
-    $('input[type="submit"]').click(function(e) {
-        //e.preventDefault();
-
-        var $form = $('.web2py_form');
-        var serializedData = $form.serialize();
-
-        $.each(serializedData.split('&'), function (index, elem) {
-            console.log(elem);
-        });
-
-    });
-
     /* Funciones para modificar los valores de los asientos */
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
