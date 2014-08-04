@@ -1,4 +1,6 @@
 # coding: utf8
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
+
 from datetime import datetime
 
 # For referencing static and views from other application
@@ -121,12 +123,12 @@ def cuadrar_poliza():
 
         if deb == hab:
             row.append(TD('Póliza Cuadrada', _class='verde'))
-            row.append(TD(deb, _class='verde'))
-            row.append(TD(hab, _class='verde'))
+            row.append(TD(locale.currency(deb, grouping=True ), _class='verde'))
+            row.append(TD(locale.currency(hab, grouping=True ), _class='verde'))
         else:
             row.append(TD('Póliza No Cuadrada', _class='rojo'))
-            row.append(TD(deb, _class='rojo'))
-            row.append(TD(hab, _class='rojo'))
+            row.append(TD(locale.currency(deb, grouping=True ), _class='rojo'))
+            row.append(TD(locale.currency(hab, grouping=True ), _class='rojo'))
 
         row.append(TD(''))
 
