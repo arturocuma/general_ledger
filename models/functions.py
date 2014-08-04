@@ -28,8 +28,8 @@ def calcula_importe(poliza_id):
             )
 
     if asientos:
-        deb = reduce(lambda x,y: x if x else 0 + y if y else 0, [asi.debe for asi in asientos])
-        hab = reduce(lambda x,y: x if x else 0 + y if y else 0, [asi.haber for asi in asientos])
+        deb = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.debe for asi in asientos])
+        hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
         if deb == hab:
             flag = DIV('{}'.format(locale.currency(deb, grouping=True )), _class='verde')
         else:
