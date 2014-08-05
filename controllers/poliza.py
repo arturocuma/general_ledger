@@ -1,5 +1,5 @@
 # coding: utf8
-(auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 
 from datetime import datetime
 

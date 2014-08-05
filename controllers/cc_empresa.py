@@ -1,6 +1,6 @@
 # coding: utf8
 # try something like
-(auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 
 import csv
 
@@ -39,14 +39,14 @@ def ul_list(tipo):
         empresa_id='1'
     else:
         empresa_id='1'
-        
+
     categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth, node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node, cc_empresa AS parent "\
                    "WHERE node.lft BETWEEN parent.lft AND parent.rgt AND node.empresa_id="+empresa_id+" "\
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
 
-   
+
     seed = DIV(_class="tree")
     child = UL()
     seed.append(UL())
@@ -64,13 +64,13 @@ def ul_list(tipo):
             for i in range(cat[2],n):
                 cadena+='</li></ul>'
             cadena+='<li>'
-        
+
         if tipo=="config":
             cadena+='<span><i class="fa fa-minus-circle"></i></span> '
             cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
         elif tipo=="wizard":
             cadena+='<span><i class="fa fa-minus-circle"></i> '+cat[0]+' '+cat[1]+'</span> '
-        
+
         n=cat[2]
     cadena+='</li></ul></div>'
     cadena=XML(cadena)
@@ -184,7 +184,7 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
         archivo='cuentas_sat'
     else:
         archivo='cuentas_sat_nivel1'
-        
+
     with open('applications/general_ledger/private/'+archivo+'.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
