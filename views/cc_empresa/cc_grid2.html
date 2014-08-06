@@ -1,0 +1,78 @@
+{{extend 'layout.html'}}
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
+<link rel="stylesheet" href="/resources/demos/style.css">
+
+<script>
+    
+    $(function () {
+        $( ".cc_grid" ).accordion({
+        collapsible: true
+        });
+        
+    });
+    
+</script>
+<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
+
+
+
+
+                                <!-- widget grid -->
+                                <section id="widget-grid" class="">
+                                        <!-- row -->
+                                        <div class="row">
+                                                <article class="col-sm-12">
+                                                        <!-- new widget -->
+                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+                                                                <!-- widget options:
+                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                                                                data-widget-colorbutton="false"
+                                                                data-widget-editbutton="false"
+                                                                data-widget-togglebutton="false"
+                                                                data-widget-deletebutton="false"
+                                                                data-widget-fullscreenbutton="false"
+                                                                data-widget-custombutton="false"
+                                                                data-widget-collapsed="true"
+                                                                data-widget-sortable="false"
+                                                                -->
+                                                                <header>
+                                                                        <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+                                                                        <h2>Catalogo Cuentas Contables</h2>
+                                                                        <ul class="nav nav-tabs pull-right in" id="myTab">
+                                                                                <li class="active">
+                                                                                        <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
+                                                                                </li>
+                                                                        </ul>
+                                                                </header>
+                                                                <!-- widget div-->
+                                                                <div class="no-padding">
+                                                                        <!-- widget edit box -->
+                                                                        <div class="jarviswidget-editbox">
+                                                                                test
+                                                                        </div>
+                                                                        <!-- end widget edit box -->
+                                                                        <div class="widget-body">
+                                                                                <!-- content -->
+                                                                                <div id="myTabContent" class="tab-content">
+                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+                                                <div class="padding-10">
+                                                    <ul id="expList">
+                                                        {{=cc_empresa}}
+                                                    </ul>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <!-- end s1 tab pane -->
+                                                                                </div>
+                                                                                <!-- end content -->
+                                                                        </div>
+                                                                </div>
+                                                                <!-- end widget div -->
+                                                        </div>
+                                                        <!-- end widget -->
+                                                </article>
+                                        </div>
+                                        <!-- end row -->
+                                </section>
+                                <!-- end widget grid -->

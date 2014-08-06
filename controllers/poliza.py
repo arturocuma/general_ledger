@@ -40,7 +40,7 @@ def listar():
             linked_tables=['asiento'],
             onvalidation=valida,
             #selectable=selectable,
-            deletable=True,
+            deletable=auth.has_permission('delete_poliza') or False,
             searchable=False,
             editable=True,
             create=False,
