@@ -250,14 +250,11 @@ db.define_table('proveedor_banco',
     format='%(banco_id)s %(cuenta)s'
     )
 
-auth.settings.extra_fields['auth_user']= [
-    Field('empleado_id', 'reference empleado', requires=IS_NULL_OR(IS_IN_DB(db, 'empleado.id', '%(nombre)s %(ap_paterno)s %(ap_materno)s'))),
-    ]
 
 auth.define_tables(username=False, signature=False)
 db.auth_user._format = '%(first_name)s %(last_name)s (%(email)s)'
 ## auth.settings.everybody_group_id = 1 ##asignar a nuevos usuarios a un grupo por default 1=ADMIN, 2=BASICO, 3=ETC
-## auth.settings.create_user_groups = None
+auth.settings.create_user_groups = None
 
 db.define_table('cc_naturaleza',
    Field('nombre','string'),
@@ -338,28 +335,13 @@ db.define_table('asiento',
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
     Field('concepto_asiento', 'string'),
-    Field('debe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('haber', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
+    Field('debe', 'double', default=0.0),
+    Field('haber', 'double', default=0.0)
 )
 db.asiento.id.label='#Asiento'
 
-db.define_table('mes',
-    Field('nombre','string'),
-    format='%(nombre)s'
-    )
-
-db.define_table('anio',
-    Field('numero','integer'),
-    format='%(numero)s'
-    )
-
-db.define_table('balanza',
-    Field('mes', 'reference mes'),
-    Field('anio', 'reference anio'),
-    Field('saldo_inicial', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('cargo', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('abono', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable')
-    )
-db.asiento.id.label='#Asiento'
+db.define_table('mi_empresa',
+                Field('user_id','reference auth_user'),
+                Field('empresa_id','reference empresa'),
+                Field('tipo','integer', default=1, requires=IS_IN_SET({1:'PROPIA',2:'COMPARTIDA'})),
+                )

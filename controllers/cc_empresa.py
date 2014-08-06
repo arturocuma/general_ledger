@@ -204,7 +204,6 @@ def wiz_cc():
     campos_cc=['empresa_id','num_cc','descripcion','clave_sat','cc_naturaleza_id', 'cc_vista_id','nivel', 'lft','rgt']
     for cuenta in cc_sat:
         num_cc=cuenta[1]
-        print num_cc
         len_num_cc=len(num_cc)
         if len_num_cc>1:
             num_cc_i=num_cc[::-1]
@@ -215,8 +214,6 @@ def wiz_cc():
             padre_id=int(padre_id)
         else:
             padre_id=None
-
-
         add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
     return
 
