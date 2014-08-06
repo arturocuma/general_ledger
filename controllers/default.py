@@ -230,9 +230,6 @@ def empresa_wizard():
     form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
-        
-        db = DAL('sqlite://storage%s.sqlite'%auth.user['email'],pool_size=1,check_reserved=['all'])
-        
         empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
