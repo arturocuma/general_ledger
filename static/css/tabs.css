@@ -205,3 +205,34 @@ h1{
 	background:#eee;
     color:#000;
 }
+
+.cc_grid{
+	width: 100%;
+	font-family: Arial, sans-serif;
+	display: table;
+	margin: 0 0 40px 0;
+ 	box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+	border-collapse: collapse;
+}
+.row_grid{
+    display: inline-block;	
+}
+.cell_grid{
+	display: table-cell;
+}
+.cc_grid li {
+	display: inline-block;	
+	width: 100%;
+    list-style-type:none;
+    margin:0;
+    padding-top:2px;
+	padding-bottom:2px;
+	border-top:1px solid #94a0b4;
+}
+
+.cc_grid ul {
+	display: inline-block;
+	width: 100%;
+	margin:0;
+	padding:0;
+	}
