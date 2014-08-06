@@ -31,14 +31,20 @@ def listar():
                 _id=str(row.id)+'.tipo_poliza'
                 )
 
+    #selectable = [
+    #        ('Eliminar', lambda ids: [eliminar(ids)]),
+    #        ]
+
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
             onvalidation=valida,
-            deletable=False,
+            #selectable=selectable,
+            deletable=True,
             searchable=False,
-            editable=False,
+            editable=True,
             create=False,
+            user_signature=True,
             exportclasses=dict(
                 #csv=False,
                 csv_with_hidden_cols=False,
@@ -114,8 +120,8 @@ def cuadrar_poliza():
             )
 
     if asientos:
-        deb = reduce(lambda x,y: x+y, [asi.debe for asi in asientos])
-        hab = reduce(lambda x,y: x+y, [asi.haber for asi in asientos])
+        deb = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.debe for asi in asientos])
+        hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
 
         row = TR(_class='fila-final')
         for x in xrange(4):

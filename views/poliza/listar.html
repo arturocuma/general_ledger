@@ -1,8 +1,5 @@
 {{extend 'layout.html'}}
 
-<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-
 <script>
 
 /* cuadrar las cuentas */
@@ -20,12 +17,11 @@ function cuadrarPoliza() {
     }
 }
 
-jQuery(document).ready(function(){
+$(document).ready(function(){
 
     cuadrarPoliza();
 
     /* Funciones para modificar los valores de los asientos */
-
     $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
         var dataArray = [];
@@ -44,12 +40,12 @@ jQuery(document).ready(function(){
         });
     });
 
-    jQuery('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+    $('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
     });
 
-    jQuery('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+    $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
         callback: function (value, settings) {
@@ -66,7 +62,6 @@ jQuery(document).ready(function(){
     });
 
     /* Funciones para modificar los valores de las pólizas */
-
     $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator: "Actualizando...",
@@ -107,6 +102,7 @@ jQuery(document).ready(function(){
     .verde {
         color: green;
     }
+
 </style>
 
 
