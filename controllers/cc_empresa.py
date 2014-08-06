@@ -35,6 +35,7 @@ def cc_wizard():
     return dict(cc_empresa=cc_empresa)
 
 def ul_list(tipo):
+    cadena=''
     if tipo=='wizard':
         empresa_id='1'
     else:
