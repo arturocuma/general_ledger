@@ -40,6 +40,7 @@ def cc_grid():
     return dict(cc_empresa=cc_empresa)
 
 def ul_list(tipo):
+    cadena=''
     if tipo=='wizard':
         empresa_id='1'
         cadena='<div class="tree well"><ul>'
