@@ -1,110 +1,62 @@
 {{extend 'layout.html'}}
-
 <script>
-
-/* cuadrar las cuentas */
-function cuadrarPoliza() {
-
-    var url = window.location.pathname;
-    var cadenitas = url.split('/');
-
-    idPoliza = 'id=' + cadenitas.pop();
-
-    if (cadenitas.pop() == 'asiento.poliza_id') {
-        $.post('{{=URL("cuadrar_poliza")}}', idPoliza).success(function(data){
-            $('.fila-final').replaceWith(data);
-        });
-    }
-}
-
-$(document).ready(function(){
-
-    cuadrarPoliza();
-
-    /* Funciones para modificar los valores de los asientos */
-    $.getJSON('{{=URL("carga_cc")}}', function(json) {
-
-        var dataArray = [];
-
-        $.each(json, function (index, value) {
-            dataArray.push(value);
-        });
-
-        $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
-            tooltip: 'Click para editar, ENTER para salvar.',
-            indicator: 'Actualizando...',
-        }).click(function() {
-            $(this).find('input').autocomplete({
-                source: dataArray
-            });
-        });
-    });
-
-    $('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-    });
-
-    $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-        callback: function (value, settings) {
-            cuadrarPoliza();
+    $( document ).ready(function() {
+        $('.cc_grid li:has(li)').addClass('parent_li').find(' > span').attr('title', 'Colapsar esta rama');
+        var children = $('.cc_grid  li.parent_li > span').parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+           $('.cc_grid li.parent_li > span').attr('title', 'Expandir esta rama').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
         }
+       
     });
-
-    $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
-        callback: function (value, settings) {
-            cuadrarPoliza();
+    $(function () {
+        
+        $('.cc_grid li.parent_li > span').on('click', function (e) {
+            var children = $(this).parent('li.parent_li').find(' > ul > li');
+            if (children.is(":visible")) {
+                children.hide('fast');
+                $(this).attr('title', 'Expandir esta rama').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
+            } else {
+                children.show('fast');
+                $(this).attr('title', 'Colapsar esta rama').find(' > i').addClass('fa-minus-circle').removeClass('fa-plus-circle');
+            }
+            e.stopPropagation();
+        });
+    });
+    function editar_cuenta(cc_id)
+    {
+        window.location.href ='#modal_editar';
+        $( "#form_editar" ).load( '{{=URL('editar_cuenta')}}', { id: cc_id } );
+    } 
+    function crear_cuenta(num_cc_padre, cc_vista_id)
+    {
+        if (cc_vista_id==1){
+            window.location.href ='#modal_crear';
+            $( "#form_crear" ).load( '{{=URL('crear_cuenta')}}', { num_cc_padre: num_cc_padre } );
+        }else{
+            alert('No se puede crear una subcuenta en una cuenta de detalle');
         }
-    });
-
-    /* Funciones para modificar los valores de las pólizas */
-    $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
-    });
-
-    $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
-
-        var dataArray = [];
-
-        $.each(json, function (index, value) {
-            dataArray.push(value);
-        });
-
-        $('.tipo_poliza').editable("{{=URL('poliza', 'actualiza_tipo_poliza')}}",{
-            tooltip: "Click para editar, ENTER para salvar.",
-            indicator : "Actualizando...",
-        }).click(function() {
-            $(this).find('input').autocomplete({
-                source: dataArray
-            });
-        });
-    });
-
-});
+    } 
 </script>
+<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
 
-<style>
+<div id="modal_editar" class="modalmask">
+    <div class="modalbox movedown">
+        <a href="#close" title="Cerrar" class="close">X</a>
+        <h2>Editar Cuenta</h2>
+        <div id="form_editar">
+        </div>
+    </div>
+</div> 
 
-    tr.fila-final td {
-        padding: 1.2em 0;
-        font-weight: bold;
-    }
-
-    .rojo {
-        color: red;
-    }
-
-    .verde {
-        color: green;
-    }
-
-</style>
-
+<div id="modal_crear" class="modalmask">
+    <div class="modalbox movedown">
+        <a href="#close" title="Cerrar" class="close">X</a>
+        <h2>Crear Cuenta</h2>
+        <div id="form_crear">
+        </div>
+    </div>
+</div>
 
 
                                 <!-- widget grid -->
@@ -127,7 +79,7 @@ $(document).ready(function(){
                                                                 -->
                                                                 <header>
                                                                         <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
-                                                                        <h2>Listado de Pólizas Contables</h2>
+                                                                        <h2>Catalogo Cuentas Contables</h2>
                                                                         <ul class="nav nav-tabs pull-right in" id="myTab">
                                                                                 <li class="active">
                                                                                         <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
@@ -147,7 +99,7 @@ $(document).ready(function(){
                                                                                         <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
                                                 <div class="padding-10">
                                                     <ul id="expList">
-                                                        {{=polizas}}
+                                                        {{=cc_empresa}}
                                                     </ul>
                                                                                                 </div>
                                                                                         </div>
