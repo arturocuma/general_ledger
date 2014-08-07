@@ -106,6 +106,7 @@ def ul_list2():
     return cadena
 
 def ul_list(tipo):
+    cadena = ''
     if tipo=='wizard':
         empresa_id='1'
         cadena='<div class="tree well"><ul>'
