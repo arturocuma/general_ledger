@@ -1,20 +1,26 @@
 {{extend 'layout.html'}}
-<link rel="stylesheet" href="//code.jquery.com/ui/1.11.0/themes/smoothness/jquery-ui.css">
-<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-<script src="//code.jquery.com/ui/1.11.0/jquery-ui.js"></script>
-<link rel="stylesheet" href="/resources/demos/style.css">
 
 <script>
     
-    $(function () {
-        $( ".cc_grid" ).accordion({
-        collapsible: true
-        });
-        
+    $(function() {
+	$('tr.parent')
+		.css("cursor","pointer")
+		.attr("title","Click to expand/collapse")
+		.click(function(){
+			$(this).siblings('.child-'+this.id).toggle();
+		});
+    
+                                         
+    $('#sel_tipo_cuentas').on('change', function (e) {
+        tipo_cuentas=$(this).val();
+        if (tipo_cuentas!='0'){
+            $( "#div_cat_cuentas" ).load( '{{=URL('ul_list2')}}', { tipo_cuentas: tipo_cuentas });
+        }
     });
+        
+});
     
 </script>
-<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
 
 
 
@@ -59,7 +65,17 @@
                                                                                         <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
                                                 <div class="padding-10">
                                                     <ul id="expList">
-                                                        {{=cc_empresa}}
+                                                        Cuentas a mostrar:
+                                                        <select id="sel_tipo_cuentas">
+                                                          <option value="0">Elija el tipo de cuenta</option>
+                                                          <option value="con_saldo">Cuentas con saldo</option>
+                                                          <option value="todas">Todas las cuentas</option>
+                                                        </select> 
+                                                        <br><br>
+                                                        <div id="div_cat_cuentas">
+                                                             {{=cc_empresa}}
+                                                        </div>
+                                                        
                                                     </ul>
                                                                                                 </div>
                                                                                         </div>

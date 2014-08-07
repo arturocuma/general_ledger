@@ -29,6 +29,11 @@ def index():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
+def ancestor(num_cc):
+    tabla = db['cc_empresa']
+    node = db(tabla.num_cc == num_cc).select().first()
+    return db( (tabla.lft < node.lft) & (tabla.rgt > node.rgt) ).select(tabla.id, orderby=tabla.lft).last()
+
 def cc_wizard():
     tipo="wizard"
     cc_empresa = ul_list(tipo)
@@ -41,11 +46,14 @@ def cc_grid():
     return dict(cc_empresa=cc_empresa)
 
 def cc_grid2():
-    tipo="grid2"
-    cc_empresa = ul_list2(tipo)
+    
+    cc_empresa = ul_list2()
     return dict(cc_empresa=cc_empresa)
 
-def ul_list2(tipo):
+def cc_table():
+    return dict()
+def ul_list2():
+    tipo_cuentas=request.vars.tipo_cuentas
     empresa_id='1'
         
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
@@ -57,29 +65,43 @@ def ul_list2(tipo):
 
     n=0
     c=0
-    cadena='<div class="cc_grid">'
-    cadena2=''
+    
+    
+    cadena='<div class="table-responsive">'\
+	'<table class="table table-hover">'\
+	'	<thead>'\
+	'		<tr>'\
+	'			<th>Op</th>'\
+	'			<th>No. cuenta</th>'\
+	'			<th>Descripción</th>'\
+	'			<th>Debe</th>'\
+	'			<th>Haber</th>'\
+	'		</tr>'\
+	'	</thead>'\
+	'	<tbody>'
+    cont=0
     for cat in categories:
+        id_padre= ancestor(cat[0])
+        if id_padre:
+            padre=id_padre.id
+        else:
+            padre=''
+            
+        clase_tr= 'child-row'+XML(str(padre))+' parent'
+        #clase_tr= "child-row "+str(id_padre)+" parent"
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
         
-        if cat[2]>n:
-            cadena+='<div class="cc_grid">'
-        elif cat[2]<n:
-            for i in range(cat[2],n):
-                cadena+='</div></div>'
-        
-        if c==1:
-            cadena+='</div>'
-        cadena+='<h3><div class="row_grid"><div class="cell_grid">   '+cat[0]+' </div><div class="cell_grid"> '+cat[1]+' </div><div class="cell_grid"> '+str(cantidad[0][0]) +' </div><div class="cell_grid">'+str(cantidad[0][1])+'</div>  </div></h3> '
-        cadena+='<div>'
-        
+        if tipo_cuentas=='con_saldo':
+            if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
+                cadena+='<tr id="row'+XML(cat[3])+'" class="'+clase_tr+'"><td><i class="fa fa-minus-circle"></i></td><td>'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+        else:
+            cadena+='<tr id="row'+XML(cat[3])+'" class="'+clase_tr+'"><td><i class="fa fa-minus-circle"></i></td><td>'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
         n=cat[2]
         c=1
-    cadena+='</div></div>'
-    
+    cadena+='</tbody></table></div>'
     cadena=XML(cadena)
     return cadena
 
@@ -89,8 +111,9 @@ def ul_list(tipo):
         cadena='<div class="tree well"><ul>'
     elif tipo=='grid':
         empresa_id='1'
-        cadena='<div class="cc_grid"><ul>'
+        cadena='<div class="tree"><ul>'
     else:
+        cadena='<div class="tree"><ul>'
         empresa_id='1'
         
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
@@ -264,7 +287,6 @@ def wiz_cc():
     campos_cc=['empresa_id','num_cc','descripcion','clave_sat','cc_naturaleza_id', 'cc_vista_id','nivel', 'lft','rgt']
     for cuenta in cc_sat:
         num_cc=cuenta[1]
-        print num_cc
         len_num_cc=len(num_cc)
         if len_num_cc>1:
             num_cc_i=num_cc[::-1]
@@ -275,8 +297,6 @@ def wiz_cc():
             padre_id=int(padre_id)
         else:
             padre_id=None
-
-
         add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
     return
 
