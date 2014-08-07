@@ -46,7 +46,6 @@ def cc_grid():
     return dict(cc_empresa=cc_empresa)
 
 def cc_grid2():
-    
     cc_empresa = ul_list2()
     return dict(cc_empresa=cc_empresa)
 
