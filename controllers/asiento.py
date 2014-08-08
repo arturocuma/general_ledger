@@ -1,6 +1,6 @@
 # coding: utf8
 # try something like
-(auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 
 def index(): return dict(message="hello from asiento.py")
 

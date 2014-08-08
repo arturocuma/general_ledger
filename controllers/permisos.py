@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 vars={'_next':request.env.request_uri}
 (auth.user or request.args(0) == 'login') or\
-redirect(URL('default', 'user', args='login', vars=vars))
+redirect(URL('default', 'login', vars=vars))
 
 #########################################################################
 ## En este controlador se administra la sección de roles y permisos
