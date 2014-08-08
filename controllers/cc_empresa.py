@@ -49,8 +49,6 @@ def cc_grid2():
     cc_empresa = ul_list2()
     return dict(cc_empresa=cc_empresa)
 
-def cc_table():
-    return dict()
 def ul_list2():
     tipo_cuentas=request.vars.tipo_cuentas
 
