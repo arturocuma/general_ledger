@@ -387,31 +387,3 @@ def color_nivel(nivel):
     else:
         color = '#28DDFF'
     return color
-
-#Devuelve el catálogo según el nivel
-def cc_by_nivel_padre(nivel,padre):
-    query = "SELECT nodo.num_cc, nodo.descripcion, (COUNT(parent.num_cc) - (sub_tree.depthh + 1)) AS depth\
-            FROM cc_empresa AS nodo,\
-                    cc_empresa AS parent,\
-                    cc_empresa AS sub_parent,\
-                    (\
-                            SELECT nodo.num_cc, nodo.descripcion, (COUNT(parent.num_cc) - 1) AS depthh\
-                            FROM cc_empresa AS nodo,\
-                                    cc_empresa AS parent\
-                            WHERE nodo.lft BETWEEN parent.lft AND parent.rgt\
-                            AND nodo.descripcion = 'Pasivo'\
-                            GROUP BY nodo.num_cc\
-                            ORDER BY nodo.lft\
-                    )AS sub_tree\
-            WHERE nodo.lft BETWEEN parent.lft AND parent.rgt\
-                    AND nodo.lft BETWEEN sub_parent.lft AND sub_parent.rgt\
-                    AND sub_parent.descripcion = sub_tree.descripcion\
-            GROUP BY nodo.num_cc\
-            HAVING depth = 3\
-            ORDER BY nodo.lft;"
-    query = db.executesql( query )
-    return dict( query = query )
-
-def nivel():
-    query = cc_by_nivel(1)
-    return query

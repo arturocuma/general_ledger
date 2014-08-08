@@ -1,5 +1,8 @@
 # coding: utf8
 # try something like
+
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
+
 def index(): return dict(message="hello from reportes.py")
 
 def sumas():
@@ -12,7 +15,7 @@ def cc_grid():
 
 def ul_list():
     tipo_cuentas=request.vars.tipo_cuentas
-        
+
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node , cc_empresa AS parent "\
@@ -20,7 +23,7 @@ def ul_list():
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
 
-   
+
     cadena='<div class="table-responsive">'\
 	'<table class="table table-hover">'\
 	'	<thead>'\
@@ -33,14 +36,14 @@ def ul_list():
 	'		</tr>'\
 	'	</thead>'\
 	'	<tbody>'
-    
+
     for cat in categories:
         id_padre= ancestor(cat[0])
         if id_padre:
             padre=id_padre.num_cc
         else:
             padre=''
-        
+
         padre = padre.replace('.', '')
         clase_tr= 'hijo-'+XML(str(padre))+' padre'
         #clase_tr= "child-row "+str(id_padre)+" parent"
@@ -48,7 +51,7 @@ def ul_list():
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
-        
+
         id_row = cat[0].replace('.', '')
         padding=XML(str(cat[2]*20))
         if tipo_cuentas=='con_saldo':
@@ -56,16 +59,15 @@ def ul_list():
                 cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
         else:
             cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
-        
+
     cadena+='</tbody></table></div>'
     cadena=XML(cadena)
     return cadena
 
 def balance_general():
-    balance = ul_list_balance()
-    return dict(balance=balance)
+    return dict(balance=tabla_balance())
 
-def ul_list_balance():
+def tabla_balance():
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node , cc_empresa AS parent "\
@@ -79,7 +81,7 @@ def ul_list_balance():
     cant_nivel=['','','']
     pasivo_capital=0
     cadena='<table>'
-    estilo_negritas='style="font-weight: bold"'
+    estilo_negritas='style="font-weight: bold; color: #111640"'
     for cat in categories:
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  "FROM asiento, cc_empresa "\
@@ -94,7 +96,7 @@ def ul_list_balance():
             haber_cc=cantidad[0][1] if cantidad[0][1]!=None else 0.0
             if num_cc[0]=='1':
                 resultado_cc=debe_cc-haber_cc
-            else:    
+            else:
                 resultado_cc=haber_cc-debe_cc
             if nivel_cc<nivel:
                 if nivel_cc==1:
@@ -112,12 +114,12 @@ def ul_list_balance():
                 cadena+='<tr><td colspan=3>-</td></tr>'
                 cadena+='<tr><td colspan="3" '+estilo_negritas+'>'+num_cc+' '+XML(descrip_cc)+'</td></tr>'
             else:
-                cadena+='<tr><td>'+XML(num_cc)+'</td><td>'+XML(descrip_cc)+'</td><td>'+XML(resultado_cc)+'</td></tr>'
+                cadena+='<tr><td>'+XML(num_cc)+'</td><td>'+XML(descrip_cc)+'</td><td style="text-align:right;">'+XML(resultado_cc)+'</td></tr>'
             nivel=cat[2]
             cant_nivel[nivel_cc]=resultado_cc
             descrip_nivel[nivel_cc]=descrip_cc
             cc_nivel[nivel_cc]=num_cc
-    
+
     if nivel_cc>0:
         cadena+='<tr><td '+estilo_negritas+'>Total de: '+XML(cc_nivel[1])+'</td><td '+estilo_negritas+'>'+XML(descrip_nivel[1])+'</td><td '+estilo_negritas+'>'+XML(cant_nivel[1])+'</td></tr>'
         cadena+='<tr><td '+estilo_negritas+'>Total de: '+XML(cc_nivel[0])+'</td><td '+estilo_negritas+'>'+XML(descrip_nivel[0])+'</td><td '+estilo_negritas+'>'+XML(cant_nivel[0])+'</td></tr>'
@@ -127,3 +129,20 @@ def ul_list_balance():
         cadena+='<tr><td '+estilo_negritas+'>Total de: </td><td '+estilo_negritas+'>Pasivo y Capital</td><td '+estilo_negritas+'>'+XML(pasivo_capital)+'</td></tr>'
         cadena+='</table>'
     return XML(cadena)
+
+def libro_diario():
+    query = "SELECT * FROM poliza"
+    query = db.executesql(query, as_dict=True)
+    #asiento_by_poliza()
+    #datos = {}
+    #for q in query:
+     #   datos['asiento'] = asiento_by_poliza_id(q['id'])
+    return dict(datos = query)
+
+def asiento_by_poliza_id(id):
+    query = "SELECT a.* \
+            FROM asiento a, cc_empresa cc \
+            WHERE a.cc_empresa_id = cc.id \
+            AND a.poliza_id = "+str(id)
+    query = db.executesql(query,as_dict=True)
+    return query
