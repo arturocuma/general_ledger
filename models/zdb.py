@@ -218,7 +218,6 @@ class Web2Postgress():
         #ToDo: crear exepciones
         """
 
-        con = None
         con = connect(
                 dbname = 'postgres',
                 user = 'web2py',

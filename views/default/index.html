@@ -50,7 +50,7 @@
                                     <strong>Empresas creadas por ti:</strong><br>
                                     {{if mias:}}
                                         {{for m in mias:}}
-                                            {{=m.razon_social}}<br>
+                                            {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}}<br>
                                         {{pass}}
                                     {{pass}}
 

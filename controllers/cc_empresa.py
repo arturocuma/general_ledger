@@ -5,7 +5,8 @@ import csv
 
 def index():
     tipo="config"
-    cc_empresa = ul_list(tipo)
+    empresa_id = request.args(0)
+    cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa = cc_empresa)
 
 def cc_wizard():
@@ -18,23 +19,26 @@ def cc_grid():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
-def ul_list(tipo):
+def ul_list(tipo, empresa_id):
+
+    db_ = empresas.dbs[int(empresa_id)]
+
     cadena=''
     if tipo=='wizard':
-        empresa_id='1'
+        empresa_id = empresa_id
         cadena='<div class="tree well"><ul>'
     elif tipo=='grid':
-        empresa_id='1'
+        empresa_id = empresa_id
         cadena='<div class="cc_grid"><ul>'
     else:
-        empresa_id='1'
+        empresa_id = empresa_id
         
-    categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth, "\
-                   "node.id, node.cc_vista_id "\
-                   "FROM cc_empresa AS node , cc_empresa AS parent "\
-                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt AND node.empresa_id="+empresa_id+" "\
-                   "GROUP BY node.id "\
-                   "ORDER BY node.lft;")
+    categories = db_.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
+                   node.id, node.cc_vista_id\
+                   FROM cc_empresa AS node , cc_empresa AS parent\
+                   WHERE node.lft BETWEEN parent.lft AND parent.rgt\
+                   GROUP BY node.id\
+                   ORDER BY node.lft;")
     
     algo="(SUM(asiento.debe)/COUNT(parent.descripcion)) as cantidad "
 
@@ -241,12 +245,12 @@ def wiz_cc():
     cc_preconf = request.vars.cc_preconf
     cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
 
-    db_.cc_vista.insert(id = 1, nombre = 'ACUMULATIVA')
-    db_.cc_vista.insert(id = 2, nombre = 'DETALLE')
-    db_.cc_naturaleza.insert(id = 1, nombre = 'ACREEDORA')
-    db_.cc_naturaleza.insert(id = 2, nombre = 'DEUDORA')
-    db_.cc_naturaleza.insert(id = 3, nombre = 'CAPITAL')
-    db_.cc_naturaleza.insert(id = 4, nombre = 'RESULTADO')
+    db_.cc_vista.insert(nombre = 'ACUMULATIVA')
+    db_.cc_vista.insert(nombre = 'DETALLE')
+    db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
+    db_.cc_naturaleza.insert(nombre = 'DEUDORA')
+    db_.cc_naturaleza.insert(nombre = 'CAPITAL')
+    db_.cc_naturaleza.insert(nombre = 'RESULTADO')
 
     for cuenta in cc_sat:
 

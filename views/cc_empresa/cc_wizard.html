@@ -149,12 +149,12 @@ $(function (){
     $(document).ready(function(){
         $(function(){
             $('#btn_enviar').click(function(){
+
                 empresa_id={{=request.vars.empresa_id}};
                 cc_preconf = $('#sel_preconf_cc').val();
-                //$.post('{{=URL('antes_cc')}}', {empresa_id:empresa_id}).success(function(data){
-                //});
+
                 $.post('{{=URL('wiz_cc')}}',{empresa_id:empresa_id, cc_preconf:cc_preconf}).success(function(data){
-                    //window.location = "{{=URL('cc_empresa','index')}}"
+                    window.location = "{{=URL('cc_empresa','index')}}/1"
                 });
             });
         });
