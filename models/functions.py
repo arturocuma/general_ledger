@@ -4,6 +4,14 @@
 Colección de funciones/hacks
 """
 
+
+def compara_flotantes(a, b):
+    if abs(a-b)<0.00000001:
+        return True
+    else:
+        return False
+
+
 def agrega_cuadrar(items):
     """
     agrega un TR al final
@@ -30,7 +38,8 @@ def calcula_importe(poliza_id):
     if asientos:
         deb = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.debe for asi in asientos])
         hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
-        if deb == hab:
+
+        if compara_flotantes(deb, hab):
             flag = DIV('{}'.format(locale.currency(deb, grouping=True )), _class='verde')
         else:
             flag = DIV('{} <> {}'.format(locale.currency(deb, grouping=True ), locale.currency(hab, grouping=True )), _class='rojo')
