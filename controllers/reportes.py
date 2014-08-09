@@ -179,7 +179,6 @@ def tabla_balance():
     return XML(cadena)
 
 def libro_diario():
-    #db.poliza.importe.represent = lambda value, row: row.importe*100 #calcula_importe(row.id) if row.id else 0.0
     query = "SELECT p.id , tp.nombre AS tipo_poliza, p.f_poliza, \
             p.concepto_general, cc.num_cc,cc.descripcion, a.concepto_asiento, a.debe, a.haber, p.importe\
             FROM poliza p \
