@@ -8,14 +8,62 @@ def index(): return dict(message="hello from reportes.py")
 def sumas():
     query = (db.cc_empresa.id>0) & (db.cc_empresa.empresa_id==db.empresa.id) & (db.empresa.id==1)
     return dict(message=query)
+def ancestor(num_cc):
+    tabla = db['cc_empresa']
+    node = db(tabla.num_cc == num_cc).select().first()
+    return db( (tabla.lft < node.lft) & (tabla.rgt > node.rgt) ).select(tabla.num_cc, orderby=tabla.lft).last()
+
+def c():
+    rows=db().select(
+        db.asiento.ALL, db.poliza.ALL,
+        left=db.asiento.on(db.asiento.poliza_id==db.poliza.id)
+        )
+    loquesea=db(db.asiento.poliza_id==db.poliza.id).select(db.poliza.ALL)
+    return loquesea
 
 def cc_grid():
+    num_cc='1.1'
+    nivel='2'
+    cc_empresa = hijos_nivel(num_cc, nivel)
+    tabla='<table>'
+    for cc in cc_empresa:
+        tabla+='<tr><td>'+cc[0]+' '+cc[1]+'</td></tr>'
+    tabla+='</table>'
+    return dict(cc_empresa=XML(tabla))
+
+def cc_grid2():
     cc_empresa = ul_list()
     return dict(cc_empresa=cc_empresa)
 
+def hijos_nivel(num_cc,nivel):
+    if num_cc!='':
+        cuenta= " AND node.num_cc = "+num_cc
+    else:
+        cuenta= " "
+    query="SELECT node.num_cc, node.descripcion, (COUNT(parent.id) - (sub_tree.depthh + 1)) AS depth,"\
+                               " node.id, node.cc_vista_id FROM cc_empresa AS node,"\
+                               " cc_empresa AS parent,"\
+                               " cc_empresa AS sub_parent,"\
+                               " ("\
+                               " SELECT node.id, node.num_cc, node.descripcion, (COUNT(parent.id) - 1) AS depthh"\
+                               " FROM cc_empresa AS node,"\
+                               " cc_empresa AS parent"\
+                               " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
+                               " "+cuenta+""\
+                               " GROUP BY node.id"\
+                               " ORDER BY node.lft"\
+                               " )AS sub_tree"\
+                               " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
+                               " AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt"\
+                               " AND sub_parent.id = sub_tree.id"\
+                               " GROUP BY node.id"\
+                               " HAVING depth = "+nivel+""\
+                               " ORDER BY node.lft;"
+    hijos = db.executesql(query)
+    return hijos
+
 def ul_list():
     tipo_cuentas=request.vars.tipo_cuentas
-
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node , cc_empresa AS parent "\
@@ -61,8 +109,8 @@ def ul_list():
             cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
 
     cadena+='</tbody></table></div>'
-    cadena=XML(cadena)
-    return cadena
+   
+    return XML(cadena)
 
 def balance_general():
     return dict(balance=tabla_balance())
