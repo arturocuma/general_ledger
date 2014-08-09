@@ -1,52 +1,189 @@
 # coding: utf8
 # try something like
+
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
+
 def index(): return dict(message="hello from reportes.py")
 
 def sumas():
-    categories = db((db.cc_empresa.empresa_id==1)).select(db.cc_empresa.ALL, db.asiento.ALL, left=db.asiento.on(db.cc_empresa.id==db.asiento.cc_empresa_id), orderby=db.cc_empresa.lft)
+    query = (db.cc_empresa.id>0) & (db.cc_empresa.empresa_id==db.empresa.id) & (db.empresa.id==1)
+    return dict(message=query)
+def ancestor(num_cc):
+    tabla = db['cc_empresa']
+    node = db(tabla.num_cc == num_cc).select().first()
+    return db( (tabla.lft < node.lft) & (tabla.rgt > node.rgt) ).select(tabla.num_cc, orderby=tabla.lft).last()
 
-    rgt = []
-    tree = []
+def c():
+    rows=db().select(
+        db.asiento.ALL, db.poliza.ALL,
+        left=db.asiento.on(db.asiento.poliza_id==db.poliza.id)
+        )
+    loquesea=db(db.asiento.poliza_id==db.poliza.id).select(db.poliza.ALL)
+    return loquesea
+
+def cc_grid():
+    num_cc='1.1'
+    nivel='2'
+    cc_empresa = hijos_nivel(num_cc, nivel)
+    tabla='<table>'
+    for cc in cc_empresa:
+        tabla+='<tr><td>'+cc[0]+' '+cc[1]+'</td></tr>'
+    tabla+='</table>'
+    return dict(cc_empresa=XML(tabla))
+
+def cc_grid2():
+    cc_empresa = ul_list()
+    return dict(cc_empresa=cc_empresa)
+
+def hijos_nivel(num_cc,nivel):
+    if num_cc!='':
+        cuenta= " AND node.num_cc = "+num_cc
+    else:
+        cuenta= " "
+    query="SELECT node.num_cc, node.descripcion, (COUNT(parent.id) - (sub_tree.depthh + 1)) AS depth,"\
+                               " node.id, node.cc_vista_id FROM cc_empresa AS node,"\
+                               " cc_empresa AS parent,"\
+                               " cc_empresa AS sub_parent,"\
+                               " ("\
+                               " SELECT node.id, node.num_cc, node.descripcion, (COUNT(parent.id) - 1) AS depthh"\
+                               " FROM cc_empresa AS node,"\
+                               " cc_empresa AS parent"\
+                               " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
+                               " "+cuenta+""\
+                               " GROUP BY node.id"\
+                               " ORDER BY node.lft"\
+                               " )AS sub_tree"\
+                               " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
+                               " AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt"\
+                               " AND sub_parent.id = sub_tree.id"\
+                               " GROUP BY node.id"\
+                               " HAVING depth = "+nivel+""\
+                               " ORDER BY node.lft;"
+    hijos = db.executesql(query)
+    return hijos
+
+def ul_list():
+    tipo_cuentas=request.vars.tipo_cuentas
+    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+                   "node.id, node.cc_vista_id "\
+                   "FROM cc_empresa AS node , cc_empresa AS parent "\
+                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   "GROUP BY node.id "\
+                   "ORDER BY node.lft;")
+
+
+    cadena='<div class="table-responsive">'\
+	'<table class="table table-hover">'\
+	'	<thead>'\
+	'		<tr>'\
+	'			<th>Op</th>'\
+	'			<th>No. cuenta</th>'\
+	'			<th>Descripción</th>'\
+	'			<th>Debe</th>'\
+	'			<th>Haber</th>'\
+	'		</tr>'\
+	'	</thead>'\
+	'	<tbody>'
+
     for cat in categories:
-        if len(rgt) > 0:
-            if rgt[-1] > cat.cc_empresa.rgt:
-                # open UL
-                pass
-            while rgt[-1] < cat.cc_empresa.rgt:
-                rgt.pop()
-                if len(rgt) == 0:
-                    break
-        branch = UL(_class="branch")
-        p=branch
-        for i in range(len(rgt)):
-            child = UL(_class="branch_leaf")
-            p.append(LI(child, _class="leaf"))
-            p=child
-        p.append(LI(A(cat.cc_empresa.num_cc+' '+cat.cc_empresa.descripcion+(str(cat.asiento.debe) if cat.asiento.debe else '0.0')+(str(cat.asiento.haber) if cat.asiento.haber else '0.0'), _href='/'+cat.cc_empresa.num_cc), _class="leaf",))
-        tree.append(branch)   
-        rgt.append(cat.cc_empresa.rgt)
-    seed = DIV(_class="root")
-    for branch in tree:
-        seed.append(DIV(branch, _class="root_branch"))
-    seed.components.extend([XML("""
-        <style>
-        .branch {
-            padding: 0;
-            margin: 0;
-            padding-left: 10px;
-            list-style-type: none;
-        }
-        .branch_leaf {
-            padding: 0;
-            margin: 0;
-            padding-left: 20px;
-            list-style-type: none;
-        }
-        .leaf {
-            list-style-type: none;
-        }
+        id_padre= ancestor(cat[0])
+        if id_padre:
+            padre=id_padre.num_cc
+        else:
+            padre=''
 
-        </style>
-                """)])
+        padre = padre.replace('.', '')
+        clase_tr= 'hijo-'+XML(str(padre))+' padre'
+        #clase_tr= "child-row "+str(id_padre)+" parent"
+        cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 "FROM asiento, cc_empresa "\
+                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 "AND cc_empresa.num_cc like '"+cat[0]+"%'")
 
-    return dict(message=seed)
+        id_row = cat[0].replace('.', '')
+        padding=XML(str(cat[2]*20))
+        if tipo_cuentas=='con_saldo':
+            if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
+                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+        else:
+            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+
+    cadena+='</tbody></table></div>'
+
+    return XML(cadena)
+
+def balance_general():
+    return dict(balance=tabla_balance())
+
+def tabla_balance():
+    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+                   "node.id, node.cc_vista_id "\
+                   "FROM cc_empresa AS node , cc_empresa AS parent "\
+                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   "GROUP BY node.id "\
+                   "ORDER BY node.lft;")
+    nivel=0
+    cont=0
+    cc_nivel=['','','']
+    descrip_nivel=['','','']
+    cant_nivel=['','','']
+    pasivo_capital=0
+    cadena='<table>'
+    estilo_negritas='style="font-weight: bold; color: #111640"'
+    for cat in categories:
+        cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 "FROM asiento, cc_empresa "\
+                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 "AND cc_empresa.num_cc like '"+cat[0]+"%'")
+        nivel_cc=cat[2]
+        digito=int(cat[0][0])
+        if (nivel_cc < 3) and (digito<4):
+            num_cc=str(cat[0])
+            descrip_cc=cat[1]
+            debe_cc=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+            haber_cc=cantidad[0][1] if cantidad[0][1]!=None else 0.0
+            if num_cc[0]=='1':
+                resultado_cc=debe_cc-haber_cc
+            else:
+                resultado_cc=haber_cc-debe_cc
+            if nivel_cc<nivel:
+                if nivel_cc==1:
+                    cadena+='<tr><td '+estilo_negritas+'>Total de: '+XML(cc_nivel[1])+'</td><td '+estilo_negritas+'>'+XML(descrip_nivel[1])+'</td><td '+estilo_negritas+'>'+XML(cant_nivel[1])+'</td></tr>'
+                else:
+                    cadena+='<tr><td '+estilo_negritas+'>Total de: '+XML(cc_nivel[0])+'</td><td '+estilo_negritas+'>'+XML(descrip_nivel[0])+'</td><td '+estilo_negritas+'>'+XML(cant_nivel[0])+'</td></tr>'
+                    cadena+='<tr><td colspan=3>-</td></tr>'
+            if nivel_cc==0:
+                if num_cc=='2' or num_cc=='3':
+                    pasivo_capital+=resultado_cc
+                    if num_cc=='2':
+                        cadena+='<tr><td colspan="3" '+estilo_negritas+'>Pasivo y Capital</td></tr>'
+                cadena+='<tr><td colspan="3" '+estilo_negritas+'>'+num_cc+' '+XML(descrip_cc)+'</td></tr>'
+            elif nivel_cc==1:
+                cadena+='<tr><td colspan=3>-</td></tr>'
+                cadena+='<tr><td colspan="3" '+estilo_negritas+'>'+num_cc+' '+XML(descrip_cc)+'</td></tr>'
+            else:
+                cadena+='<tr><td>'+XML(num_cc)+'</td><td>'+XML(descrip_cc)+'</td><td style="text-align:right;">'+XML(resultado_cc)+'</td></tr>'
+            nivel=cat[2]
+            cant_nivel[nivel_cc]=resultado_cc
+            descrip_nivel[nivel_cc]=descrip_cc
+            cc_nivel[nivel_cc]=num_cc
+
+    if nivel_cc>0:
+        cadena+='<tr><td '+estilo_negritas+'>Total de: '+XML(cc_nivel[1])+'</td><td '+estilo_negritas+'>'+XML(descrip_nivel[1])+'</td><td '+estilo_negritas+'>'+XML(cant_nivel[1])+'</td></tr>'
+        cadena+='<tr><td '+estilo_negritas+'>Total de: '+XML(cc_nivel[0])+'</td><td '+estilo_negritas+'>'+XML(descrip_nivel[0])+'</td><td '+estilo_negritas+'>'+XML(cant_nivel[0])+'</td></tr>'
+        cadena+='<tr><td '+estilo_negritas+'>Total de: </td><td '+estilo_negritas+'>Pasivo y Capital</td><td '+estilo_negritas+'>'+XML(pasivo_capital)+'</td></tr>'
+        cadena+='</table>'
+    else:
+        cadena+='<tr><td '+estilo_negritas+'>Total de: </td><td '+estilo_negritas+'>Pasivo y Capital</td><td '+estilo_negritas+'>'+XML(pasivo_capital)+'</td></tr>'
+        cadena+='</table>'
+    return XML(cadena)
+
+def libro_diario():
+    query = "SELECT p.id , tp.nombre AS tipo_poliza, p.f_poliza, \
+            p.concepto_general, cc.num_cc,cc.descripcion, a.concepto_asiento, a.debe, a.haber, p.importe\
+            FROM poliza p \
+            LEFT JOIN asiento a ON (a.poliza_id = p.id) \
+            LEFT JOIN cc_empresa cc ON (a.cc_empresa_id = cc.id)\
+            LEFT JOIN tipo_poliza tp ON (p.tipo = tp.id)"
+    query = db.executesql(query, as_dict=True)
+    return dict(datos = query)

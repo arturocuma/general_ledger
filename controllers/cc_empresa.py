@@ -1,6 +1,6 @@
 # coding: utf8
 # try something like
-(auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 
 import csv
 
@@ -29,40 +29,104 @@ def index():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
+def ancestor(num_cc):
+    tabla = db['cc_empresa']
+    node = db(tabla.num_cc == num_cc).select().first()
+    return db( (tabla.lft < node.lft) & (tabla.rgt > node.rgt) ).select(tabla.num_cc, orderby=tabla.lft).last()
+
 def cc_wizard():
     tipo="wizard"
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
+##@auth.requires_permission('cc_grid')
 def cc_grid():
     tipo="grid"
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
+def cc_grid2():
+    cc_empresa = ul_list2()
+    return dict(cc_empresa=cc_empresa)
+
+def ul_list2():
+    tipo_cuentas=request.vars.tipo_cuentas
+
+    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+                   "node.id, node.cc_vista_id "\
+                   "FROM cc_empresa AS node , cc_empresa AS parent "\
+                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   "GROUP BY node.id "\
+                   "ORDER BY node.lft;")
+
+
+    cadena='<div class="table-responsive">'\
+	'<table class="table">'\
+	'	<thead>'\
+	'		<tr>'\
+	'			<th style="width:10px;">Op</th>'\
+	'			<th>No. cuenta</th>'\
+	'			<th>Descripción</th>'\
+	'			<th>Debe</th>'\
+	'			<th>Haber</th>'\
+	'		</tr>'\
+	'	</thead>'\
+	'	<tbody>'
+
+    for cat in categories:
+        id_padre= ancestor(cat[0])
+        if id_padre:
+            padre=id_padre.num_cc
+        else:
+            padre=''
+
+        padre = padre.replace('.', '')
+        clase_tr= 'hijo-'+XML(str(padre))+' padre'
+        #clase_tr= "child-row "+str(id_padre)+" parent"
+        cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 "FROM asiento, cc_empresa "\
+                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 "AND cc_empresa.num_cc like '"+cat[0]+"%'")
+
+        id_row = cat[0] #.replace('.', '')
+        color=XML(color_nivel(cat[2]))
+        padding=XML(str(cat[2]*20))
+        if tipo_cuentas=='con_saldo':
+            if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
+                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+        else:
+            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+
+    cadena+='</tbody></table></div>'
+    cadena=XML(cadena)
+    return cadena
+
 def ul_list(tipo):
+    cadena = ''
     if tipo=='wizard':
         empresa_id='1'
         cadena='<div class="tree well"><ul>'
     elif tipo=='grid':
         empresa_id='1'
-        cadena='<div class="cc_grid"><ul>'
+        cadena='<div class="tree"><ul>'
     else:
+        cadena='<div class="tree"><ul>'
         empresa_id='1'
-        
+
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node , cc_empresa AS parent "\
                    "WHERE node.lft BETWEEN parent.lft AND parent.rgt AND node.empresa_id="+empresa_id+" "\
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
-    
+
     algo="(SUM(asiento.debe)/COUNT(parent.descripcion)) as cantidad "
 
     seed = DIV(_class="tree well")
     child = UL()
     seed.append(UL())
     n=0
-    
+
     for cat in categories:
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  "FROM asiento, cc_empresa "\
@@ -79,7 +143,7 @@ def ul_list(tipo):
             for i in range(cat[2],n):
                 cadena+='</li></ul>'
             cadena+='<li>'
-        
+
         if tipo=="config":
             cadena+='<span><i class="fa fa-minus-circle"></i></span> '
             cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
@@ -200,7 +264,7 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
         archivo='cuentas_sat'
     else:
         archivo='cuentas_sat_nivel1'
-        
+
     with open('applications/general_ledger/private/'+archivo+'.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
@@ -230,28 +294,6 @@ def wiz_cc():
             padre_id=int(padre_id)
         else:
             padre_id=None
-        add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
-    return
-
-    db(db.cc_empresa).delete()
-    db.executesql('delete from sqlite_sequence where name="cc_empresa";')
-
-    campos_cc=['empresa_id','num_cc','descripcion','clave_sat','cc_naturaleza_id', 'cc_vista_id','nivel', 'lft','rgt']
-    for cuenta in cc_sat:
-        num_cc=cuenta[1]
-        print num_cc
-        len_num_cc=len(num_cc)
-        if len_num_cc>1:
-            num_cc_i=num_cc[::-1]
-            ultimo_punto = num_cc_i.find(".")
-            num_cc = num_cc[:-(ultimo_punto+1)]
-            padre = db(tabla.num_cc == num_cc).select().first()
-            padre_id=padre.id
-            padre_id=int(padre_id)
-        else:
-            padre_id=None
-
-
         add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
     return
 
@@ -325,3 +367,23 @@ def editar_cuenta():
 def obtener_empresa(usuario_id):
     empresa_id=1
     return empresa_id
+
+def color_nivel(nivel):
+    color = '#000'
+    if nivel == 0:
+        color = '#000'
+    elif nivel == 1:
+        color = '#111640'
+    elif nivel == 2:
+        color = '#212C7F'
+    elif nivel == 3:
+        color = '#3242BF'
+    elif nivel == 4:
+        color = '#4258FF'
+    elif nivel == 5:
+        color = '#168BBF'
+    elif nivel == 6:
+        color = '#1DBAFF'
+    else:
+        color = '#28DDFF'
+    return color

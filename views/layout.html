@@ -521,9 +521,17 @@ input[type=button]{
 						<a href="#"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent">Reportes</span></a>
 						<ul>
 							<li>
-								<a href="#">
+                                <a href="{{=URL('cc_empresa','cc_grid2')}}">
+									<i class="fa fa-list-ol"></i>
+									Cuentas con Saldo
+								</a>
+								 <a href="{{=URL('reportes','balance_general')}}">
 									<i class="fa fa-bar-chart-o"></i>
 									Balance general
+								</a>
+								<a href="{{=URL('reportes','libro_diario')}}">
+									<i class="fa fa-book"></i>
+									Libro diario
 								</a>
 								<a href="#">
 									<i class="fa fa-lg fa-fw fa-usd"></i>
@@ -533,16 +541,23 @@ input[type=button]{
 						</ul>
 					</li>
 					<li>
-						<a href="#"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent">Configuraciones</span></a>
+						<a href="#"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent"> Configuraciones</span></a>
 						<ul>
                             <li>
-                                <a href="#"><i class="fa fa-fw fa-folder-open"></i>Catalogos</a>
+                                <a href="#"><i class="fa fa-fw fa-folder-open"></i> Catalogos</a>
                                 <ul>
+
                                     <li>
-                                        <a href="{{=URL('cc_empresa','index')}}"><i class="fa fa-fw "></i> Cuentas Contables </a>
+                                        <a href="{{=URL('cc_empresa','cc_grid')}}"><i class="fa fa-fw "></i> Cuentas Contables </a>
                                     </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="#"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> Reportes</a>
+                                <ul>
+
                                     <li>
-                                        <a href="{{=URL('cc_empresa','cc_wizard')}}"><i class="fa fa-fw "></i> Wizard Cuentas Contables </a>
+                                        <a href="{{=URL('configuracion','estado_resultados')}}"><i class="fa fa-fw "></i> Estado de Resultados </a>
                                     </li>
                                 </ul>
                             </li>

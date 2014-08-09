@@ -1,5 +1,5 @@
 # coding: utf8
-(auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 
 from datetime import datetime
 
@@ -40,8 +40,8 @@ def listar():
             db.poliza,
             linked_tables=['asiento'],
             onvalidation=valida,
-            selectable=selectable,
-            deletable=True,
+            #selectable=selectable,
+            deletable=auth.has_permission('delete_poliza') or False,
             searchable=False,
             editable=True,
             create=False,

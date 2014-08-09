@@ -325,7 +325,7 @@ db.define_table('poliza',
     Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
     Field('concepto_general', 'string', label='Concepto de la Póliza'),
     Field('tipo', 'reference tipo_poliza'),
-    Field('importe', 'double', default=0.0, represent = lambda value, row: calcula_importe(row.id) if row else 0.0
+    Field('importe', 'double', default=0.0, represent = lambda value, row: calcula_importe(row.id) if row.id else 0.0
             )
 )
 db.poliza.id.label='#Póliza'
@@ -335,8 +335,8 @@ db.define_table('asiento',
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
     Field('concepto_asiento', 'string'),
-    Field('debe', 'double', default=0.0),
-    Field('haber', 'double', default=0.0)
+    Field('debe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;') if row else 0.0),
+    Field('haber', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;') if row else 0.0)
 )
 db.asiento.id.label='#Asiento'
 
