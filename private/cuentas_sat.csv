@@ -207,74 +207,74 @@
 ,5.3.1,Devoluciones. Descuentos y Rebajas Sobre Compras,63.1,4,2
 ,5.4,Otras cuentas de costos,64,4,1
 ,5.4.1,Otras cuentas de costos,64.1,4,2
-,5.5,Gastos,,4,1
-,5.5.1,Gastos Generales,65,4,1
-,5.5.1.1,Gastos Generales,65.1,4,2
-,5.5.1.2,Combustibles y lubricantes,65.2,4,2
-,5.5.1.3,Correos,65.3,4,2
-,5.5.1.4,Internet,65.4,4,2
-,5.5.1.5,Viáticos y gastos de viaje,65.5,4,2
-,5.5.1.6,Gastos de representación,65.6,4,2
-,5.5.1.7,Teléfono,65.7,4,2
-,5.5.1.8,Agua,65.8,4,2
-,5.5.1.9,Electricidad,65.9,4,2
-,5.5.1.10,Vigilancia y limpieza,65.10,4,2
-,5.5.1.11,Materiales de oficina,65.11,4,2
-,5.5.1.12,Gastos legales,65.12,4,2
-,5.5.1.13,Mantenimiento y conservación,65.13,4,2
-,5.5.1.14,Seguros y fianzas,65.14,4,2
-,5.5.1.15,Gastos no deducibles,65.15,4,2
-,5.5.1.16,Otros impuestos y derechos,65.16,4,2
-,5.5.1.17,Recargos fiscales,65.17,4,2
-,5.5.1.18,Cuotas y suscripciones,65.18,4,2
-,5.5.1.19,Propaganda y publicidad,65.19,4,2
-,5.5.1.20,Fotocopiado,65.20,4,2
-,5.5.1.21,Donativos,65.21,4,2
-,5.5.1.22,Asistencia técnica,65.22,4,2
-,5.5.1.23,Fletes,65.23,4,2
-,5.5.1.24,Impuesto de importación,65.24,4,2
-,5.5.1.25,Impuesto de exportación,65.25,4,2
-,5.5.1.26,Regalías sin retención,65.26,4,2
-,5.5.1.27,Regalías sujetas al 5%,65.27,4,2
-,5.5.1.28,Regalías sujetas al 10%,65.28,4,2
-,5.5.1.29,Regalías sujetas al 25%,65.29,4,2
-,5.5.1.30,Regalías sujetas al 30%,65.30,4,2
-,5.5.1.31,Comisiones sobre ventas,65.31,4,2
-,5.5.1.32,Patentes y marcas,65.32,4,2
-,5.5.1.33,Materias primas de producción,65.33,4,2
-,5.5.1.34,Materiales auxiliares de producción,65.34,4,2
-,5.5.1.35,Comisiones bancarias,65.35,4,2
-,5.5.2,Gastos de Ventas,66,4,1
-,5.5.2.1,Gastos de Ventas,66.1,4,2
-,5.5.3,Gastos de Administración,67,4,1
-,5.5.3.1,Gastos de Administración,67.1,4,2
-,5.5.4,Gastos Financieros,68,4,1
-,5.5.4.1,Gastos Financieros,68.1,4,2
-,5.5.5,Otros Gastos,69,4,1
-,5.5.5.1,Perdida en venta de terrenos,69.1,4,2
-,5.5.5.2,Perdida en venta de edificios y construcciones,69.2,4,2
-,5.5.5.3,Perdida en venta de maquinaria,69.3,4,2
-,5.5.5.4,Perdida en venta de equipo de transporte,69.4,4,2
-,5.5.5.5,Perdida en venta de mobiliario y equipo,69.5,4,2
-,5.5.5.6,Perdida en venta de equipo de computo,69.6,4,2
-,5.5.5.7,Perdida en enajenación de acciones,69.7,4,2
-,5.5.5.8,Perdida por deterioro de activos,69.8,4,2
-,5.5.5.9,Otros,69.9,4,2
-,5.5.6,Participación de los Trabajadores en las Utilidades,70,4,1
-,5.5.6.1,Participación de los Trabajadores en las Utilidades,70.1,4,2
-,5.5.7,Gastos no deducibles,71,4,1
-,5.5.7.1,Gastos no deducibles,71.1,4,2
-,5.5.8,Depreciación contable,72,4,1
-,5.5.8.1,Depreciación contable de edificios,72.1,4,2
-,5.5.8.2,Depreciación contable de maquinaria y equipo,72.2,4,2
-,5.5.8.3,Depreciación contable de equipo de transporte,72.3,4,2
-,5.5.8.4,Depreciación contable de mobiliario y equipo,72.4,4,2
-,5.5.8.5,Depreciación contable de equipo de cómputo,72.5,4,2
-,5.5.8.6,Depreciación contable de otros activos,72.6,4,2
-,5.5.9,Amortización contable,73,4,1
-,5.5.9.1,Amortización contable,73.1,4,2
-,6,Cuentas de Orden,,4,1
-,6.1,CUCA,74,4,1
-,6.1.1,CUCA,74.1,4,2
-,6.2,CUFIN,75,4,1
-,6.2.1,CUFIN,75.1,4,2
+,6,Gastos,,4,1
+,6.1,Gastos Generales,65,4,1
+,6.1.1,Gastos Generales,65.1,4,2
+,6.1.2,Combustibles y lubricantes,65.2,4,2
+,6.1.3,Correos,65.3,4,2
+,6.1.4,Internet,65.4,4,2
+,6.1.5,Viáticos y gastos de viaje,65.5,4,2
+,6.1.6,Gastos de representación,65.6,4,2
+,6.1.7,Teléfono,65.7,4,2
+,6.1.8,Agua,65.8,4,2
+,6.1.9,Electricidad,65.9,4,2
+,6.1.10,Vigilancia y limpieza,65.10,4,2
+,6.1.11,Materiales de oficina,65.11,4,2
+,6.1.12,Gastos legales,65.12,4,2
+,6.1.13,Mantenimiento y conservación,65.13,4,2
+,6.1.14,Seguros y fianzas,65.14,4,2
+,6.1.15,Gastos no deducibles,65.15,4,2
+,6.1.16,Otros impuestos y derechos,65.16,4,2
+,6.1.17,Recargos fiscales,65.17,4,2
+,6.1.18,Cuotas y suscripciones,65.18,4,2
+,6.1.19,Propaganda y publicidad,65.19,4,2
+,6.1.20,Fotocopiado,65.20,4,2
+,6.1.21,Donativos,65.21,4,2
+,6.1.22,Asistencia técnica,65.22,4,2
+,6.1.23,Fletes,65.23,4,2
+,6.1.24,Impuesto de importación,65.24,4,2
+,6.1.25,Impuesto de exportación,65.25,4,2
+,6.1.26,Regalías sin retención,65.26,4,2
+,6.1.27,Regalías sujetas al 5%,65.27,4,2
+,6.1.28,Regalías sujetas al 10%,65.28,4,2
+,6.1.29,Regalías sujetas al 25%,65.29,4,2
+,6.1.30,Regalías sujetas al 30%,65.30,4,2
+,6.1.31,Comisiones sobre ventas,65.31,4,2
+,6.1.32,Patentes y marcas,65.32,4,2
+,6.1.33,Materias primas de producción,65.33,4,2
+,6.1.34,Materiales auxiliares de producción,65.34,4,2
+,6.1.35,Comisiones bancarias,65.35,4,2
+,6.2,Gastos de Ventas,66,4,1
+,6.2.1,Gastos de Ventas,66.1,4,2
+,6.3,Gastos de Administración,67,4,1
+,6.3.1,Gastos de Administración,67.1,4,2
+,6.4,Gastos Financieros,68,4,1
+,6.4.1,Gastos Financieros,68.1,4,2
+,6.5,Otros Gastos,69,4,1
+,6.5.1,Perdida en venta de terrenos,69.1,4,2
+,6.5.2,Perdida en venta de edificios y construcciones,69.2,4,2
+,6.5.3,Perdida en venta de maquinaria,69.3,4,2
+,6.5.4,Perdida en venta de equipo de transporte,69.4,4,2
+,6.5.5,Perdida en venta de mobiliario y equipo,69.5,4,2
+,6.5.6,Perdida en venta de equipo de computo,69.6,4,2
+,6.5.7,Perdida en enajenación de acciones,69.7,4,2
+,6.5.8,Perdida por deterioro de activos,69.8,4,2
+,6.5.9,Otros,69.9,4,2
+,6.6,Participación de los Trabajadores en las Utilidades,70,4,1
+,6.6.1,Participación de los Trabajadores en las Utilidades,70.1,4,2
+,6.7,Gastos no deducibles,71,4,1
+,6.7.1,Gastos no deducibles,71.1,4,2
+,6.8,Depreciación contable,72,4,1
+,6.8.1,Depreciación contable de edificios,72.1,4,2
+,6.8.2,Depreciación contable de maquinaria y equipo,72.2,4,2
+,6.8.3,Depreciación contable de equipo de transporte,72.3,4,2
+,6.8.4,Depreciación contable de mobiliario y equipo,72.4,4,2
+,6.8.5,Depreciación contable de equipo de cómputo,72.5,4,2
+,6.8.6,Depreciación contable de otros activos,72.6,4,2
+,6.9,Amortización contable,73,4,1
+,6.9.1,Amortización contable,73.1,4,2
+,7,Cuentas de Orden,,4,1
+,7.1,CUCA,74,4,1
+,7.1.1,CUCA,74.1,4,2
+,7.2,CUFIN,75,4,1
+,7.2.1,CUFIN,75.1,4,2
