@@ -1,2 +1,154 @@
 {{extend 'layout.html'}}
-{{=datos}}
+<style>
+	.poliza{
+		background-color: #DDD;
+	}
+	.poliza:hover{
+		background-color: #EFEFEF;
+	}
+	.asiento{
+		background-color: #EEE;
+	}
+	.asiento:hover{
+		background-color: #FEFEEE;
+	}
+	.rojo{
+		color: red;
+	}
+	.verde{
+		color: green;
+	}
+</style>
+<!-- widget grid -->
+<section id="widget-grid" class="">
+   <!-- row -->
+	<div class="row">
+   	<article class="col-sm-12">
+         <!-- new widget -->
+         <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+         <!-- widget options:
+          usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+          data-widget-colorbutton="false"
+          data-widget-editbutton="false"
+          data-widget-togglebutton="false"
+          data-widget-deletebutton="false"
+          data-widget-fullscreenbutton="false"
+          data-widget-custombutton="false"
+          data-widget-collapsed="true"
+          data-widget-sortable="false"
+         -->
+    			<header>
+               <span class="widget-icon"> <i class="fa fa-book txt-color-darken"></i> </span>
+               <h2>Libro diario</h2>
+               <ul class="nav nav-tabs pull-right in" id="myTab">
+                  <li class="active">
+                     <a data-toggle="tab" href="#s1"><i class="fa fa-file-text-o"></i> <span class="hidden-mobile hidden-tablet">Reporte</span></a>
+                  </li>
+               </ul>
+       		</header>
+            <!-- widget div-->
+            <div class="no-padding">
+               <!-- widget edit box -->
+               <div class="jarviswidget-editbox">
+                       test
+               </div>
+               <!-- end widget edit box -->
+               <div class="widget-body">
+                  <!-- content -->
+                  <div id="myTabContent" class="tab-content">
+                     <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+               			<div class="padding-10">
+									<table class="table">
+										<thead>
+											<tr class="poliza titulo">
+												<th>Op</th>
+												<th>Tipo</th>
+												<th>No. póliza</th>
+												<th>Fecha</th>
+												<th>Concepto póliza</th>
+												<th></th>
+												<th style="text-align: left;">Total póliza</th>
+											</tr>
+										</thead>
+										<tbody>
+											{{id = 0
+											for d in datos:
+												if id != d['id']:
+													id = d['id']}}
+													<tr class="poliza detalle" data-padre="{{=d['id']}}" data-abierto="false">
+														<td><i class="fa fa-chevron-down"></i></td>
+														<td>{{=d['tipo_poliza']}}</td>
+														<td>{{=d['id']}}</td>
+														<td>{{=d['f_poliza']}}</td>
+														<td>{{=d['concepto_general']}}</td>
+														<td style="text-align: right">Importe:</td>
+														<td style="text-align: right">{{=calcula_importe(d['id'])}}</td>
+													</tr>
+													<tr class="asiento titulo" data-hijo="{{=d['id']}}">
+														<th></th>
+														<th>No. cuenta</th>
+														<th>Depto</th>
+														<th>Descripción cuenta</th>
+														<th>Concepto asiento</th>
+														<th>Debe</th>
+														<th>Haber</th>
+													</tr>
+													<tr class="asiento detalle"  data-hijo="{{=d['id']}}">
+														<td></td>
+														<td>{{=d['num_cc']}}</td>
+														<td>--</td>
+														<td>{{=d['descripcion']}}</td>
+														<td>{{=d['concepto_asiento']}}</td>
+														<td>{{=d['debe']}}</td>
+														<td>{{=d['haber']}}</td>
+													</tr>
+												{{else:}}
+													<tr class=" asiento detalle"  data-hijo="{{=d['id']}}">
+														<td></td>
+														<td>{{=d['num_cc']}}</td>
+														<td>--</td>
+														<td>{{=d['descripcion']}}</td>
+														<td>{{=d['concepto_asiento']}}</td>
+														<td>{{=d['debe']}}</td>
+														<td>{{=d['haber']}}</td>
+													</tr>
+												{{pass
+											pass}}
+											<tr>
+
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+<script>
+	$(document).ready(function(){
+
+		$('.asiento').hide();
+
+		$('tr.poliza.detalle')
+			.css("cursor","pointer")
+			.attr("title","Click para ver/ocultar asientos")
+			.click(function(){
+				var hijo = $(this).data('padre');
+				if ( $(this).data('abierto') == true ){
+					$('[data-hijo="'+hijo+'"]').hide();
+					$(this).data('abierto',false);
+					$(this).find('i').removeClass( "fa-chevron-up" ).addClass( "fa-chevron-down" );
+				}else{
+					$('[data-hijo="'+hijo+'"]').show();
+					$(this).data('abierto',true);
+					$(this).find('i').removeClass( "fa-chevron-down" ).addClass( "fa-chevron-up" );
+
+				}
+			});
+
+	});
+</script>

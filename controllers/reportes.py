@@ -109,7 +109,7 @@ def ul_list():
             cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
 
     cadena+='</tbody></table></div>'
-   
+
     return XML(cadena)
 
 def balance_general():
@@ -179,18 +179,11 @@ def tabla_balance():
     return XML(cadena)
 
 def libro_diario():
-    query = "SELECT * FROM poliza"
+    query = "SELECT p.id , tp.nombre AS tipo_poliza, p.f_poliza, \
+            p.concepto_general, cc.num_cc,cc.descripcion, a.concepto_asiento, a.debe, a.haber, p.importe\
+            FROM poliza p \
+            LEFT JOIN asiento a ON (a.poliza_id = p.id) \
+            LEFT JOIN cc_empresa cc ON (a.cc_empresa_id = cc.id)\
+            LEFT JOIN tipo_poliza tp ON (p.tipo = tp.id)"
     query = db.executesql(query, as_dict=True)
-    #asiento_by_poliza()
-    #datos = {}
-    #for q in query:
-     #   datos['asiento'] = asiento_by_poliza_id(q['id'])
     return dict(datos = query)
-
-def asiento_by_poliza_id(id):
-    query = "SELECT a.* \
-            FROM asiento a, cc_empresa cc \
-            WHERE a.cc_empresa_id = cc.id \
-            AND a.poliza_id = "+str(id)
-    query = db.executesql(query,as_dict=True)
-    return query
