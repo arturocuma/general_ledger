@@ -56,6 +56,5 @@ def accion(ids, table=''):
     """
     Recibe una lista de ids y los elimina
     """
-    print table
 
     [db(db[id.split('.')[1]].id == id.split('.')[0]).delete() for id in ids]

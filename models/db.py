@@ -16,7 +16,7 @@ locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
-    db = DAL('sqlite://storage.sqlite',pool_size=1,check_reserved=['all'])
+    db = DAL('postgres://web2py:w3b2py@localhost/contabilidad', migrate=True)
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db = DAL('google:datastore+ndb')
@@ -47,6 +47,7 @@ response.generic_patterns = ['*'] if request.is_local else []
 
 from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
 auth = Auth(db)
+
 crud, service, plugins = Crud(db), Service(), PluginManager()
 
 ## create all tables needed by auth if not custom tables

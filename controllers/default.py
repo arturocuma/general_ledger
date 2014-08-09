@@ -10,7 +10,6 @@
 #########################################################################
 
 import csv
-import sqlite3
 
 def insertar_pais(nombre):
     """
@@ -203,6 +202,7 @@ def cargar_localidades():
     )
     return resultado
 
+
 @auth.requires_login()
 def empresa_wizard():
     """
@@ -231,15 +231,17 @@ def empresa_wizard():
 
     if form.process().accepted:
         
-        db = DAL('sqlite://storage%s.sqlite'%auth.user['email'],pool_size=1,check_reserved=['all'])
-        
         empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
-        # response.flash = 'Response han configurado correctamente los datos de la empresa'
-        # session.flash = response.flash
         session.flash = 'Se han configurado correctamente los datos de la empresa'
-        db.mi_empresa.insert(user_id=auth.user['id'],empresa_id=empresa_id)
+        db.mi_empresa.insert(user_id=auth.user['id'], empresa_id=empresa_id)
+
+        # se crea la base de datos con el nombre de la misma
+        nombre = form.vars.razon_social
+        instancia = Web2Postgress()
+        instancia.crear_db(nombre)
+
         redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
 
     elif form.errors:
@@ -349,7 +351,6 @@ def index4():
         #redirect(URL('default', 'index5', vars=vars))
 
     elif form.errors:
-        print form.errors
         response.flash = 'Errores en el formulario'
     else:
         response.flash = 'Formulario incompleto'
@@ -448,6 +449,7 @@ def login():
 
     return dict(form=form)
 
+
 def index():
     import urllib
     import urllib2
@@ -455,11 +457,39 @@ def index():
     from gluon.storage import Storage
     from uuid import uuid4
     from gluon.storage import Storage
+    #from DBs import CargaEmpresas, Web2Postgres
+
+    print 'before'
+    print empresas.dbs
 
     if session.auth:
+        print 'if'
+        print empresas.dbs
         if not request.cookies.has_key('login_general_ledger'):
             cookieCreate()
+
+        #código repetido, digno de eliminarse
+        mias = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 1)
+           ).select(
+                   db.empresa.razon_social,
+                   db.empresa.id
+                   )
+
+        compartidas = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 2)
+            ).select(
+                    db.empresa.razon_social,
+                    db.empresa.id
+                    )
+
     elif request.cookies.has_key('login_general_ledger'):
+        print 'elif'
+        print empresas.dbs
         usuario = db(db.auth_user.email==request.cookies['login_general_ledger'].value).select()
         #if 'picture' in data:
         #    session.picture = data['picture']
@@ -469,6 +499,29 @@ def index():
         auth.user = Storage(auth.settings.table_user._filter_fields(user, id=True))
         session.auth = Storage(user=auth.user, last_visit=request.now, expiration=auth.settings.expiration)
         session.picture = request.cookies['picture_usr'].value
-        session.modelo = 0
-    ##response.flash = T("Welcome!")
-    return dict()
+
+        mias = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 1)
+           ).select(
+                   db.empresa.razon_social,
+                   db.empresa.id
+                   )
+
+        compartidas = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 2)
+            ).select(
+                    db.empresa.razon_social,
+                    db.empresa.id
+                    )
+    else:
+        # para el logout
+        print 'else'
+        print empresas.dbs
+        mias = ''
+        compartidas = ''
+
+    return dict(mias=mias, compartidas=compartidas)
