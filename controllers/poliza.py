@@ -31,10 +31,9 @@ def listar():
                 _id=str(row.id)+'.tipo_poliza'
                 )
 
-    selectable = [
-            ('Editar', lambda ids, table: [accion(ids, table)]),
-            #('Editar', lambda ids: [accion(ids)]),
-            ]
+    #selectable = [
+    #        ('Eliminar', lambda ids: [eliminar(ids)]),
+    #        ]
 
     polizas = SQLFORM.smartgrid(
             db.poliza,
@@ -128,7 +127,7 @@ def cuadrar_poliza():
         for x in xrange(4):
             row.append(TD(''))
 
-        if compara_flotantes(deb, hab):
+        if deb == hab:
             row.append(TD('Póliza Cuadrada', _class='verde'))
             row.append(TD(locale.currency(deb, grouping=True ), _class='verde'))
             row.append(TD(locale.currency(hab, grouping=True ), _class='verde'))
@@ -143,8 +142,8 @@ def cuadrar_poliza():
 
 
 def valida(form):
-    #print "In onvalidation callback"
-    #print form.vars
+    print "In onvalidation callback"
+    print form.vars
     #form.errors= True  #this prevents the submission from completing
 
     #...or to add messages to specific elements on the form

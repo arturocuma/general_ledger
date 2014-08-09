@@ -203,8 +203,8 @@ def cargar_localidades():
     )
     return resultado
 
-@auth.requires_login()
-def empresa_wizard():
+
+def index2():
     """
     Útil para introducir los datos iniciales de una empresa
     """
@@ -230,17 +230,15 @@ def empresa_wizard():
     form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
-        
-        db = DAL('sqlite://storage%s.sqlite'%auth.user['email'],pool_size=1,check_reserved=['all'])
-        
+
         empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
         # response.flash = 'Response han configurado correctamente los datos de la empresa'
-        # session.flash = response.flash
+        session.flash = response.flash
         session.flash = 'Se han configurado correctamente los datos de la empresa'
-        db.mi_empresa.insert(user_id=auth.user['id'],empresa_id=empresa_id)
-        redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
+        print session
+        redirect(URL('default', 'index3', vars=vars))
 
     elif form.errors:
         response.flash = 'Errores en el formulario'
@@ -469,6 +467,6 @@ def index():
         auth.user = Storage(auth.settings.table_user._filter_fields(user, id=True))
         session.auth = Storage(user=auth.user, last_visit=request.now, expiration=auth.settings.expiration)
         session.picture = request.cookies['picture_usr'].value
-        session.modelo = 0
+
     ##response.flash = T("Welcome!")
     return dict()

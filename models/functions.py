@@ -4,13 +4,15 @@
 Colección de funciones/hacks
 """
 
-
-def compara_flotantes(a, b):
-    if abs(a-b)<0.00000001:
+def comparar_flotantes(a, b):
+    """
+    compara flotantes que en apariencia son iguales D:
+    """
+    if abs(a-b) < 0.0000000001:
         return True
     else:
         return False
-
+    
 
 def agrega_cuadrar(items):
     """
@@ -39,7 +41,7 @@ def calcula_importe(poliza_id):
         deb = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.debe for asi in asientos])
         hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
 
-        if compara_flotantes(deb, hab):
+        if comparar_flotantes(deb, hab):
             flag = DIV('{}'.format(locale.currency(deb, grouping=True )), _class='verde')
         else:
             flag = DIV('{} <> {}'.format(locale.currency(deb, grouping=True ), locale.currency(hab, grouping=True )), _class='rojo')
@@ -61,10 +63,15 @@ def obtener_tipo_poliza(tipo_poliza_id):
     return resultado.nombre
 
 
-def accion(ids, table=''):
+def eliminar(ids):
     """
     Recibe una lista de ids y los elimina
     """
-    print table
+    [db(db.poliza.id == id).delete() for id in ids]
 
-    [db(db[id.split('.')[1]].id == id.split('.')[0]).delete() for id in ids]
+
+def editar(ids):
+    """
+    Recibe una lista de ids, edita el primero que toma
+    """
+    print ids[0]
