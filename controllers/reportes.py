@@ -131,18 +131,12 @@ def tabla_balance():
     return XML(cadena)
 
 def libro_diario():
-    query = "SELECT * FROM poliza"
+    #db.poliza.importe.represent = lambda value, row: row.importe*100 #calcula_importe(row.id) if row.id else 0.0
+    query = "SELECT p.id , tp.nombre AS tipo_poliza, p.f_poliza, \
+            p.concepto_general, cc.num_cc,cc.descripcion, a.concepto_asiento, a.debe, a.haber, p.importe\
+            FROM poliza p \
+            LEFT JOIN asiento a ON (a.poliza_id = p.id) \
+            LEFT JOIN cc_empresa cc ON (a.cc_empresa_id = cc.id)\
+            LEFT JOIN tipo_poliza tp ON (p.tipo = tp.id)"
     query = db.executesql(query, as_dict=True)
-    #asiento_by_poliza()
-    #datos = {}
-    #for q in query:
-     #   datos['asiento'] = asiento_by_poliza_id(q['id'])
     return dict(datos = query)
-
-def asiento_by_poliza_id(id):
-    query = "SELECT a.* \
-            FROM asiento a, cc_empresa cc \
-            WHERE a.cc_empresa_id = cc.id \
-            AND a.poliza_id = "+str(id)
-    query = db.executesql(query,as_dict=True)
-    return query
