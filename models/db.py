@@ -338,8 +338,8 @@ db.define_table('asiento',
     Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
     Field('concepto_asiento', 'string'),
-    Field('debe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('haber', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;'))
+    Field('debe', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;') if row else 0.0),
+    Field('haber', 'double', default=0.0, represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;') if row else 0.0)
 )
 db.asiento.id.label='#Asiento'
 

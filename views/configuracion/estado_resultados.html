@@ -1,0 +1,228 @@
+{{extend 'layout.html'}}
+
+<link href="{{=URL('static', 'chosen/chosen.css')}}" rel="stylesheet">
+<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
+
+<script>
+    $(function() {
+        
+        /*
+        $('#sel_tipo_cuentas').on('change', function (e) {
+
+            tipo_cuentas=$(this).val();
+            if (tipo_cuentas!='0'){
+                //$( "#div_cat_cuentas" ).load( '{{=URL('ul_list2')}}', { tipo_cuentas: tipo_cuentas });
+            }
+        });
+
+        $(document).ready(function(){
+            $('tr')
+            .filter(function() {
+                return this.id.match(/\d./);
+            }).hide();
+
+        });
+        */
+});
+
+</script>
+<style>
+
+table > tbody > tr:hover{
+    background-color: #eee;
+    background-image: -moz-linear-gradient(center top , #f2f2f2 0px, #fafafa 100%);
+}
+   .chosen-container-multi .chosen-choices li.search-field input[type="text"]{
+	font-size:12px;
+	margin:4px;
+	padding: 0px;
+	
+}
+
+    
+</style>
+
+
+
+                                <!-- widget grid -->
+                                <section id="widget-grid" class="">
+                                        <!-- row -->
+                                        <div class="row">
+                                                <article class="col-sm-12">
+                                                        <!-- new widget -->
+                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+                                                                <!-- widget options:
+                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                                                                data-widget-colorbutton="false"
+                                                                data-widget-editbutton="false"
+                                                                data-widget-togglebutton="false"
+                                                                data-widget-deletebutton="false"
+                                                                data-widget-fullscreenbutton="false"
+                                                                data-widget-custombutton="false"
+                                                                data-widget-collapsed="true"
+                                                                data-widget-sortable="false"
+                                                                -->
+                                                                <header>
+                                                                        <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+                                                                    <h2>Configuración del Reporte: Estado de Resultados</h2>
+                                                                        <ul class="nav nav-tabs pull-right in" id="myTab">
+                                                                                <li class="active">
+                                                                                        <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Configuración</span></a>
+                                                                                </li>
+                                                                        </ul>
+                                                                </header>
+                                                                <!-- widget div-->
+                                                                <div class="no-padding">
+                                                                        <!-- widget edit box -->
+                                                                        <div class="jarviswidget-editbox">
+                                                                                test
+                                                                        </div>
+                                                                        <!-- end widget edit box -->
+                                                                        <div class="widget-body">
+                                                                                <!-- content -->
+                                                                                <div id="myTabContent" class="tab-content">
+                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+                                                <div class="padding-10">
+                                                    <ul id="expList">
+                                                        <div class="table">
+                                                            
+                                                        <div class="fila">
+                                                       <div class="cell">
+                                                           Etiqueta para ingresos:
+                                                       </div>
+                                                       <div class="cell">
+                                                           <input type="text" style="width:450px;"  >
+                                                        </div> 
+                                                        </div>
+                                                            
+                                                        <div class="fila">
+                                                        <div class="cell">
+                                                        Cuentas de Ingresos:
+                                                        </div>   
+                                                        <div class="cell">
+                                                        <select id="sel_ingresos" data-placeholder="Eija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                                            {{for cc in cc_empresa:}}
+                                                            <option value="{{=cc[3]}}">{{=cc[0]+' '+cc[1]}}</option>
+                                                            {{pass}}
+                                                        </select>
+                                                        </div>
+                                                        </div>    
+                                                            
+                                                       <div class="fila">
+                                                       <div class="cell">
+                                                           Etiqueta para costos:
+                                                       </div>
+                                                       <div class="cell">
+                                                           <input type="text" style="width:450px;"  >
+                                                        </div> 
+                                                        </div>
+                                                            
+                                                        <div class="fila">
+                                                        <div class="cell">
+                                                        Cuentas de Costos:
+                                                        </div>
+                                                         <div class="cell">    
+                                                        <select id="sel_costos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                                          {{for cc in cc_empresa:}}
+                                                            <option value="{{=cc[3]}}">{{=cc[0]+' '+cc[1]}}</option>
+                                                            {{pass}}
+                                                        </select>
+                                                        </div>
+                                                         </div>
+                                                            
+                                                       <div class="fila">
+                                                       <div class="cell">
+                                                           Etiqueta para gastos:
+                                                       </div>
+                                                       <div class="cell">
+                                                           <input type="text" style="width:450px;"  >
+                                                        </div> 
+                                                        </div>
+                                                            
+                                                        <div class="fila">
+                                                        <div class="cell">
+                                                        Cuentas de Gastos:
+                                                        </div>
+                                                         <div class="cell">    
+                                                        <select id="sel_gastos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                                          {{for cc in cc_empresa:}}
+                                                            <option value="{{=cc[3]}}">{{=cc[0]+' '+cc[1]}}</option>
+                                                            {{pass}}
+                                                        </select>
+                                                        </div>
+                                                         </div>
+                                                            
+                                                       <div class="fila">
+                                                       <div class="cell">
+                                                           Etiqueta para otros ingresos y costos:
+                                                       </div>
+                                                       <div class="cell">
+                                                           <input type="text" style="width:450px;"  >
+                                                        </div> 
+                                                        </div>
+                                                            
+                                                        <div class="fila">
+                                                        <div class="cell">
+                                                        Cuentas de otros ingresos y costos:
+                                                         </div>  
+                                                         <div class="cell">
+                                                        <select id="sel_otros"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                                          {{for cc in cc_empresa:}}
+                                                            <option value="{{=cc[3]}}">{{=cc[0]+' '+cc[1]}}</option>
+                                                            {{pass}}
+                                                            </select>
+                                                        </div>   
+                                                        </div>   
+                                                       
+                                                            
+                                                       <div class="fila">
+                                                       <div class="cell">
+                                                           Etiqueta para impuestos:
+                                                       </div>
+                                                       <div class="cell">
+                                                           <input type="text" style="width:450px;"  >
+                                                        </div> 
+                                                       </div>
+                                                            
+                                                       <div class="fila">
+                                                        <div class="cell">
+                                                        Cuentas de impuestos:
+                                                         </div>  
+                                                         <div class="cell">
+                                                        <select id="sel_impuestos"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                                          {{for cc in cc_empresa:}}
+                                                            <option value="{{=cc[3]}}">{{=cc[0]+' '+cc[1]}}</option>
+                                                            {{pass}}
+                                                            </select>
+                                                        </div>   
+                                                        </div> 
+                                                            
+                                                       </div>
+                                                        
+                                                      
+                                                      <div id="div_cat_cuentas">
+                                                           
+                                                        </div>
+
+                                                    </ul>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <!-- end s1 tab pane -->
+                                                                                </div>
+                                                                                <!-- end content -->
+                                                                        </div>
+                                                                </div>
+                                                                <!-- end widget div -->
+                                                        </div>
+                                                        <!-- end widget -->
+                                                </article>
+                                        </div>
+                                        <!-- end row -->
+                                </section>
+                                <!-- end widget grid -->
+
+<script src="{{=URL('static', 'chosen/chosen.jquery.js')}}" type="text/javascript"></script>
+
+  <script type="text/javascript">
+        $(".chosen-select").chosen({no_results_text:'Ningun resultado!'});
+  </script>
