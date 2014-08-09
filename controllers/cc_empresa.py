@@ -39,7 +39,7 @@ def cc_wizard():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
-@auth.requires_permission('cc_grid')
+##@auth.requires_permission('cc_grid')
 def cc_grid():
     tipo="grid"
     cc_empresa = ul_list(tipo)
