@@ -127,7 +127,7 @@ def cuadrar_poliza():
         for x in xrange(4):
             row.append(TD(''))
 
-        if deb == hab:
+        if comparar_flotantes(deb, hab):
             row.append(TD('Póliza Cuadrada', _class='verde'))
             row.append(TD(locale.currency(deb, grouping=True ), _class='verde'))
             row.append(TD(locale.currency(hab, grouping=True ), _class='verde'))
