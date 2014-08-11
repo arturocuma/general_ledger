@@ -31,15 +31,16 @@ def listar():
                 _id=str(row.id)+'.tipo_poliza'
                 )
 
-    #selectable = [
-    #        ('Eliminar', lambda ids: [eliminar(ids)]),
-    #        ]
+    selectable = [
+            ('Editar', lambda ids, table: [accion(ids, table)]),
+            #('Editar', lambda ids: [accion(ids)]),
+            ]
 
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
             onvalidation=valida,
-            #selectable=selectable,
+            selectable=selectable,
             deletable=True,
             searchable=False,
             editable=True,
@@ -142,8 +143,8 @@ def cuadrar_poliza():
 
 
 def valida(form):
-    print "In onvalidation callback"
-    print form.vars
+    #print "In onvalidation callback"
+    #print form.vars
     #form.errors= True  #this prevents the submission from completing
 
     #...or to add messages to specific elements on the form
