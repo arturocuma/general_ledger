@@ -145,22 +145,21 @@ $(function (){
     </div>
 </div>   
 
-
 <script>
     $(document).ready(function(){
-        
-        jQuery(function(){
+        $(function(){
             $('#btn_enviar').click(function(){
-              empresa_id=1;
-              cc_preconf = jQuery('#sel_preconf_cc').val();
-                jQuery.post('{{=URL('wiz_cc')}}',{empresa_id:empresa_id, cc_preconf:cc_preconf}).success(function(data){
-                        window.location = "{{=URL('cc_empresa','index')}}"
-              });
-              
-             });
+
+                empresa_id={{=request.vars.empresa_id}};
+                cc_preconf = $('#sel_preconf_cc').val();
+
+                $.post('{{=URL('wiz_cc')}}',{empresa_id:empresa_id, cc_preconf:cc_preconf}).success(function(data){
+                    window.location = "{{=URL('cc_empresa','index')}}/" + empresa_id;
+                });
+            });
         });
-        
     });
 </script>
+
 </body>
 </html>

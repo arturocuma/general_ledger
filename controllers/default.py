@@ -5,21 +5,20 @@
 ## This is a sample controller
 ## - index is the default action of any application
 ## - user is required for authentication and authorization
-## - download is for downloading files uploaded in the db (does streaming)
+## - download is for downloading files uploaded in the db_maestro (does streaming)
 ## - call exposes all registered services (none by default)
 #########################################################################
 
 import csv
-import sqlite3
 
 def insertar_pais(nombre):
     """
     Inserta un registro `pais` si no existe,
     en caso contrario retorna su id
     """
-    pais = db(db.pais.nombre == nombre).select(db.pais.id).first()
+    pais = db(db.pais.nombre == nombre).select(db_maestro.pais.id).first()
     if not pais:
-        return db.pais.insert(nombre = nombre)
+        return db_maestro.pais.insert(nombre = nombre)
     else:
         return pais.id
 
@@ -29,9 +28,9 @@ def insertar_estado(nombre, clave_interna, pais_id):
     Inserta un registro `estado` si no existe,
     en caso contrario retorna su id
     """
-    estado = db(db.estado.nombre == nombre).select(db.estado.id).first()
+    estado = db_maestro(db_maestro.estado.nombre == nombre).select(db_maestro.estado.id).first()
     if not estado:
-        return db.estado.insert(
+        return db_maestro.estado.insert(
                 nombre = nombre,
                 clave_interna = clave_interna,
                 pais_id = pais_id
@@ -46,12 +45,12 @@ def insertar_municipio(nombre, clave_interna, estado_id):
     en caso contrario retorna su id
     """
 
-    municipio = db(
-            (db.municipio.nombre == nombre) &
-            (db.municipio.estado_id == estado_id)
-            ).select(db.municipio.id).first()
+    municipio = db_maestro(
+            (db_maestro.municipio.nombre == nombre) &
+            (db_maestro.municipio.estado_id == estado_id)
+            ).select(db_maestro.municipio.id).first()
     if not municipio:
-        return db.municipio.insert(
+        return db_maestro.municipio.insert(
                 nombre = nombre,
                 clave_interna = clave_interna,
                 estado_id = estado_id
@@ -73,7 +72,7 @@ def insertar_localidad(
     Inserta un registro `localidad`
     """
 
-    db.localidad.insert(
+    db_maestro.localidad.insert(
             nombre = nombre,
             clave_interna = clave_interna,
             lat_grad = lat_grad,
@@ -111,8 +110,8 @@ def cargar_paises():
     """
 
     opciones = [OPTION(pais.nombre, _value=pais.id) for pais in\
-               db().select(
-                   db.pais.ALL,
+               db_maestro().select(
+                   db_maestro.pais.ALL,
                    #cache=(cache.ram, 3600) #problemas SQLite
                    )
                ]
@@ -124,7 +123,7 @@ def cargar_paises():
         *opciones,
         **dict(
             _name='paises',
-            requires = IS_IN_DB(db,'pais.nombre')
+            requires = IS_IN_DB(db_maestro,'pais.nombre')
         )
     )
     return resultado
@@ -136,8 +135,8 @@ def cargar_estados():
     """
 
     opciones = [OPTION(estado.nombre, _value=estado.id) for estado in\
-               db(db.estado.pais_id == request.vars.pais_id).select(
-                   db.estado.ALL,
+               db_maestro(db_maestro.estado.pais_id == request.vars.pais_id).select(
+                   db_maestro.estado.ALL,
                    #cache=(cache.ram, 3600) #problemas SQLite
                    )
                ]
@@ -148,7 +147,7 @@ def cargar_estados():
         *opciones,
         **dict(
             _name='estados',
-            requires = IS_IN_DB(db, 'estado.nombre')
+            requires = IS_IN_DB(db_maestro, 'estado.nombre')
         )
     )
     return resultado
@@ -160,8 +159,8 @@ def cargar_municipios():
     """
 
     opciones = [OPTION(municipio.nombre, _value=municipio.id) for municipio in\
-               db(db.municipio.estado_id == request.vars.estado_id).select(
-                   db.municipio.ALL,
+               db_maestro(db_maestro.municipio.estado_id == request.vars.estado_id).select(
+                   db_maestro.municipio.ALL,
                    #cache=(cache.ram, 3600) #problemas SQLite
                    )
                ]
@@ -173,7 +172,7 @@ def cargar_municipios():
         *opciones,
         **dict(
             _name='municipios',
-            requires = IS_IN_DB(db, 'municipio.nombre')
+            requires = IS_IN_DB(db_maestro, 'municipio.nombre')
         )
     )
     return resultado
@@ -185,8 +184,8 @@ def cargar_localidades():
     """
 
     opciones = [OPTION(localidad.nombre, _value=localidad.id) for localidad in\
-               db(db.localidad.municipio_id == request.vars.municipio_id).select(
-                   db.localidad.ALL,
+               db_maestro(db_maestro.localidad.municipio_id == request.vars.municipio_id).select(
+                   db_maestro.localidad.ALL,
                    #cache=(cache.ram, 3600) #problemas SQLite
                    )
                ]
@@ -198,13 +197,14 @@ def cargar_localidades():
         *opciones,
         **dict(
             _name='localidad',
-            requires = IS_IN_DB(db, 'localidad.nombre')
+            requires = IS_IN_DB(db_maestro, 'localidad.nombre')
         )
     )
     return resultado
 
 
-def index2():
+@auth.requires_login()
+def empresa_wizard():
     """
     Útil para introducir los datos iniciales de una empresa
     """
@@ -230,15 +230,19 @@ def index2():
     form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
-
-        empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
+        
+        empresa_id = db_maestro.empresa.insert(**db_maestro.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
-        # response.flash = 'Response han configurado correctamente los datos de la empresa'
-        session.flash = response.flash
         session.flash = 'Se han configurado correctamente los datos de la empresa'
-        print session
-        redirect(URL('default', 'index3', vars=vars))
+        db_maestro.mi_empresa.insert(user_id=auth.user['id'], empresa_id=empresa_id)
+
+        # se crea la base de datos con el nombre de la misma
+        nombre = form.vars.razon_social
+        instancia = Web2Postgress()
+        instancia.crear_db(nombre)
+
+        redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
 
     elif form.errors:
         response.flash = 'Errores en el formulario'
@@ -276,7 +280,7 @@ def index3():
 
         form.vars.empresa_id = request.vars.empresa_id
         form.vars.nombre = request.vars.nombre_suc
-        sucursal_id = db.sucursal.insert(**db.sucursal._filter_fields(form.vars))
+        sucursal_id = db_maestro.sucursal.insert(**db_maestro.sucursal._filter_fields(form.vars))
 
         vars = {'sucursal_id': sucursal_id, 'empresa_id': request.vars.empresa_id}
 
@@ -325,20 +329,20 @@ def index4():
         # insertar departamento
         form.vars.sucursal_id = request.vars.sucursal_id
         form.vars.nombre = request.vars.nombre_dep
-        departamento_id = db.departamento.insert(
-                **db.departamento._filter_fields(form.vars)
+        departamento_id = db_maestro.departamento.insert(
+                **db_maestro.departamento._filter_fields(form.vars)
                 )
 
         # insertar puesto
         form.vars.nombre = request.vars.nombre_pue
-        puesto_id = db.puesto.insert(**db.puesto._filter_fields(form.vars))
+        puesto_id = db_maestro.puesto.insert(**db_maestro.puesto._filter_fields(form.vars))
 
         # insertar empleado
         form.vars.nombre = form.vars.nombre_emp
         form.vars.departamento_id = departamento_id
         form.vars.puesto_id = puesto_id
-        empleado_id = db.empleado.insert(
-                **db.empleado._filter_fields(form.vars)
+        empleado_id = db_maestro.empleado.insert(
+                **db_maestro.empleado._filter_fields(form.vars)
                 )
 
         vars = {'empresa_id': request.vars.empresa_id}
@@ -347,7 +351,6 @@ def index4():
         #redirect(URL('default', 'index5', vars=vars))
 
     elif form.errors:
-        print form.errors
         response.flash = 'Errores en el formulario'
     else:
         response.flash = 'Formulario incompleto'
@@ -371,7 +374,15 @@ def user():
     to decorate functions that need access control
     """
     if request.args(0)=='logout':
+
+        #print '<-----------------'
+        #print dir(empresas.dbs[1])
+        #print '----------------->'
+        #for instancia in empresas.dbs:
+        #    empresas.dbs[1].close()
+
         cookieDelete()
+
     elif request.args(0)=='login':
         auth.settings.login_form=GoogleAccount()
     return dict(form=auth())
@@ -382,7 +393,7 @@ def download():
     allows downloading of uploaded files
     http://..../[app]/default/download/[filename]
     """
-    return response.download(request, db)
+    return response.download(request, db_maestro)
 
 
 def call():
@@ -440,11 +451,12 @@ def cookieDelete():
 
 def login():
     from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-    auth = Auth(db)
+    auth = Auth(db_maestro)
     #auth.settings.login_form=GoogleAccount()
     form = auth.login()
 
     return dict(form=form)
+
 
 def index():
     import urllib
@@ -454,9 +466,34 @@ def index():
     from uuid import uuid4
     from gluon.storage import Storage
 
+    print session.instancias
+
     if session.auth:
+
         if not request.cookies.has_key('login_general_ledger'):
             cookieCreate()
+            #session.instancias = []
+            session.instancias = 0
+
+        #código repetido, digno de eliminarse
+        mias = db_maestro(
+                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+                (db_maestro.mi_empresa.tipo == 1)
+           ).select(
+                   db_maestro.empresa.razon_social,
+                   db_maestro.empresa.id
+                   )
+
+        compartidas = db_maestro(
+                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+                (db_maestro.mi_empresa.tipo == 2)
+            ).select(
+                    db_maestro.empresa.razon_social,
+                    db_maestro.empresa.id
+                    )
+
     elif request.cookies.has_key('login_general_ledger'):
         usuario = db(db.auth_user.email==request.cookies['login_general_ledger'].value).select()
         #if 'picture' in data:
@@ -468,5 +505,29 @@ def index():
         session.auth = Storage(user=auth.user, last_visit=request.now, expiration=auth.settings.expiration)
         session.picture = request.cookies['picture_usr'].value
 
-    ##response.flash = T("Welcome!")
-    return dict()
+        #session.instancias = []
+        session.instancias = 0
+
+        mias = db_maestro(
+                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+                (db_maestro.mi_empresa.tipo == 1)
+           ).select(
+                   db_maestro.empresa.razon_social,
+                   db_maestro.empresa.id
+                   )
+
+        compartidas = db_maestro(
+                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+                (db_maestro.mi_empresa.tipo == 2)
+            ).select(
+                    db_maestro.empresa.razon_social,
+                    db_maestro.empresa.id
+                    )
+    else:
+        # the user is not logged
+        mias = ''
+        compartidas = ''
+
+    return dict(mias=mias, compartidas=compartidas)

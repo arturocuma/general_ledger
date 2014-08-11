@@ -8,23 +8,27 @@ def index(): return dict(message="hello from poliza.py")
 
 def listar():
 
+    empresa_id = session.instancias
+    db_ = empresas.dbs[int(empresa_id)]
+    print session.instancias, db_
+
     # modificaciones a campos de la tabla `asiento`
-    db.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
-    db.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db.cc_empresa.descripcion, id_field=db.cc_empresa.id, limitby=(0,10), min_length=1)
-    db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
-    db.asiento.concepto_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
-    db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
-    db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
+    db_.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
+    db_.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db_.cc_empresa.descripcion, id_field=db_.cc_empresa.id, limitby=(0,10), min_length=1)
+    db_.asiento.cc_empresa_id.represent = lambda value, row: DIV( db_.cc_empresa(value).num_cc + ' ' + db_.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
+    db_.asiento.concepto_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
+    db_.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
+    db_.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
 
     # modificaciones a campos de la tabla `poliza`
-    db.poliza.importe.writable = False
-    db.poliza.concepto_general.represent = lambda value, row:\
+    db_.poliza.importe.writable = False
+    db_.poliza.concepto_general.represent = lambda value, row:\
             DIV(
                 value if value != '' else '-',
                 _class='concepto_general',
                 _id=str(row.id)+'.concepto_general'
                 )
-    db.poliza.tipo.represent = lambda value, row:\
+    db_.poliza.tipo.represent = lambda value, row:\
             DIV(
                 obtener_tipo_poliza(value) if value != None else '-',
                 _class='tipo_poliza',
@@ -32,11 +36,12 @@ def listar():
                 )
 
     #selectable = [
-    #        ('Eliminar', lambda ids: [eliminar(ids)]),
-    #        ]
+            #('Editar', lambda ids, table: [accion(ids, table)]),
+            #('Editar', lambda ids: [accion(ids)]),
+            #]
 
     polizas = SQLFORM.smartgrid(
-            db.poliza,
+            db_.poliza,
             linked_tables=['asiento'],
             onvalidation=valida,
             #selectable=selectable,
@@ -212,7 +217,10 @@ def agregar_poliza():
     Agrega un elemento a la tabla `póliza`
     """
 
-    db.poliza.insert(
+    empresa_id = session.instancias
+    db_ = empresas.dbs[int(empresa_id)]
+
+    db_.poliza.insert(
             concepto_general = '',
             tipo = '',
             importe = 0,
