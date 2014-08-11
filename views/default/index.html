@@ -47,24 +47,24 @@
                                 <ul id="expList">
 
                                     {{if not session.instancias:}}
-
                                         {{if session.auth:}}
-                                        <strong>Empresas creadas por ti:</strong><br>
-                                        {{if mias:}}
-                                            {{for m in mias:}}
-                                                {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}}<br>
+                                            {{if mias:}}
+                                                <strong>Empresas creadas por ti:</strong><br>
+                                                {{for m in mias:}}
+                                                    {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}}<br>
+                                                {{pass}}
                                             {{pass}}
-                                        {{pass}}
 
-                                        <strong>Empresas compartidas contigo:</strong><br>
-                                        {{if compartidas:}}
-                                            {{for c in compartidas:}}
-                                                {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}}<br>
+                                            {{if compartidas:}}
+                                                <strong>Empresas compartidas contigo:</strong><br>
+                                                {{for c in compartidas:}}
+                                                    {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}}<br>
+                                                {{pass}}
                                             {{pass}}
-                                        {{pass}}
 
-                                        {{else:}}
-                                        Sesión no iniciada.
+                                            {{else:}}
+                                            Sesión no iniciada.
+                                            {{pass}}
                                         {{pass}}
 
                                     {{else:}}

@@ -252,7 +252,7 @@ db_maestro.define_table('proveedor_banco',
     )
 
 auth.settings.extra_fields['auth_user']= [
-    Field('empleado_id', 'reference empleado', requires=IS_NULL_OR(IS_IN_DB(db, 'empleado.id', '%(nombre)s %(ap_paterno)s %(ap_materno)s'))),
+    Field('empleado_id', 'reference empleado', requires=IS_NULL_OR(IS_IN_DB(db_maestro, 'empleado.id', '%(nombre)s %(ap_paterno)s %(ap_materno)s'))),
     ]
 
 auth.define_tables(username=False, signature=False)
