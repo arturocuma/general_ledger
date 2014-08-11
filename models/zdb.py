@@ -234,4 +234,4 @@ class Web2Postgress():
     def cerrar_sesiones():
         pass
 
-empresas = EmpresaDB(db)
+empresas = EmpresaDB(db_maestro)

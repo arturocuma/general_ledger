@@ -230,10 +230,7 @@ def empresa_wizard():
     form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
-<<<<<<< HEAD
-=======
         
->>>>>>> 82033e67dfd0c669a9833c2ef8d896dcf68eb825
         empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
@@ -469,9 +466,14 @@ def index():
     from uuid import uuid4
     from gluon.storage import Storage
 
+    print session.instancias
+
     if session.auth:
+
         if not request.cookies.has_key('login_general_ledger'):
             cookieCreate()
+            #session.instancias = []
+            session.instancias = 0
 
         #código repetido, digno de eliminarse
         mias = db(
@@ -502,6 +504,9 @@ def index():
         auth.user = Storage(auth.settings.table_user._filter_fields(user, id=True))
         session.auth = Storage(user=auth.user, last_visit=request.now, expiration=auth.settings.expiration)
         session.picture = request.cookies['picture_usr'].value
+
+        #session.instancias = []
+        session.instancias = 0
 
         mias = db(
                 (db.mi_empresa.user_id == auth.user['id']) &\

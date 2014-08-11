@@ -6,6 +6,15 @@ import csv
 def index():
     tipo="config"
     empresa_id = request.args(0)
+
+    #if empresa_id and empresa_id not in session.instancias:
+    #    session.instancias.append(empresa_id)
+
+    if empresa_id:
+        session.instancias = empresa_id
+    #else:
+    #    session.instancias = 0
+
     cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa = cc_empresa)
 
@@ -20,14 +29,10 @@ def cc_grid():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
-<<<<<<< HEAD
-def ul_list(tipo):
-=======
 def ul_list(tipo, empresa_id):
 
     db_ = empresas.dbs[int(empresa_id)]
 
->>>>>>> 82033e67dfd0c669a9833c2ef8d896dcf68eb825
     cadena=''
     if tipo=='wizard':
         empresa_id = empresa_id

@@ -45,25 +45,33 @@
                         <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
                             <div class="padding-10">
                                 <ul id="expList">
-                                    {{if session.auth:}}
 
-                                    <strong>Empresas creadas por ti:</strong><br>
-                                    {{if mias:}}
-                                        {{for m in mias:}}
-                                            {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}}<br>
-                                        {{pass}}
-                                    {{pass}}
+                                    {{if not session.instancias:}}
 
-                                    <strong>Empresas compartidas contigo:</strong><br>
-                                    {{if compartidas:}}
-                                        {{for c in compartidas:}}
-                                            {{=c.razon_social}}<br>
+                                        {{if session.auth:}}
+                                        <strong>Empresas creadas por ti:</strong><br>
+                                        {{if mias:}}
+                                            {{for m in mias:}}
+                                                {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}}<br>
+                                            {{pass}}
                                         {{pass}}
-                                    {{pass}}
+
+                                        <strong>Empresas compartidas contigo:</strong><br>
+                                        {{if compartidas:}}
+                                            {{for c in compartidas:}}
+                                                {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}}<br>
+                                            {{pass}}
+                                        {{pass}}
+
+                                        {{else:}}
+                                        Sesión no iniciada.
+                                        {{pass}}
 
                                     {{else:}}
-                                    Sesión no iniciada.
+                                        Se está editando la empresa {{=session.instancias}}</br>
+                                        {{#=A('¿Desea salir?', _href=URL('cc_empresa', 'index', args=0))}}
                                     {{pass}}
+
                                 </ul>
                             </div>
                         </div>
