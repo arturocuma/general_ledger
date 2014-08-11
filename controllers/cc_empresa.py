@@ -20,10 +20,14 @@ def cc_grid():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
+<<<<<<< HEAD
+def ul_list(tipo):
+=======
 def ul_list(tipo, empresa_id):
 
     db_ = empresas.dbs[int(empresa_id)]
 
+>>>>>>> 82033e67dfd0c669a9833c2ef8d896dcf68eb825
     cadena=''
     if tipo=='wizard':
         empresa_id = empresa_id

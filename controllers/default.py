@@ -230,7 +230,10 @@ def empresa_wizard():
     form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
+<<<<<<< HEAD
+=======
         
+>>>>>>> 82033e67dfd0c669a9833c2ef8d896dcf68eb825
         empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
