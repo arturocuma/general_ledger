@@ -1,4 +1,5 @@
 {{extend 'layout.html'}}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
 <style>
 	.poliza{
 		background-color: #DDD;
@@ -17,6 +18,9 @@
 	}
 	.verde{
 		color: green;
+	}
+	.smart-form fieldset + fieldset{
+		border-style: none;
 	}
 </style>
 <!-- widget grid -->
@@ -57,68 +61,154 @@
                   <!-- content -->
                   <div id="myTabContent" class="tab-content">
                      <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+                     	<div class="padding-10">
+                     		<div class="panel panel-info">
+									  	<div class="panel-heading" id="abrir-campos-filtro" title="Mostrar/ocultar los filtros" style="cursor: pointer;">
+									    	<h3 class="panel-title" style="font-size: 14px;">Filtros de búsqueda <i class="fa fa-chevron-down"></i></h3>
+									  	</div>
+									  	<div class="panel-body" id="campos-filtro">
+									  		<form class="smart-form" method="POST" id="filtros" name="filtros">
+										  		<!--<article class="col-sm-12 col-md-12 col-lg-4">-->
+										  		<div role="content">
+										  			<div class="widget-body no-padding" >
+										  					<fieldset class="col-sm-12 col-md-12 col-lg-4">
+											  					<section>
+																	<label class="label">Tipo de póliza</label>
+																	<label class="select">
+																		<select id="tipo-poliza" name="tipo_poliza_id" class="activo">
+																			<option value="">Todos</option>
+																			{{for tp in tipo_poliza:}}
+																			<option value="{{=tp.id}}" {{=XML("selected='selected'") if str(tp.id)==request.vars.tipo_poliza_id else ""}}>{{=tp.nombre}}</option>
+																			{{pass}}
+																		</select>
+																	</label>
+																</section>
+																<section>
+																	<label class="label">Fecha inicial</label>
+																	<label class="input">
+																		<div class="input-group">
+																		  	<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+																		  	<input type="text" name="fecha_ini" class="activo fecha form-control input-sm" placeholder="Fecha inicio" value="{{=XML(request.vars.fecha_ini) if request.vars.fecha_ini else ''}}">
+																		</div>
+																	</label>
+											  					</section>
+											  					<section>
+											  						<label class="label">Fecha final</label>
+																	<label class="input">
+																		<div class="input-group">
+																		  	<span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+																		  	<input type="text" name="fecha_fin" class="activo fecha form-control input-sm" placeholder="Fecha fin" value="{{=XML(request.vars.fecha_fin) if request.vars.fecha_fin else ''}}">
+																		</div>
+																	</label>
+											  					</section>
+										  					</fieldset>
+										  					<fieldset class="col-sm-12 col-md-12 col-lg-4">
+											  					<section>
+											  						<label class="label">Concepto de la póliza</label>
+																	<label class="input">
+																		<div class="input-group">
+																		  	<span class="input-group-addon"><i class="fa fa-edit"></i></span>
+																		  	<input type="text" name="concepto_general" class="activo form-control input-sm" placeholder="Concepto de la póliza" value="{{=XML(request.vars.concepto_general) if request.vars.concepto_general else ''}}">
+																		</div>
+																	</label>
+											  					</section>
+																<section>
+											  						<label class="label"><input type="checkbox" id="num-poliza" > Número de póliza</label>
+																	<label class="input">
+																		<div class="input-group">
+																	      <span class="input-group-addon">
+																	        	#
+																	      </span>
+																	      <input type="text" class="form-control input-sm" id="campo-num-poliza" name="num_poliza" value="{{=XML(request.vars.num_poliza) if request.vars.num_poliza else ''}}">
+																	   </div><!-- /input-group -->
+																	</label>
+											  					</section>
+											  					<!--<section>
+											  						<label class="label">Importe</label>
+																	<label class="input">
+																		<div class="input-group">
+																	      <span class="input-group-addon">
+																	        	$
+																	      </span>
+																	      <input type="text" class="form-control input-sm">
+																	   </div>
+																	</label>
+											  					</section>-->
+										  					</fieldset>
+										  					<fieldset class="col-sm-12 col-md-12 col-lg-4">
+																<input type="submit" value="Buscar">
+																<button class="btn btn-default" type="button" onclick="location.href='{{=URL('reportes','libro_diario')}}'"> Limpiar </button>
+															</fieldset>
+										  				</div>
+										  			</div>
+									  		</form>
+									  	</div>
+									</div>
+                     	</div>
                			<div class="padding-10">
-									<table class="table">
-										<thead>
-											<tr class="poliza titulo">
-												<th>Op</th>
-												<th>Tipo</th>
-												<th>No. póliza</th>
-												<th>Fecha</th>
-												<th>Concepto póliza</th>
-												<th></th>
-												<th style="text-align: left;">Total póliza</th>
-											</tr>
-										</thead>
-										<tbody>
-											{{id = 0
-											for d in datos:
-												if id != d['id']:
-													id = d['id']}}
-													<tr class="poliza detalle" data-padre="{{=d['id']}}" data-abierto="false">
-														<td><i class="fa fa-chevron-down"></i></td>
-														<td>{{=d['tipo_poliza']}}</td>
-														<td>{{=d['id']}}</td>
-														<td>{{=d['f_poliza']}}</td>
-														<td>{{=d['concepto_general']}}</td>
-														<td style="text-align: right">Importe:</td>
-														<td style="text-align: right">{{=calcula_importe(d['id'])}}</td>
-													</tr>
-													<tr class="asiento titulo" data-hijo="{{=d['id']}}">
-														<th></th>
-														<th>No. cuenta</th>
-														<th>Depto</th>
-														<th>Descripción cuenta</th>
-														<th>Concepto asiento</th>
-														<th>Debe</th>
-														<th>Haber</th>
-													</tr>
-													<tr class="asiento detalle"  data-hijo="{{=d['id']}}">
-														<td></td>
-														<td>{{=d['num_cc']}}</td>
-														<td>--</td>
-														<td>{{=d['descripcion']}}</td>
-														<td>{{=d['concepto_asiento']}}</td>
-														<td>{{=d['debe']}}</td>
-														<td>{{=d['haber']}}</td>
-													</tr>
-												{{else:}}
-													<tr class=" asiento detalle"  data-hijo="{{=d['id']}}">
-														<td></td>
-														<td>{{=d['num_cc']}}</td>
-														<td>--</td>
-														<td>{{=d['descripcion']}}</td>
-														<td>{{=d['concepto_asiento']}}</td>
-														<td>{{=d['debe']}}</td>
-														<td>{{=d['haber']}}</td>
-													</tr>
-												{{pass
-											pass}}
-											<tr>
+               				<div  class="table-responsive">
+										<table class="table table-condensed">
+											<thead>
+												<tr class="poliza titulo">
+													<th>Op</th>
+													<th>Tipo</th>
+													<th>No. póliza</th>
+													<th>Fecha</th>
+													<th>Concepto póliza</th>
+													<th></th>
+													<th style="text-align: left;">Total póliza</th>
+												</tr>
+											</thead>
+											<tbody>
+												{{id = 0
+												for d in datos:
+													if id != d['id']:
+														id = d['id']}}
+														<tr class="poliza detalle" data-padre="{{=d['id']}}" data-abierto="false">
+															<td><i class="fa fa-chevron-down"></i></td>
+															<td>{{=d['tipo_poliza']}}</td>
+															<td>{{=d['id']}}</td>
+															<td>{{=d['f_poliza']}}</td>
+															<td>{{=d['concepto_general']}}</td>
+															<td style="text-align: right">Importe:</td>
+															<td style="text-align: right">{{=calcula_importe(d['id'])}}</td>
+														</tr>
+														<tr class="asiento titulo" data-hijo="{{=d['id']}}">
+															<th></th>
+															<th>No. cuenta</th>
+															<th>Depto</th>
+															<th>Descripción cuenta</th>
+															<th>Concepto asiento</th>
+															<th>Debe</th>
+															<th>Haber</th>
+														</tr>
+														<tr class="asiento detalle"  data-hijo="{{=d['id']}}">
+															<td></td>
+															<td>{{=d['num_cc']}}</td>
+															<td>--</td>
+															<td>{{=d['descripcion']}}</td>
+															<td>{{=d['concepto_asiento']}}</td>
+															<td>{{=d['debe']}}</td>
+															<td>{{=d['haber']}}</td>
+														</tr>
+													{{else:}}
+														<tr class=" asiento detalle"  data-hijo="{{=d['id']}}">
+															<td></td>
+															<td>{{=d['num_cc']}}</td>
+															<td>--</td>
+															<td>{{=d['descripcion']}}</td>
+															<td>{{=d['concepto_asiento']}}</td>
+															<td>{{=d['debe']}}</td>
+															<td>{{=d['haber']}}</td>
+														</tr>
+													{{pass
+												pass}}
+												<tr>
 
-											</tr>
-										</tbody>
-									</table>
+												</tr>
+											</tbody>
+										</table>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -146,9 +236,41 @@
 					$('[data-hijo="'+hijo+'"]').show();
 					$(this).data('abierto',true);
 					$(this).find('i').removeClass( "fa-chevron-down" ).addClass( "fa-chevron-up" );
-
 				}
 			});
 
+			$(".fa-calendar").click(function () {
+				$(".fecha").datepicker({
+						dateFormat: 'yy-mm-dd',
+					});
+			});
+			$(".fecha").datepicker({
+				dateFormat: 'yy-mm-dd',
+			});
+
+		$('#campos-filtro').hide();
+		$('#abrir-campos-filtro').click(function(){
+			if ( $( "#campos-filtro" ).is( ":visible" ) ){
+				$(this).find('i').removeClass( "fa-chevron-up" ).addClass( "fa-chevron-down" );
+				$('#campos-filtro').hide('slow');
+			}else{
+				$(this).find('i').removeClass( "fa-chevron-down" ).addClass( "fa-chevron-up" );
+				$('#campos-filtro').show('slow');
+			}
+		});
+
+		document.getElementById('campo-num-poliza').disabled = true;
+
+		$('#num-poliza').change(function() {
+        if(document.getElementById('num-poliza').checked){
+        		$('.activo').prop('disabled',true);
+				document.getElementById('campo-num-poliza').disabled = false;
+			}else{
+				$('.activo').prop('disabled',false);
+				document.getElementById('campo-num-poliza').disabled = true;
+			}
+	   });
+
 	});
+
 </script>
