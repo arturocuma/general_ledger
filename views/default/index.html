@@ -47,7 +47,9 @@
                                 <ul id="expList">
 
                                     {{if not session.instancias:}}
+
                                         {{if session.auth:}}
+
                                             {{if mias:}}
                                                 <strong>Empresas creadas por ti:</strong><br>
                                                 {{for m in mias:}}
@@ -62,11 +64,10 @@
                                                 {{pass}}
                                             {{pass}}
 
-                                            {{else:}}
-                                            Sesión no iniciada.
-                                            {{pass}}
+                                        {{else:}}
+                                        Sesión no iniciada.
                                         {{pass}}
-
+                                        
                                     {{else:}}
                                         Se está editando la empresa {{=session.instancias}}</br>
                                         {{#=A('¿Desea salir?', _href=URL('cc_empresa', 'index', args=0))}}

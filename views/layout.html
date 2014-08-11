@@ -597,6 +597,22 @@ input[type=button]{
 					</li>
 				</ul>
 			</nav>
+{{else:}}
+            <nav>
+                <ul>
+                    <li>
+                        <a href="{{=URL('default','index.html')}}" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
+                    </li>
+                    <li>
+                        <a href="{{=URL('default','empresa_wizard.html')}}">
+                            <i class="fa fa-lg fa-fw fa-building"></i>
+                            <span class="menu-item-parent">Crear Empresa</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+{{pass}}
+
 			<span class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>
 
 		</aside>
