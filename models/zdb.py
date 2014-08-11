@@ -42,7 +42,6 @@ class EmpresaDB(object):
 
             dbs[i.id] = DAL(
                     'postgres://web2py:w3b2py@localhost/{}'.format(indice),
-                    pool_size = 1,
                     check_reserved = ['all'],
                     migrate = True
                     )

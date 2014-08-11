@@ -11,7 +11,8 @@ def index():
 
 def cc_wizard():
     tipo="wizard"
-    cc_empresa = ul_list(tipo)
+    empresa_id = request.vars.empresa_id
+    cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa=cc_empresa)
 
 def cc_grid():

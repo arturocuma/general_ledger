@@ -374,7 +374,15 @@ def user():
     to decorate functions that need access control
     """
     if request.args(0)=='logout':
+
+        #print '<-----------------'
+        #print dir(empresas.dbs[1])
+        #print '----------------->'
+        #for instancia in empresas.dbs:
+        #    empresas.dbs[1].close()
+
         cookieDelete()
+
     elif request.args(0)=='login':
         auth.settings.login_form=GoogleAccount()
     return dict(form=auth())
@@ -457,14 +465,8 @@ def index():
     from gluon.storage import Storage
     from uuid import uuid4
     from gluon.storage import Storage
-    #from DBs import CargaEmpresas, Web2Postgres
-
-    print 'before'
-    print empresas.dbs
 
     if session.auth:
-        print 'if'
-        print empresas.dbs
         if not request.cookies.has_key('login_general_ledger'):
             cookieCreate()
 
@@ -488,8 +490,6 @@ def index():
                     )
 
     elif request.cookies.has_key('login_general_ledger'):
-        print 'elif'
-        print empresas.dbs
         usuario = db(db.auth_user.email==request.cookies['login_general_ledger'].value).select()
         #if 'picture' in data:
         #    session.picture = data['picture']
@@ -518,9 +518,7 @@ def index():
                     db.empresa.id
                     )
     else:
-        # para el logout
-        print 'else'
-        print empresas.dbs
+        # the user is not logged
         mias = ''
         compartidas = ''
 
