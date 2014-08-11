@@ -240,7 +240,7 @@ def empresa_wizard():
         # se crea la base de datos con el nombre de la misma
         nombre = form.vars.razon_social
         instancia = Web2Postgress()
-        instancia.crear_db_maestro(nombre)
+        instancia.crear_db(nombre)
 
         redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
 
