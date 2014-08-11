@@ -10,7 +10,6 @@
 #########################################################################
 
 import csv
-import sqlite3
 
 def insertar_pais(nombre):
     """
@@ -204,7 +203,8 @@ def cargar_localidades():
     return resultado
 
 
-def index2():
+@auth.requires_login()
+def empresa_wizard():
     """
     Útil para introducir los datos iniciales de una empresa
     """
@@ -230,15 +230,19 @@ def index2():
     form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
-
+        
         empresa_id = db.empresa.insert(**db.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
-        # response.flash = 'Response han configurado correctamente los datos de la empresa'
-        session.flash = response.flash
         session.flash = 'Se han configurado correctamente los datos de la empresa'
-        print session
-        redirect(URL('default', 'index3', vars=vars))
+        db.mi_empresa.insert(user_id=auth.user['id'], empresa_id=empresa_id)
+
+        # se crea la base de datos con el nombre de la misma
+        nombre = form.vars.razon_social
+        instancia = Web2Postgress()
+        instancia.crear_db(nombre)
+
+        redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
 
     elif form.errors:
         response.flash = 'Errores en el formulario'
@@ -347,7 +351,6 @@ def index4():
         #redirect(URL('default', 'index5', vars=vars))
 
     elif form.errors:
-        print form.errors
         response.flash = 'Errores en el formulario'
     else:
         response.flash = 'Formulario incompleto'
@@ -371,7 +374,15 @@ def user():
     to decorate functions that need access control
     """
     if request.args(0)=='logout':
+
+        #print '<-----------------'
+        #print dir(empresas.dbs[1])
+        #print '----------------->'
+        #for instancia in empresas.dbs:
+        #    empresas.dbs[1].close()
+
         cookieDelete()
+
     elif request.args(0)=='login':
         auth.settings.login_form=GoogleAccount()
     return dict(form=auth())
@@ -446,6 +457,7 @@ def login():
 
     return dict(form=form)
 
+
 def index():
     import urllib
     import urllib2
@@ -454,9 +466,34 @@ def index():
     from uuid import uuid4
     from gluon.storage import Storage
 
+    print session.instancias
+
     if session.auth:
+
         if not request.cookies.has_key('login_general_ledger'):
             cookieCreate()
+            #session.instancias = []
+            session.instancias = 0
+
+        #código repetido, digno de eliminarse
+        mias = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 1)
+           ).select(
+                   db.empresa.razon_social,
+                   db.empresa.id
+                   )
+
+        compartidas = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 2)
+            ).select(
+                    db.empresa.razon_social,
+                    db.empresa.id
+                    )
+
     elif request.cookies.has_key('login_general_ledger'):
         usuario = db(db.auth_user.email==request.cookies['login_general_ledger'].value).select()
         #if 'picture' in data:
@@ -468,5 +505,29 @@ def index():
         session.auth = Storage(user=auth.user, last_visit=request.now, expiration=auth.settings.expiration)
         session.picture = request.cookies['picture_usr'].value
 
-    ##response.flash = T("Welcome!")
-    return dict()
+        #session.instancias = []
+        session.instancias = 0
+
+        mias = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 1)
+           ).select(
+                   db.empresa.razon_social,
+                   db.empresa.id
+                   )
+
+        compartidas = db(
+                (db.mi_empresa.user_id == auth.user['id']) &\
+                (db.mi_empresa.empresa_id == db.empresa.id) &\
+                (db.mi_empresa.tipo == 2)
+            ).select(
+                    db.empresa.razon_social,
+                    db.empresa.id
+                    )
+    else:
+        # the user is not logged
+        mias = ''
+        compartidas = ''
+
+    return dict(mias=mias, compartidas=compartidas)

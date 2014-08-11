@@ -1,33 +1,22 @@
 # coding: utf8
-# try something like
-(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
 
 import csv
 
 def index():
-    #nodo_id = add_node('','','1','ACTIVO','','')
-    #nodo_id = add_node('1','','1.1','ACTIVO CIRCULANTE','','')
-    #nodo_id = add_node('1.1','','1.1.1','BANCO','','')
-    #nodo_id = add_node('1.1.1','','1.1.1.1','CAJA','','')
-    #nodo_id = add_node('1.1.1.1','','1.1.1.1.1','CHICA','','')
-    #nodo_id = add_node('','','2','PASIVO','','')
-    #nodo_id = add_node('2','','2.1','PASIVO CIRCULANTE','','')
-    #nodo_id = add_node('1.1.1.1','','1.1.1.1.2','GENERAL','','')
-    #nodo_id = add_node('1','','1.2','NO CIRCULANTE','','')
-
-    #print delete_node('1.1.1.1')
-    """
-    XXX = db.executesql('SELECT replace(substr(quote(zeroblob(((COUNT(parent.descripcion) - 1) + 1) / 2)), 3, (COUNT(parent.descripcion) - 1) ), "0", "  ") || node.num_cc || node.descripcion AS descripcion \
-                                    FROM cc_empresa AS node, cc_empresa AS parent \
-                                    WHERE node.lft BETWEEN parent.lft AND parent.rgt \
-                                    GROUP BY node.num_cc \
-                                    ORDER BY node.lft;')
-    for x in XXX:
-        print x[0]
-    """
     tipo="config"
-    cc_empresa = ul_list(tipo)
-    return dict(cc_empresa=cc_empresa)
+    empresa_id = request.args(0)
+
+    #if empresa_id and empresa_id not in session.instancias:
+    #    session.instancias.append(empresa_id)
+
+    if empresa_id:
+        session.instancias = empresa_id
+    #else:
+    #    session.instancias = 0
+
+    cc_empresa = ul_list(tipo, empresa_id)
+    return dict(cc_empresa = cc_empresa)
 
 def ancestor(num_cc):
     tabla = db['cc_empresa']
@@ -36,7 +25,8 @@ def ancestor(num_cc):
 
 def cc_wizard():
     tipo="wizard"
-    cc_empresa = ul_list(tipo)
+    empresa_id = request.vars.empresa_id
+    cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa=cc_empresa)
 
 ##@auth.requires_permission('cc_grid')
@@ -45,81 +35,26 @@ def cc_grid():
     cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
-def cc_grid2():
-    cc_empresa = ul_list2()
-    return dict(cc_empresa=cc_empresa)
+def ul_list(tipo, empresa_id):
 
-def ul_list2():
-    tipo_cuentas=request.vars.tipo_cuentas
+    db_ = empresas.dbs[int(empresa_id)]
 
-    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
-                   "node.id, node.cc_vista_id "\
-                   "FROM cc_empresa AS node , cc_empresa AS parent "\
-                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
-                   "GROUP BY node.id "\
-                   "ORDER BY node.lft;")
-
-
-    cadena='<div class="table-responsive">'\
-	'<table class="table">'\
-	'	<thead>'\
-	'		<tr>'\
-	'			<th style="width:10px;">Op</th>'\
-	'			<th>No. cuenta</th>'\
-	'			<th>Descripción</th>'\
-	'			<th>Debe</th>'\
-	'			<th>Haber</th>'\
-	'		</tr>'\
-	'	</thead>'\
-	'	<tbody>'
-
-    for cat in categories:
-        id_padre= ancestor(cat[0])
-        if id_padre:
-            padre=id_padre.num_cc
-        else:
-            padre=''
-
-        padre = padre.replace('.', '')
-        clase_tr= 'hijo-'+XML(str(padre))+' padre'
-        #clase_tr= "child-row "+str(id_padre)+" parent"
-        cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
-                                 "FROM asiento, cc_empresa "\
-                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
-                                 "AND cc_empresa.num_cc like '"+cat[0]+"%'")
-
-        id_row = cat[0] #.replace('.', '')
-        color=XML(color_nivel(cat[2]))
-        padding=XML(str(cat[2]*20))
-        if tipo_cuentas=='con_saldo':
-            if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
-                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
-        else:
-            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
-
-    cadena+='</tbody></table></div>'
-    cadena=XML(cadena)
-    return cadena
-
-def ul_list(tipo):
-    cadena = ''
+    cadena=''
     if tipo=='wizard':
-        empresa_id='1'
+        empresa_id = empresa_id
         cadena='<div class="tree well"><ul>'
     elif tipo=='grid':
-        empresa_id='1'
-        cadena='<div class="tree"><ul>'
+        empresa_id = empresa_id
+        cadena='<div class="cc_grid"><ul>'
     else:
-        cadena='<div class="tree"><ul>'
-        empresa_id='1'
-
-    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
-                   "node.id, node.cc_vista_id "\
-                   "FROM cc_empresa AS node , cc_empresa AS parent "\
-                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt AND node.empresa_id="+empresa_id+" "\
-                   "GROUP BY node.id "\
-                   "ORDER BY node.lft;")
-
+        empresa_id = empresa_id
+        
+    categories = db_.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
+                   node.id, node.cc_vista_id\
+                   FROM cc_empresa AS node , cc_empresa AS parent\
+                   WHERE node.lft BETWEEN parent.lft AND parent.rgt\
+                   GROUP BY node.id\
+                   ORDER BY node.lft;")
     algo="(SUM(asiento.debe)/COUNT(parent.descripcion)) as cantidad "
 
     seed = DIV(_class="tree well")
@@ -155,6 +90,7 @@ def ul_list(tipo):
     cadena+='</li></ul></div>'
     cadena=XML(cadena)
     return cadena
+
 
 def ul_list_back():
     categories = db(db.cc_empresa.id>0).select(db.cc_empresa.ALL, orderby=db.cc_empresa.lft)
@@ -203,13 +139,14 @@ def ul_list_back():
         </style>
                 """)])
 
-    #print seed
     return seed
+
 
 def ancestors(num_cc, *fields):
     tabla = db['cc_empresa']
     node = db(tabla.num_cc == num_cc).select().first()
     return db( (tabla.lft <= node.lft) & (tabla.rgt >= node.rgt) ).select(tabla.ALL, orderby=tabla.lft, *fields)
+
 
 def descendants(num_cc, *fields):
     tabla = db['cc_empresa']
@@ -217,26 +154,61 @@ def descendants(num_cc, *fields):
     return db( (tabla.lft >= node.lft) & (tabla.rgt <= node.rgt) ).select(tabla.ALL, orderby=tabla.lft, *fields)
 
 
-def add_node(padre_id=None, empresa_id=None, num_cc=None, descripcion=None, clave_sat=None, cc_naturaleza_id=None, cc_vista_id=None):
-    tabla = db['cc_empresa']
-    print padre_id
+def add_node(
+        padre_id=None,
+        num_cc=None,
+        descripcion=None,
+        clave_sat=None,
+        cc_naturaleza_id=None,
+        cc_vista_id=None
+        ):
+
+    empresa_id = request.vars.empresa_id
+    db_ = empresas.dbs[int(empresa_id)]
+    tabla = db_['cc_empresa']
 
     if padre_id:
         if isinstance(padre_id, int):
-            padre = db(tabla.id == padre_id).select().first()
+            padre = db_(tabla.id == padre_id).select().first()
         else:
-            padre = db(tabla.num_cc == padre_id).select().first()
+            padre = db_(tabla.num_cc == padre_id).select().first()
 
-        db(tabla.rgt >= padre.rgt).update(rgt=tabla.rgt+2)
-        db(tabla.lft >= padre.rgt).update(lft=tabla.lft+2)
-        node_id = tabla.insert(empresa_id=empresa_id, num_cc=num_cc, descripcion=descripcion, clave_sat=clave_sat,cc_naturaleza_id=cc_naturaleza_id, cc_vista_id=cc_vista_id, lft=padre.rgt, rgt=padre.rgt+1)
+        db_(tabla.rgt >= padre.rgt).update(rgt=tabla.rgt+2)
+        db_(tabla.lft >= padre.rgt).update(lft=tabla.lft+2)
+
+        node_id = tabla.insert(
+                num_cc=num_cc,
+                descripcion=descripcion,
+                clave_sat=clave_sat,
+                cc_naturaleza_id = cc_naturaleza_id,
+                cc_vista_id = cc_vista_id,
+                lft=padre.rgt,
+                rgt=padre.rgt+1
+                )
     else:
-        top = db(tabla.lft > 0).select(orderby=tabla.rgt).last()
+        top = db_(tabla.lft > 0).select(orderby=tabla.rgt).last()
         if top:
-            node_id = tabla.insert(empresa_id=empresa_id, num_cc=num_cc, descripcion=descripcion, clave_sat=clave_sat, cc_naturaleza_id=cc_naturaleza_id, cc_vista_id=cc_vista_id, lft=top.rgt+1, rgt=top.rgt+2)
+            node_id = tabla.insert(
+                    num_cc=num_cc,
+                    descripcion=descripcion,
+                    clave_sat=clave_sat,
+                    cc_naturaleza_id=cc_naturaleza_id,
+                    cc_vista_id=cc_vista_id,
+                    lft=top.rgt+1,
+                    rgt=top.rgt+2
+                    )
         else:
-            node_id = tabla.insert(empresa_id=empresa_id, num_cc=num_cc, descripcion=descripcion, clave_sat=clave_sat, cc_naturaleza_id=cc_naturaleza_id, cc_vista_id=cc_vista_id, lft=1, rgt=2)
+            node_id = tabla.insert(
+                    num_cc = num_cc,
+                    descripcion = descripcion,
+                    clave_sat = clave_sat,
+                    cc_naturaleza_id = cc_naturaleza_id,
+                    cc_vista_id = cc_vista_id,
+                    lft = 1,
+                    rgt = 2
+                    )
     return node_id
+
 
 def delete_node(num_cc):
     # Se elimina el nodo y también sus ramas
@@ -270,38 +242,58 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
         for row in reader:
             row[0]=str(empresa_id)
             cc_sat.append(row)
+
     return cc_sat
 
+
+def antes_cc():
+    empresa_id = request.vars.empresa_id
+    db_ = empresas.dbs[int(empresa_id)]
+
+
 def wiz_cc():
-    tabla = db['cc_empresa']
-    empresa_id=int(request.vars.empresa_id)
-    cc_preconf=request.vars.cc_preconf
-    cc_sat=cat_cuentas_sat(empresa_id, cc_preconf)
 
-    db(db.cc_empresa).delete()
-    db.executesql('delete from sqlite_sequence where name="cc_empresa";')
+    empresa_id = request.vars.empresa_id
+    db_ = empresas.dbs[int(empresa_id)]
 
-    campos_cc=['empresa_id','num_cc','descripcion','clave_sat','cc_naturaleza_id', 'cc_vista_id','nivel', 'lft','rgt']
+    tabla = db_['cc_empresa']
+    cc_preconf = request.vars.cc_preconf
+    cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
+
+    db_.cc_vista.insert(nombre = 'ACUMULATIVA')
+    db_.cc_vista.insert(nombre = 'DETALLE')
+    db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
+    db_.cc_naturaleza.insert(nombre = 'DEUDORA')
+    db_.cc_naturaleza.insert(nombre = 'CAPITAL')
+    db_.cc_naturaleza.insert(nombre = 'RESULTADO')
+
     for cuenta in cc_sat:
-        num_cc=cuenta[1]
-        len_num_cc=len(num_cc)
-        if len_num_cc>1:
-            num_cc_i=num_cc[::-1]
+
+        #print 'cuenta'
+        #print cuenta
+
+        num_cc = cuenta[1]
+        len_num_cc = len(num_cc)
+
+        if len_num_cc > 1:
+            num_cc_i = num_cc[::-1]
             ultimo_punto = num_cc_i.find(".")
             num_cc = num_cc[:-(ultimo_punto+1)]
-            padre = db(tabla.num_cc == num_cc).select().first()
-            padre_id=padre.id
-            padre_id=int(padre_id)
+            padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
         else:
-            padre_id=None
-        add_node(padre_id, cuenta[0], str(cuenta[1]), str(cuenta[2]),str(cuenta[3]), cuenta[4], cuenta[5])
+            padre_id = None
+
+        add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
+                str(cuenta[3]), cuenta[4], cuenta[5])
+
     return
+
 
 def crear_cc(form):
     if form.record:
         form.vars.num_cc = form.vars.num_cc
     elif (form.vars.num_cc != ''):
-        empresa_id=1
+        empresa_id=3
         niveles_cc_empresa=db(db.niveles_cc_empresa.empresa_id==empresa_id).select()
         niveles_cc=niveles_cc_empresa[0]
         if form.vars.tipo_cc_id=='1':#Acumulativa
@@ -313,7 +305,7 @@ def crear_cc(form):
         str(num_cc).zfill(num_niv)
 
         form.vars.num_cc = form.vars.cuenta_padre+'.'+ num_cc
-        print form.vars
+        #print form.vars
     return
 
 def listar():
@@ -354,6 +346,7 @@ def crear_cuenta():
 
     return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)
 
+
 def editar_cuenta():
     db.cc_empresa.lft.writable=False
     db.cc_empresa.lft.readable=False
@@ -363,6 +356,7 @@ def editar_cuenta():
     if request.vars.num_cc:
         redirect(URL('index'))
     return dict(form=form)
+
 
 def obtener_empresa(usuario_id):
     empresa_id=1
