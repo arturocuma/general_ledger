@@ -434,11 +434,22 @@ input[type=button]{
 				</div>
 				<!-- end collapse menu -->
 
+
 				<!-- logout button -->
 				<div id="logout" class="btn-header transparent pull-right">
 					<span> <a data-logout-msg="Cerrar sesión y salir." href="{{=URL('default/user','logout')}}" title="Cerrar sesión"><i class="fa fa-sign-out"></i></a> </span>
 				</div>
 				<!-- end logout button -->
+
+                <!-- cambiar esto -->
+				<div class="btn-header transparent pull-right">
+                <span style='color: white;'>
+                    <strong>
+                    Empresa {{=session.instancias if session.instancias else 'Nanay'}}
+                    </strong>
+                </span>
+				</div>
+                <!-- fin cambiar esto -->
 
 				<!-- search mobile button (this is hidden till mobile view port)
 				<div id="search-mobile" class="btn-header transparent pull-right">
@@ -493,10 +504,12 @@ input[type=button]{
 			(the reference to the nav > ul) after page load. Or the navigation
 			will not initialize.
 			-->
+
+{{if session.instancias:}}
 			<nav>
 				<!-- NOTE: Notice the gaps after each icon usage <i></i>..
 				Please note that these links work a bit different than
-				traditional hre="" links. See documentation for details.
+				traditionat hre="" links. See documentation for details.
 				-->
 
 				<ul>
@@ -584,6 +597,22 @@ input[type=button]{
 					</li>
 				</ul>
 			</nav>
+{{else:}}
+            <nav>
+                <ul>
+                    <li>
+                        <a href="{{=URL('default','index.html')}}" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
+                    </li>
+                    <li>
+                        <a href="{{=URL('default','empresa_wizard.html')}}">
+                            <i class="fa fa-lg fa-fw fa-building"></i>
+                            <span class="menu-item-parent">Crear Empresa</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+{{pass}}
+
 			<span class="minifyme"> <i class="fa fa-arrow-circle-left hit"></i> </span>
 
 		</aside>
