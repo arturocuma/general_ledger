@@ -1,17 +1,17 @@
 {{extend 'layout.html'}}
 <script>
     $( document ).ready(function() {
-        $('.cc_grid li:has(li)').addClass('parent_li').find(' > span').attr('title', 'Colapsar esta rama');
-        var children = $('.cc_grid  li.parent_li > span').parent('li.parent_li').find(' > ul > li');
+        $('.tree li:has(li)').addClass('parent_li').find(' > span').attr('title', 'Colapsar esta rama');
+        var children = $('.tree  li.parent_li > span').parent('li.parent_li').find(' > ul > li');
         if (children.is(":visible")) {
             children.hide('fast');
-           $('.cc_grid li.parent_li > span').attr('title', 'Expandir esta rama').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
+           $('.tree li.parent_li > span').attr('title', 'Expandir esta rama').find(' > i').addClass('fa-plus-circle').removeClass('fa-minus-circle');
         }
        
     });
     $(function () {
         
-        $('.cc_grid li.parent_li > span').on('click', function (e) {
+        $('.tree li.parent_li > span').on('click', function (e) {
             var children = $(this).parent('li.parent_li').find(' > ul > li');
             if (children.is(":visible")) {
                 children.hide('fast');

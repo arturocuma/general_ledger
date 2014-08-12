@@ -16,7 +16,7 @@ locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
-    db_maestro = DAL('postgres://web2py:w3b2py@localhost/contabilidad', migrate=True)
+    db_maestro = DAL('postgres://web2py:w3b2py@localhost/contabilidad', migrate=False)
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db_maestro = DAL('google:datastore+ndb')
@@ -146,7 +146,8 @@ auth.settings.login_form=GoogleAccount()
 
 db_maestro.define_table('pais',
     Field('nombre', 'string'),
-    format='%(nombre)s'
+    format='%(nombre)s',
+    migrate=True,fake_migrate=True
     )
 
 db_maestro.define_table('estado',
@@ -348,18 +349,21 @@ db_maestro.asiento.id.label='#Asiento'
 db_maestro.define_table('reporte',
     Field('nombre', 'string', label='Nombre'),
     Field('descripcion', 'string', label='Descripción'),
-    format='%(descripcion)s'
+    format='%(descripcion)s',
+    migrate=True
     )
 db_maestro.define_table('seccion_reporte',
     Field('reporte_id', 'reference reporte', label='Reporte'),
     Field('nombre', 'string', label='Nombre de la sección'), 
     Field('descripcion', 'string', label='Etiqueta'),
-    format='%(nombre)s %(descripcion)s'
+    format='%(nombre)s %(descripcion)s',
+    migrate=True
     )
 db_maestro.define_table('cuentas_seccion_reporte',
     Field('seccion_reporte_id', 'reference seccion_reporte', label='Etiqueta'),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
-    format='%(cc_empresa_id)s'
+    format='%(cc_empresa_id)s',
+    migrate=True
     )
 
 db_maestro.define_table('mi_empresa',
