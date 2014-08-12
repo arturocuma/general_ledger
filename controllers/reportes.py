@@ -1,6 +1,7 @@
 # coding: utf8
 # try something like
-
+if session.instancias:
+    db=empresas.dbs[int(session.instancias)]
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 
 def index(): return dict(message="hello from reportes.py")
@@ -21,7 +22,7 @@ def c():
     loquesea=db(db.asiento.poliza_id==db.poliza.id).select(db.poliza.ALL)
     return loquesea
 
-def cc_grid():
+def cc_grid2():
     num_cc='1.1'
     nivel='2'
     cc_empresa = hijos_nivel(num_cc, nivel)
@@ -31,7 +32,7 @@ def cc_grid():
     tabla+='</table>'
     return dict(cc_empresa=XML(tabla))
 
-def cc_grid2():
+def cc_grid():
     cc_empresa = ul_list()
     return dict(cc_empresa=cc_empresa)
 

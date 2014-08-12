@@ -10,6 +10,8 @@
 #########################################################################
 
 import csv
+if session.instancias:
+    db=empresas.dbs[int(session.instancias)]
 
 def insertar_pais(nombre):
     """
