@@ -1,4 +1,6 @@
 # coding: utf8
+if session.instancias:
+    db=empresas.dbs[int(session.instancias)]
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
 
 import csv
@@ -12,6 +14,7 @@ def index():
 
     if empresa_id:
         session.instancias = empresa_id
+        
     #else:
     #    session.instancias = 0
 
@@ -30,14 +33,70 @@ def cc_wizard():
     return dict(cc_empresa=cc_empresa)
 
 ##@auth.requires_permission('cc_grid')
-def cc_grid():
+def cc_grid2():
     tipo="grid"
-    cc_empresa = ul_list(tipo)
+    cc_empresa = ul_list2()
     return dict(cc_empresa=cc_empresa)
 
-def ul_list(tipo, empresa_id):
+def cc_grid():
+    tipo="config"
+    empresa_id=int(session.instancias)
+    cc_empresa = ul_list(tipo, empresa_id)
+    return dict(cc_empresa=cc_empresa)
 
-    db_ = empresas.dbs[int(empresa_id)]
+def ul_list2():
+    tipo_cuentas=request.vars.tipo_cuentas
+
+    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+                   "node.id, node.cc_vista_id "\
+                   "FROM cc_empresa AS node , cc_empresa AS parent "\
+                   "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   "GROUP BY node.id "\
+                   "ORDER BY node.lft;")
+
+
+    cadena='<div class="table-responsive">'\
+	'<table class="table">'\
+	'	<thead>'\
+	'		<tr>'\
+	'			<th style="width:10px;">Op</th>'\
+	'			<th>No. cuenta</th>'\
+	'			<th>Descripción</th>'\
+	'			<th>Debe</th>'\
+	'			<th>Haber</th>'\
+	'		</tr>'\
+	'	</thead>'\
+	'	<tbody>'
+
+    for cat in categories:
+        id_padre= ancestor(cat[0])
+        if id_padre:
+            padre=id_padre.num_cc
+        else:
+            padre=''
+
+        padre = padre.replace('.', '')
+        clase_tr= 'hijo-'+XML(str(padre))+' padre'
+        #clase_tr= "child-row "+str(id_padre)+" parent"
+        cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 "FROM asiento, cc_empresa "\
+                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 "AND cc_empresa.num_cc like '"+cat[0]+"%'")
+
+        id_row = cat[0] #.replace('.', '')
+        color=XML(color_nivel(cat[2]))
+        padding=XML(str(cat[2]*20))
+        if tipo_cuentas=='con_saldo':
+            if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
+                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+        else:
+            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+
+    cadena+='</tbody></table></div>'
+    cadena=XML(cadena)
+    return cadena
+
+def ul_list(tipo, empresa_id):
 
     cadena=''
     if tipo=='wizard':
@@ -45,11 +104,12 @@ def ul_list(tipo, empresa_id):
         cadena='<div class="tree well"><ul>'
     elif tipo=='grid':
         empresa_id = empresa_id
-        cadena='<div class="cc_grid"><ul>'
+        cadena='<div class="tree"><ul>'
     else:
         empresa_id = empresa_id
+        cadena='<div class="tree"><ul>'
         
-    categories = db_.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
+    categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
                    node.id, node.cc_vista_id\
                    FROM cc_empresa AS node , cc_empresa AS parent\
                    WHERE node.lft BETWEEN parent.lft AND parent.rgt\
@@ -164,8 +224,8 @@ def add_node(
         ):
 
     empresa_id = request.vars.empresa_id
-    db_ = empresas.dbs[int(empresa_id)]
-    tabla = db_['cc_empresa']
+    db = empresas.dbs[int(empresa_id)]
+    tabla = db['cc_empresa']
 
     if padre_id:
         if isinstance(padre_id, int):
