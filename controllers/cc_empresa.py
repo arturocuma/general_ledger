@@ -5,6 +5,9 @@ if session.instancias:
 
 import csv
 
+if session.instancias:
+    db = empresas.dbs[int(session.instancias)]
+
 def index():
     tipo="config"
     empresa_id = request.args(0)
@@ -306,11 +309,6 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
     return cc_sat
 
 
-def antes_cc():
-    empresa_id = request.vars.empresa_id
-    db_ = empresas.dbs[int(empresa_id)]
-
-
 def wiz_cc():
 
     empresa_id = request.vars.empresa_id
@@ -322,15 +320,17 @@ def wiz_cc():
 
     db_.cc_vista.insert(nombre = 'ACUMULATIVA')
     db_.cc_vista.insert(nombre = 'DETALLE')
+
     db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
     db_.cc_naturaleza.insert(nombre = 'DEUDORA')
     db_.cc_naturaleza.insert(nombre = 'CAPITAL')
     db_.cc_naturaleza.insert(nombre = 'RESULTADO')
 
-    for cuenta in cc_sat:
+    db_.tipo_poliza.insert(nombre = 'INGRESO')
+    db_.tipo_poliza.insert(nombre = 'EGRESO')
+    db_.tipo_poliza.insert(nombre = 'DIARIO')
 
-        #print 'cuenta'
-        #print cuenta
+    for cuenta in cc_sat:
 
         num_cc = cuenta[1]
         len_num_cc = len(num_cc)
@@ -416,6 +416,26 @@ def editar_cuenta():
     if request.vars.num_cc:
         redirect(URL('index'))
     return dict(form=form)
+
+
+def eliminar_empresa():
+
+    id = request.vars.id
+
+    nombre = db_maestro(db_maestro.empresa.id == id).select(
+            db_maestro.empresa.razon_social
+            ).first().razon_social
+
+    instancia = Web2Postgress()
+
+    # eliminar registro de la base de datos maestra
+    db_maestro(db_maestro.empresa.id == id).delete()
+
+    # cerrar cesión
+    empresas.dbs[int(id)].close()
+    
+    # eliminar instancia de base de datos
+    instancia.eliminar_db(nombre)
 
 
 def obtener_empresa(usuario_id):

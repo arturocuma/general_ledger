@@ -377,12 +377,7 @@ def user():
     """
     if request.args(0)=='logout':
 
-        #print '<-----------------'
-        #print dir(empresas.dbs[1])
-        #print '----------------->'
-        #for instancia in empresas.dbs:
-        #    empresas.dbs[1].close()
-
+        [empresas.dbs[instancia].close() for instancia in empresas.dbs]
         cookieDelete()
 
     elif request.args(0)=='login':
@@ -497,10 +492,10 @@ def index():
                     )
 
     elif request.cookies.has_key('login_general_ledger'):
-        usuario = db(db.auth_user.email==request.cookies['login_general_ledger'].value).select()
+        usuario = db_maestro(db_maestro.auth_user.email==request.cookies['login_general_ledger'].value).select()
         #if 'picture' in data:
         #    session.picture = data['picture']
-        user = db(db.auth_user.id==usuario[0].id).select().first()
+        user = db_maestro(db_maestro.auth_user.id==usuario[0].id).select().first()
         auth.settings.long_expiration = 3600*24*30 # one month
         auth.settings.remember_me_form = True
         auth.user = Storage(auth.settings.table_user._filter_fields(user, id=True))

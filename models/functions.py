@@ -33,13 +33,17 @@ def calcula_importe(poliza_id):
     calcula el importe de la póliza, esto es, la suma de los asientos
     """
 
-    asientos = db_maestro(db_maestro.asiento.poliza_id == poliza_id).select(
-            db_maestro.asiento.debe, db_maestro.asiento.haber
+    db = empresas.dbs[int(session.instancias)]
+    asientos = db(db.asiento.poliza_id == poliza_id).select(
+            db.asiento.debe, db.asiento.haber
             )
 
     if asientos:
         deb = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.debe for asi in asientos])
         hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
+
+        print deb
+        print hab
 
         if comparar_flotantes(deb, hab):
             flag = DIV('{}'.format(locale.currency(deb, grouping=True )), _class='verde')

@@ -12,9 +12,22 @@ class EmpresaDB(object):
     Recupera las bases de datos
     """
 
+    def crear_instancia(self, indice):
+        """
+        `indice` es el valor usado para mandar llamar una instancia
+        """
+        instancia = db_maestro(
+                (db_maestro.mi_empresa.empresa_id == indice) &\
+                (db_maestro.mi_empresa.user_id == self.user_id)
+            ).select(
+                    db_maestro.empresa.razon_social,
+                    db_maestro.empresa.id
+                    )
+
+
     def __init__(self, db):
         """
-        Método init, aquí se crear la
+        Método init
         """
 
         self.db = db
@@ -180,13 +193,15 @@ class EmpresaDB(object):
             dbs[instancia].define_table('tipo_poliza',
                 Field('nombre','string'),
                 format='%(nombre)s'
-                )
+            )
 
             dbs[instancia].define_table('poliza',
                 Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
                 Field('concepto_general', 'string', label='Concepto de la Póliza'),
                 Field('tipo', 'reference tipo_poliza'),
-                Field('importe', 'double', default=0.0, represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
+                Field('importe', 'double', 
+                    default = 0.0, 
+                    represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
             )
             dbs[instancia].poliza.id.label='#Póliza'
 
@@ -248,6 +263,32 @@ class Web2Postgress():
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
         cur.execute('create database {}'.format(nombre))
+        cur.close()
+        con.close()
+
+
+    def eliminar_db(self, nombre):
+        """
+        #ToDo: crear exepciones
+        """
+
+        con = connect(
+                dbname = 'postgres',
+                user = 'web2py',
+                host = 'localhost',
+                password = 'w3b2py'
+                )
+
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        #cur.execute("select pg_terminate_backend(pg_stat_activity.procpid)\
+        #from pg_stat_activity\
+        #where pg_stat_activity.datname = '{}'\
+        #and procpid <> pg_backend_pid();".format(nombre))
+
+        cur.execute('drop database {}'.format(nombre))
+
         cur.close()
         con.close()
 

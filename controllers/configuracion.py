@@ -35,7 +35,7 @@ def estado_resultados():
                    "ORDER BY node.lft;")
     
     if request.vars:
-        if request.vars.nombre_reporte:
+        if request.vars.nombre_reporte == '':
             tipo_msg='error'
             msg='Asigne un nombre al reporte'
         elif request.vars.etiqueta_ingresos=='':

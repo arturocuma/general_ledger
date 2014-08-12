@@ -3,6 +3,9 @@
 
 from datetime import datetime
 
+empresa_id = session.instancias
+db = empresas.dbs[int(empresa_id)]
+
 # For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
 

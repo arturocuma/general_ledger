@@ -350,20 +350,17 @@ db_maestro.define_table('reporte',
     Field('nombre', 'string', label='Nombre'),
     Field('descripcion', 'string', label='Descripción'),
     format='%(descripcion)s',
-    migrate=True
     )
 db_maestro.define_table('seccion_reporte',
     Field('reporte_id', 'reference reporte', label='Reporte'),
     Field('nombre', 'string', label='Nombre de la sección'), 
     Field('descripcion', 'string', label='Etiqueta'),
     format='%(nombre)s %(descripcion)s',
-    migrate=True
     )
 db_maestro.define_table('cuentas_seccion_reporte',
     Field('seccion_reporte_id', 'reference seccion_reporte', label='Etiqueta'),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
     format='%(cc_empresa_id)s',
-    migrate=True
     )
 
 db_maestro.define_table('mi_empresa',
