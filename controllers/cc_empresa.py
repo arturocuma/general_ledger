@@ -3,6 +3,9 @@
 
 import csv
 
+if session.instancias:
+    db = empresas.dbs[int(session.instancias)]
+
 def index():
     tipo="config"
     empresa_id = request.args(0)
@@ -37,7 +40,6 @@ def cc_grid():
 
 def ul_list(tipo, empresa_id):
 
-    db_ = empresas.dbs[int(empresa_id)]
 
     cadena=''
     if tipo=='wizard':
@@ -49,7 +51,7 @@ def ul_list(tipo, empresa_id):
     else:
         empresa_id = empresa_id
         
-    categories = db_.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
+    categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
                    node.id, node.cc_vista_id\
                    FROM cc_empresa AS node , cc_empresa AS parent\
                    WHERE node.lft BETWEEN parent.lft AND parent.rgt\
@@ -262,15 +264,17 @@ def wiz_cc():
 
     db_.cc_vista.insert(nombre = 'ACUMULATIVA')
     db_.cc_vista.insert(nombre = 'DETALLE')
+
     db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
     db_.cc_naturaleza.insert(nombre = 'DEUDORA')
     db_.cc_naturaleza.insert(nombre = 'CAPITAL')
     db_.cc_naturaleza.insert(nombre = 'RESULTADO')
 
-    for cuenta in cc_sat:
+    db_.tipo_poliza.insert(nombre = 'INGRESO')
+    db_.tipo_poliza.insert(nombre = 'EGRESO')
+    db_.tipo_poliza.insert(nombre = 'DIARIO')
 
-        #print 'cuenta'
-        #print cuenta
+    for cuenta in cc_sat:
 
         num_cc = cuenta[1]
         len_num_cc = len(num_cc)
@@ -356,6 +360,26 @@ def editar_cuenta():
     if request.vars.num_cc:
         redirect(URL('index'))
     return dict(form=form)
+
+
+def eliminar_empresa():
+
+    id = request.vars.id
+
+    nombre = db_maestro(db_maestro.empresa.id == id).select(
+            db_maestro.empresa.razon_social
+            ).first().razon_social
+
+    instancia = Web2Postgress()
+
+    # eliminar registro de la base de datos maestra
+    db_maestro(db_maestro.empresa.id == id).delete()
+
+    # cerrar cesión
+    empresas.dbs[int(id)].close()
+    
+    # eliminar instancia de base de datos
+    instancia.eliminar_db(nombre)
 
 
 def obtener_empresa(usuario_id):

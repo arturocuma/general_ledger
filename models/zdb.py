@@ -180,7 +180,7 @@ class EmpresaDB(object):
             dbs[instancia].define_table('tipo_poliza',
                 Field('nombre','string'),
                 format='%(nombre)s'
-                )
+            )
 
             dbs[instancia].define_table('poliza',
                 Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
@@ -227,6 +227,32 @@ class Web2Postgress():
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
         cur.execute('create database {}'.format(nombre))
+        cur.close()
+        con.close()
+
+
+    def eliminar_db(self, nombre):
+        """
+        #ToDo: crear exepciones
+        """
+
+        con = connect(
+                dbname = 'postgres',
+                user = 'web2py',
+                host = 'localhost',
+                password = 'w3b2py'
+                )
+
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        #cur.execute("select pg_terminate_backend(pg_stat_activity.procpid)\
+        #from pg_stat_activity\
+        #where pg_stat_activity.datname = '{}'\
+        #and procpid <> pg_backend_pid();".format(nombre))
+
+        cur.execute('drop database {}'.format(nombre))
+
         cur.close()
         con.close()
 

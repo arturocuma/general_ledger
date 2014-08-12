@@ -20,7 +20,8 @@
             -->
             <header>
             <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
-            <h2>{{if session.auth:}}
+            <h2>
+                {{if session.auth:}}
                 Bienvenido: {{=auth.user['first_name'] + ' ' + auth.user['last_name']}}
                 {{else:}}
                 Sesión no iniciada.
@@ -46,21 +47,23 @@
                             <div class="padding-10">
                                 <ul id="expList">
 
-                                    {{if not session.instancias:}}
+                                    {{#if not session.instancias:}}
 
                                         {{if session.auth:}}
 
                                             {{if mias:}}
                                                 <strong>Empresas creadas por ti:</strong><br>
                                                 {{for m in mias:}}
-                                                    {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}}<br>
+                                                    {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}} |
+                                                    {{=A('Eliminar', _id=m.id, _class='eliminar-empresa')}} <br>
                                                 {{pass}}
                                             {{pass}}
 
                                             {{if compartidas:}}
                                                 <strong>Empresas compartidas contigo:</strong><br>
                                                 {{for c in compartidas:}}
-                                                    {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}}<br>
+                                                    {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}} |
+                                                    {{=A('Eliminar', _href=URL('cc_empresa', 'eliminar_empresa', args=c.id), _id="eliminar_empresa")}} <br>
                                                 {{pass}}
                                             {{pass}}
 
@@ -68,10 +71,10 @@
                                         Sesión no iniciada.
                                         {{pass}}
                                         
-                                    {{else:}}
-                                        Se está editando la empresa {{=session.instancias}}</br>
+                                    {{#else:}}
+                                        <br>Se está editando la empresa {{=session.instancias}}
                                         {{#=A('¿Desea salir?', _href=URL('cc_empresa', 'index', args=0))}}
-                                    {{pass}}
+                                    {{#pass}}
 
                                 </ul>
                             </div>
@@ -89,3 +92,25 @@
     <!-- end row -->
     </section>
     <!-- end widget grid -->
+
+<script>
+    $(document).ready(function(){
+        $('.eliminar-empresa').click(function(e) {
+            e.preventDefault();
+
+            id = $('.eliminar-empresa').attr('id');
+
+            $.ajax({
+                type: "post",
+                url: "{{=URL('cc_empresa', 'eliminar_empresa')}}",
+                data: {id: id},
+                success: function (response) {
+                    console.log('good');
+                },
+                error: function (response) {
+                    console.log('bad');
+                },
+            });
+        });
+    });
+</script>
