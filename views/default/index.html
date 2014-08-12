@@ -98,7 +98,7 @@
         $('.eliminar-empresa').click(function(e) {
             e.preventDefault();
 
-            id = $('.eliminar-empresa').attr('id');
+            id = $(this).attr('id');
 
             $.ajax({
                 type: "post",
