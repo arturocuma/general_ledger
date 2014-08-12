@@ -40,6 +40,7 @@ def cc_grid():
 
 def ul_list(tipo, empresa_id):
 
+    db = empresas.dbs[int(empresa_id)]
 
     cadena=''
     if tipo=='wizard':
@@ -246,11 +247,6 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
             cc_sat.append(row)
 
     return cc_sat
-
-
-def antes_cc():
-    empresa_id = request.vars.empresa_id
-    db_ = empresas.dbs[int(empresa_id)]
 
 
 def wiz_cc():

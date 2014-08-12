@@ -12,9 +12,22 @@ class EmpresaDB(object):
     Recupera las bases de datos
     """
 
+    def crear_instancia(self, indice):
+        """
+        `indice` es el valor usado para mandar llamar una instancia
+        """
+        instancia = db_maestro(
+                (db_maestro.mi_empresa.empresa_id == indice) &\
+                (db_maestro.mi_empresa.user_id == self.user_id)
+            ).select(
+                    db_maestro.empresa.razon_social,
+                    db_maestro.empresa.id
+                    )
+
+
     def __init__(self, db):
         """
-        Método init, aquí se crear la
+        Método init
         """
 
         self.db = db
@@ -186,7 +199,9 @@ class EmpresaDB(object):
                 Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
                 Field('concepto_general', 'string', label='Concepto de la Póliza'),
                 Field('tipo', 'reference tipo_poliza'),
-                Field('importe', 'double', default=0.0, represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
+                Field('importe', 'double', 
+                    default = 0.0, 
+                    represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
             )
             dbs[instancia].poliza.id.label='#Póliza'
 
