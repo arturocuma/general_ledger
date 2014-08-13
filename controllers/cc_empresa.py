@@ -1,6 +1,4 @@
 # coding: utf8
-if session.instancias:
-    db=empresas.dbs[int(session.instancias)]
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
 
 import csv
@@ -100,7 +98,7 @@ def ul_list2():
     return cadena
 
 def ul_list(tipo, empresa_id):
-
+    db=empresas.dbs[int(empresa_id)]
     cadena=''
     if tipo=='wizard':
         empresa_id = empresa_id
