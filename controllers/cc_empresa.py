@@ -12,15 +12,9 @@ def index():
     tipo="config"
     empresa_id = request.args(0)
 
-    #if empresa_id and empresa_id not in session.instancias:
-    #    session.instancias.append(empresa_id)
-
     if empresa_id:
         session.instancias = empresa_id
         
-    #else:
-    #    session.instancias = 0
-
     cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa = cc_empresa)
 
@@ -99,7 +93,10 @@ def ul_list2():
     cadena=XML(cadena)
     return cadena
 
+
 def ul_list(tipo, empresa_id):
+
+    db = empresas.dbs[int(empresa_id)]
 
     cadena=''
     if tipo=='wizard':
@@ -218,6 +215,7 @@ def descendants(num_cc, *fields):
 
 
 def add_node(
+        db_=None,
         padre_id=None,
         num_cc=None,
         descripcion=None,
@@ -226,18 +224,20 @@ def add_node(
         cc_vista_id=None
         ):
 
-    empresa_id = request.vars.empresa_id
-    db = empresas.dbs[int(empresa_id)]
+    #empresa_id = request.vars.empresa_id
+    #db = empresas.dbs[int(empresa_id)]
+    db = db_
+    
     tabla = db['cc_empresa']
 
     if padre_id:
         if isinstance(padre_id, int):
-            padre = db_(tabla.id == padre_id).select().first()
+            padre = db(tabla.id == padre_id).select().first()
         else:
-            padre = db_(tabla.num_cc == padre_id).select().first()
+            padre = db(tabla.num_cc == padre_id).select().first()
 
-        db_(tabla.rgt >= padre.rgt).update(rgt=tabla.rgt+2)
-        db_(tabla.lft >= padre.rgt).update(lft=tabla.lft+2)
+        db(tabla.rgt >= padre.rgt).update(rgt=tabla.rgt+2)
+        db(tabla.lft >= padre.rgt).update(lft=tabla.lft+2)
 
         node_id = tabla.insert(
                 num_cc=num_cc,
@@ -249,7 +249,7 @@ def add_node(
                 rgt=padre.rgt+1
                 )
     else:
-        top = db_(tabla.lft > 0).select(orderby=tabla.rgt).last()
+        top = db(tabla.lft > 0).select(orderby=tabla.rgt).last()
         if top:
             node_id = tabla.insert(
                     num_cc=num_cc,
@@ -318,14 +318,20 @@ def wiz_cc():
     cc_preconf = request.vars.cc_preconf
     cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
 
+    db_(db_.cc_vista).delete()
+    db_.executesql('alter sequence cc_vista_id_seq restart with 1')
     db_.cc_vista.insert(nombre = 'ACUMULATIVA')
     db_.cc_vista.insert(nombre = 'DETALLE')
 
+    db_(db_.cc_naturaleza).delete()
+    db_.executesql('alter sequence cc_naturaleza_id_seq restart with 1')
     db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
     db_.cc_naturaleza.insert(nombre = 'DEUDORA')
     db_.cc_naturaleza.insert(nombre = 'CAPITAL')
     db_.cc_naturaleza.insert(nombre = 'RESULTADO')
 
+    db_(db_.tipo_poliza).delete()
+    db_.executesql('alter sequence tipo_poliza_id_seq restart with 1')
     db_.tipo_poliza.insert(nombre = 'INGRESO')
     db_.tipo_poliza.insert(nombre = 'EGRESO')
     db_.tipo_poliza.insert(nombre = 'DIARIO')
@@ -343,7 +349,7 @@ def wiz_cc():
         else:
             padre_id = None
 
-        add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
+        add_node(db_, padre_id, str(cuenta[1]), str(cuenta[2]),
                 str(cuenta[3]), cuenta[4], cuenta[5])
 
     return
