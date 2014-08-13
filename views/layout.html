@@ -318,6 +318,26 @@ input[type=submit]:hover{
 input[type=submit]:active {
   background-image: none;
 }
+.btn-primary{
+	color: #ffffff;
+  	background-color: #3E78FD;
+  	border-color: #2c699d;
+}
+.btn-primary:hover{
+	color: #ffffff;
+  	background-color: #296191;
+  	border-color: #1f496d;
+}
+.btn-danger {
+    background-color: #d9534f;
+    border-color: #d43f3a;
+    color: #fff;
+}
+.btn-danger:hover{
+	background-color: #D2322D;
+	border-color: #d43f3a;
+   color: #fff;
+}
 /*Fin estilo Botones submit*/
 
 /*Estilos de input*/
@@ -373,7 +393,7 @@ input[type=button]{
 			<div id="logo-group">
 
 				<!-- PLACE YOUR LOGO HERE -->
-				<span id="logo"> <img src="{{=URL('static/smartadmin','img/1.png')}}" alt="Sistema Contable"> </span>
+				<span id="logo"> <img src="{{=URL('static','images/logo-pale.png')}}" alt="Sistema Contable"> </span>
 				<!-- END LOGO PLACEHOLDER -->
 
 				<!-- Note: The activity badge color changes when clicked and resets the number to 0
@@ -422,7 +442,14 @@ input[type=button]{
 				</div>
 				<!-- END AJAX-DROPDOWN -->
 			</div>
-
+			<div id="project-context" class="open">
+				{{if session.instancias:}}
+				<span class="label">Empresa:</span>
+					<span id="project-selector">
+						Empresa {{=session.instancias}}
+				</span>
+				{{pass}}
+			</div>
 
 
 			<!-- pulled right: nav area -->
@@ -440,16 +467,6 @@ input[type=button]{
 					<span> <a data-logout-msg="Cerrar sesión y salir." href="{{=URL('default/user','logout')}}" title="Cerrar sesión"><i class="fa fa-sign-out"></i></a> </span>
 				</div>
 				<!-- end logout button -->
-
-                <!-- cambiar esto -->
-				<div class="btn-header transparent pull-right">
-                <span style='color: white;'>
-                    <strong>
-                    Empresa {{=session.instancias if session.instancias else 'Nanay'}}
-                    </strong>
-                </span>
-				</div>
-                <!-- fin cambiar esto -->
 
 				<!-- search mobile button (this is hidden till mobile view port)
 				<div id="search-mobile" class="btn-header transparent pull-right">
