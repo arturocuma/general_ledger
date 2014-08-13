@@ -56,7 +56,7 @@ class EmpresaDB(object):
             dbs[i.id] = DAL(
                     'postgres://web2py:w3b2py@localhost/{}'.format(indice),
                     check_reserved = ['all'],
-                    migrate = False
+                    migrate = True
                     )
 
         for instancia in dbs:
