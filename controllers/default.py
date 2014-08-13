@@ -463,8 +463,6 @@ def index():
     from uuid import uuid4
     from gluon.storage import Storage
 
-    print session.instancias
-
     if session.auth:
 
         if not request.cookies.has_key('login_general_ledger'):

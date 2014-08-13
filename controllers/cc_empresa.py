@@ -424,29 +424,10 @@ def editar_cuenta():
     return dict(form=form)
 
 
-def eliminar_empresa():
-
-    id = request.vars.id
-
-    nombre = db_maestro(db_maestro.empresa.id == id).select(
-            db_maestro.empresa.razon_social
-            ).first().razon_social
-
-    instancia = Web2Postgress()
-
-    # eliminar registro de la base de datos maestra
-    db_maestro(db_maestro.empresa.id == id).delete()
-
-    # cerrar cesión
-    empresas.dbs[int(id)].close()
-    
-    # eliminar instancia de base de datos
-    instancia.eliminar_db(nombre)
-
-
 def obtener_empresa(usuario_id):
     empresa_id=1
     return empresa_id
+
 
 def color_nivel(nivel):
     color = '#000'

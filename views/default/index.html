@@ -55,15 +55,16 @@
                                                 <strong>Empresas creadas por ti:</strong><br>
                                                 {{for m in mias:}}
                                                     {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}} |
-                                                    {{=A('Eliminar', _id=m.id, _class='eliminar-empresa')}} <br>
+                                                    {{=A('Eliminar', _id=m.id, _class='eliminar-empresa')}} |
+                                                    {{=A('Compartir', _id=m.id, _class='invitar')}} |
+                                                    <br>
                                                 {{pass}}
                                             {{pass}}
 
                                             {{if compartidas:}}
                                                 <strong>Empresas compartidas contigo:</strong><br>
                                                 {{for c in compartidas:}}
-                                                    {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}} |
-                                                    {{=A('Eliminar', _href=URL('cc_empresa', 'eliminar_empresa', args=c.id), _id="eliminar_empresa")}} <br>
+                                                    {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}}
                                                 {{pass}}
                                             {{pass}}
 
@@ -93,8 +94,29 @@
     </section>
     <!-- end widget grid -->
 
+<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
+
+<div id="modal_invitar" class="modalmask">
+    <div class="modalbox movedown">
+        <a href="#close" title="Cerrar" class="close">X</a>
+        <h2>Enviar invitación</h2>
+        <div id="form_invitar">
+        </div>
+    </div>
+</div>
+
 <script>
+
     $(document).ready(function(){
+
+        /* Enviar email de invitación */
+        $('.invitar').click(function(e) {
+            e.preventDefault();
+            window.location.href = '#modal_invitar';
+            $("#form_invitar").load("{{=URL('empresa', 'invitar')}}");
+        });
+
+        /* Eliminar empresa */
         $('.eliminar-empresa').click(function(e) {
             e.preventDefault();
 
@@ -102,7 +124,7 @@
 
             $.ajax({
                 type: "post",
-                url: "{{=URL('cc_empresa', 'eliminar_empresa')}}",
+                url: "{{=URL('empresa', 'eliminar')}}",
                 data: {id: id},
                 success: function (response) {
                     console.log('good');
@@ -113,5 +135,29 @@
                 },
             });
         });
+
+        /* Compartir empresa */
+        /*
+        $('.compartir-empresa').click(function(e) {
+            e.preventDefault();
+
+            empresa_id = $(this).attr('id');
+            usuario_id = 3;
+
+            $.ajax({
+                type: "post",
+                url: "{{=URL('empresa', 'compartir')}}",
+                data: {empresa_id: empresa_id, usuario_id:usuario_id},
+                success: function (response) {
+                    console.log('good');
+                    location.reload();
+                },
+                error: function (response) {
+                    console.log('bad');
+                },
+            });
+        });
+        */
+
     });
 </script>
