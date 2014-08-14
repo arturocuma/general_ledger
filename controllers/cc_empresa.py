@@ -94,8 +94,10 @@ def ul_list2():
 
 def ul_list(tipo, empresa_id):
 
-
     db = empresas.dbs[int(empresa_id)]
+
+    print 'se crea la instancia', db
+    print db.tables
 
     cadena=''
     if tipo=='wizard':
@@ -108,9 +110,10 @@ def ul_list(tipo, empresa_id):
         empresa_id = empresa_id
         cadena='<div class="tree"><ul>'
         
-    categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
+    categories = db.executesql("SELECT node.num_cc, node.descripcion,\
+                   (COUNT(parent.descripcion) - 1) AS depth,\
                    node.id, node.cc_vista_id\
-                   FROM cc_empresa AS node , cc_empresa AS parent\
+                   FROM cc_empresa AS node, cc_empresa AS parent\
                    WHERE node.lft BETWEEN parent.lft AND parent.rgt\
                    GROUP BY node.id\
                    ORDER BY node.lft;")
@@ -214,7 +217,6 @@ def descendants(num_cc, *fields):
 
 
 def add_node(
-        db_=None,
         padre_id=None,
         num_cc=None,
         descripcion=None,
@@ -223,9 +225,8 @@ def add_node(
         cc_vista_id=None
         ):
 
-    #empresa_id = request.vars.empresa_id
-    #db = empresas.dbs[int(empresa_id)]
-    db = db_
+    empresa_id = request.vars.empresa_id
+    db = empresas.dbs[int(empresa_id)]
     
     tabla = db['cc_empresa']
 
@@ -348,7 +349,7 @@ def wiz_cc():
         else:
             padre_id = None
 
-        add_node(db_, padre_id, str(cuenta[1]), str(cuenta[2]),
+        add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
                 str(cuenta[3]), cuenta[4], cuenta[5])
 
     return
@@ -423,29 +424,10 @@ def editar_cuenta():
     return dict(form=form)
 
 
-def eliminar_empresa():
-
-    id = request.vars.id
-
-    nombre = db_maestro(db_maestro.empresa.id == id).select(
-            db_maestro.empresa.razon_social
-            ).first().razon_social
-
-    instancia = Web2Postgress()
-
-    # eliminar registro de la base de datos maestra
-    db_maestro(db_maestro.empresa.id == id).delete()
-
-    # cerrar cesión
-    empresas.dbs[int(id)].close()
-    
-    # eliminar instancia de base de datos
-    instancia.eliminar_db(nombre)
-
-
 def obtener_empresa(usuario_id):
     empresa_id=1
     return empresa_id
+
 
 def color_nivel(nivel):
     color = '#000'

@@ -56,9 +56,9 @@ crud, service, plugins = Crud(db_maestro), Service(), PluginManager()
 
 ## configure email
 mail = auth.settings.mailer
-mail.settings.server = 'logging' or 'smtp.gmail.com:587'
-mail.settings.sender = 'you@gmail.com'
-mail.settings.login = 'username:password'
+mail.settings.server = 'smtp.gmail.com:587'
+mail.settings.sender = 'datawork.mx@gmail.com'
+mail.settings.login = 'datawork.mx:d4t4w0rk'
 
 ## configure auth policy
 auth.settings.registration_requires_verification = False
