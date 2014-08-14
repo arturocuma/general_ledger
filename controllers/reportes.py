@@ -215,6 +215,7 @@ def libro_diario():
     return dict(datos = query, tipo_poliza= tipo_poliza)
 
 def estado_resultados():
+    tabla=''
     nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.descripcion).first()
     if nombre_reporte:
         desc_ingresos= db(db.seccion_reporte.nombre=='ingresos').select(db.seccion_reporte.descripcion).first()
