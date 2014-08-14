@@ -49,7 +49,6 @@ def ul_list2():
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
 
-
     cadena='<div class="table-responsive">'\
 	'<table class="table">'\
 	'	<thead>'\

@@ -263,9 +263,6 @@ class Web2Postgress():
         cur = con.cursor()
 
         nombre_hasheado = hashlib.sha1(nombre).hexdigest()
-        print 'crear base de datos'
-        print nombre
-        print nombre_hasheado
         cur.execute('create database _{}'.format(nombre_hasheado))
 
         cur.close()
@@ -288,11 +285,6 @@ class Web2Postgress():
         cur = con.cursor()
 
         nombre_hasheado = hashlib.sha1(nombre).hexdigest()
-
-        print 'eliminar base de datos'
-        print nombre
-        print nombre_hasheado
-
         cur.execute('drop database _{}'.format(nombre_hasheado))
 
         cur.close()
