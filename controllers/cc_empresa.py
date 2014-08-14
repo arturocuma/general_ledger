@@ -96,9 +96,6 @@ def ul_list(tipo, empresa_id):
 
     db = empresas.dbs[int(empresa_id)]
 
-    print 'se crea la instancia', db
-    print db.tables
-
     cadena=''
     if tipo=='wizard':
         empresa_id = empresa_id
@@ -371,7 +368,6 @@ def crear_cc(form):
         str(num_cc).zfill(num_niv)
 
         form.vars.num_cc = form.vars.cuenta_padre+'.'+ num_cc
-        #print form.vars
     return
 
 def listar():
