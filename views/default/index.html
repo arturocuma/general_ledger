@@ -3,10 +3,16 @@
 <div id='content'>
     <div class='well'>
         {{if session.auth:}}
+        {{ult_sesion = db_maestro(db_maestro.auth_event.user_id == auth.user['id']).select(db_maestro.auth_event.time_stamp).last()}}
             <div class='row'>
-                <h1 class="page-title txt-color-blueDark">
-                    Bienvenido {{=auth.user['first_name'] + ' ' + auth.user['last_name']}}
-                </h1>
+                <div class='jumbotron'>
+                    <h1 class="page-title txt-color-blueDark">
+                        Bienvenido {{=auth.user['first_name'] + ' ' + auth.user['last_name']}}
+                    </h1>
+                    {{if ult_sesion:}}
+                    <p>Ultima vez que iniciaste sesión: {{=ult_sesion.time_stamp}}</p>
+                    {{pass}}
+                </div>
             </div>
             {{if mias:}}
             <div class='row'>
@@ -15,26 +21,14 @@
                 </header>
                 {{for m in mias:}}
                 <div class="col-sm-4 col-md-2">
-                    <div class="btn-box">
-                        <a href="{{=URL('cc_empresa', 'index', args=m.id)}}">
+                    <a href="{{=URL('cc_empresa', 'index', args=m.id)}}">
+                        <div class="thumbnail">
                             <img src="{{=URL('static','images/logo-o.png')}}">
-                        </a>
-                        <div class="btn-group">
-                            <a class="dropdown-toggle" data-toggle="dropdown">
-                                <h4>{{=m.razon_social}}
-                                <span class="caret"> </span></h4>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{{=URL('cc_empresa', 'index', args=m.id)}}" class="btn btn-primary" role="button">Entrar
-                                    </a>
-                                </li>
-                                <li>
-                                    <a id='{{=m.id}}' data-nombre='{{=m.razon_social}}' class="btn btn-danger eliminar-empresa" role="button" href="javascript:void();" >Eliminar</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div><!--btn box-->
+                            <div class="caption">
+                                <h3>{{=m.razon_social}}</h3>
+                            </div>
+                        </div><!--thumbnail-->
+                    </a>
                 </div><!--fin col-->
                 {{pass}}
             </div><!--fin row-->
@@ -46,26 +40,14 @@
                 </header>
                 {{for c in compartidas:}}
                 <div class="col-sm-4 col-md-2">
-                    <div class="btn-box">
-                        <a href="{{=URL('cc_empresa', 'index', args=c.id)}}">
+                    <a href="{{=URL('cc_empresa', 'index', args=c.id)}}">
+                        <div class="thumbnail">
                             <img src="{{=URL('static','images/logo-o.png')}}">
-                        </a>
-                        <div class="btn-group">
-                            <a class="dropdown-toggle" data-toggle="dropdown">
-                                <h4>{{=c.razon_social}}
-                                <span class="caret"> </span></h4>
-                            </a>
-                            <ul class="dropdown-menu">
-                                <li>
-                                    <a href="{{=URL('cc_empresa', 'index', args=c.id)}}" class="btn btn-primary" role="button">Entrar
-                                    </a>
-                                </li>
-                                <li>
-                                    <a id='{{=c.id}}' data-nombre='{{=c.razon_social}}' class="btn btn-danger" role="button" href="javascript:void();" >Eliminar</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div><!--btn box-->
+                            <div class="caption">
+                                <h3>{{=c.razon_social}}</h3>
+                            </div>
+                        </div><!--thumbnail-->
+                    </a>
                 </div><!--fin col-->
                 {{pass}}
             </div>
@@ -81,25 +63,7 @@
     </div><!--fin well-->
 </div><!--content-->
 <style>
-    .dropdown-toggle{
-        color: #22262E;
-        text-decoration: none;
-    }
-    .dropdown-toggle:hover{
-        text-decoration: none;
-        cursor: pointer;
-    }
-    .dropdown-menu{
-        min-width: 0px;
-    }
-    .dropdown-menu > li > a {
-        color: #FFFFFF;
-    }
-    .dropdown-menu > li > a.btn-danger:hover {
-        background-color: #D2322D;
-        border-color: #d43f3a;
-    }
-    .btn-box{
+    .thumbnail{
         border: 1px solid #bbbbbb;
         background: #cccccc;
         background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#cccccc));
@@ -108,27 +72,21 @@
         background: -ms-linear-gradient(top, #eeeeee, #cccccc);
         background: -o-linear-gradient(top, #eeeeee, #cccccc);
         color: #22262e;
-        padding: 10px;
+        text-align: center;
     }
-    .btn-box > a {
-        text-decoration: none;
+    .thumbnail:hover{
+        background-color: #bbbbbb;
     }
-    .btn-box > a:hover{
-        text-decoration: none;
+    .thumbnail > img{
+        margin-top: 10px;
     }
-    .btn-box > a > img:hover{
-        cursor: pointer;
-        opacity: 0.5;
+    h3{
+        margin:10px;
     }
 </style>
 <script>
     $(document).ready(function(){
-        $('.btn-box').click(function(){
-            console.log(this);
-        });
-        $('.btn-group').click(function(){
-            console.log(this);
-        });
+
         $('.eliminar-empresa').click(function(e) {
             id = $(this).attr('id');
             nombre = $(this).data('nombre');
