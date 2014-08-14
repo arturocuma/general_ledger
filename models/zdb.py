@@ -55,6 +55,7 @@ class EmpresaDB(object):
 
             dbs[i.id] = DAL(
                     'postgres://web2py:w3b2py@localhost/{}'.format(indice),
+                    #'postgres://web2py:w3b2py@develop.datawork.mx:5432/{}'.format(indice),
                     check_reserved = ['all'],
                     migrate = False
                     )
@@ -199,8 +200,8 @@ class EmpresaDB(object):
                 Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
                 Field('concepto_general', 'string', label='Concepto de la Póliza'),
                 Field('tipo', 'reference tipo_poliza'),
-                Field('importe', 'double', 
-                    default = 0.0, 
+                Field('importe', 'double',
+                    default = 0.0,
                     represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
             )
             dbs[instancia].poliza.id.label='#Póliza'
@@ -214,23 +215,23 @@ class EmpresaDB(object):
                 Field('haber', 'double', default=0.0)
             )
             dbs[instancia].asiento.id.label='#Asiento'
-            
+
             # Tablas para configuración de reportes
             dbs[instancia].define_table('reporte',
                 Field('nombre', 'string', label='Nombre'),
                 Field('descripcion', 'string', label='Descripción'),
-                format='%(descripcion)s',
+                format='%(descripcion)s'
                 )
             dbs[instancia].define_table('seccion_reporte',
                 Field('reporte_id', 'reference reporte', label='Reporte'),
-                Field('nombre', 'string', label='Nombre de la sección'), 
+                Field('nombre', 'string', label='Nombre de la sección'),
                 Field('descripcion', 'string', label='Etiqueta'),
-                format='%(nombre)s %(descripcion)s',
+                format='%(nombre)s %(descripcion)s'
                 )
             dbs[instancia].define_table('cuentas_seccion_reporte',
                 Field('seccion_reporte_id', 'reference seccion_reporte', label='Etiqueta'),
                 Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
-                format='%(cc_empresa_id)s',
+                format='%(cc_empresa_id)s'
                 )
             dbs[instancia].define_table('balanza',
                 Field('mes', 'reference mes'),
