@@ -96,9 +96,6 @@ def ul_list(tipo, empresa_id):
 
     db = empresas.dbs[int(empresa_id)]
 
-    print 'se crea la instancia', db
-    print db.tables
-
     cadena=''
     if tipo=='wizard':
         empresa_id = empresa_id

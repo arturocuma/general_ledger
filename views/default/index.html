@@ -1,163 +1,160 @@
 {{extend 'layout.html'}}
 
-<!-- widget grid -->
-<section id="widget-grid" class="">
-<!-- row -->
-<div class="row">
-    <article class="col-sm-12">
-    <!-- new widget -->
-    <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-        <!-- widget options:
-        usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-            data-widget-colorbutton="false"
-            data-widget-editbutton="false"
-            data-widget-togglebutton="false"
-            data-widget-deletebutton="false"
-            data-widget-fullscreenbutton="false"
-            data-widget-custombutton="false"
-            data-widget-collapsed="true"
-            data-widget-sortable="false"
-            -->
-            <header>
-            <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
-            <h2>
-                {{if session.auth:}}
-                Bienvenido: {{=auth.user['first_name'] + ' ' + auth.user['last_name']}}
-                {{else:}}
-                Sesión no iniciada.
-                {{pass}}
-            </h2>
-            <ul class="nav nav-tabs pull-right in" id="myTab">
-                <li class="active">
-                <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
-                </li>
-            </ul>
-            </header>
-            <!-- widget div-->
-            <div class="no-padding">
-                <!-- widget edit box -->
-                <div class="jarviswidget-editbox">
-                    test
-                </div>
-                <!-- end widget edit box -->
-                <div class="widget-body">
-                    <!-- content -->
-                    <div id="myTabContent" class="tab-content">
-                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
-                            <div class="padding-10">
-                                <ul id="expList">
-
-                                    {{#if not session.instancias:}}
-
-                                        {{if session.auth:}}
-
-                                            {{if mias:}}
-                                                <strong>Empresas creadas por ti:</strong><br>
-                                                {{for m in mias:}}
-                                                    {{=A(m.razon_social, _href=URL('cc_empresa', 'index', args=m.id))}} |
-                                                    {{=A('Eliminar', _id=m.id, _class='eliminar-empresa')}} |
-                                                    {{=A('Compartir', _id=m.id, _class='invitar')}} |
-                                                    <br>
-                                                {{pass}}
-                                            {{pass}}
-
-                                            {{if compartidas:}}
-                                                <strong>Empresas compartidas contigo:</strong><br>
-                                                {{for c in compartidas:}}
-                                                    {{=A(c.razon_social, _href=URL('cc_empresa', 'index', args=c.id))}}
-                                                {{pass}}
-                                            {{pass}}
-
-                                        {{else:}}
-                                        Sesión no iniciada.
-                                        {{pass}}
-                                        
-                                    {{#else:}}
-                                        <br>Se está editando la empresa {{=session.instancias}}
-                                        {{#=A('¿Desea salir?', _href=URL('cc_empresa', 'index', args=0))}}
-                                    {{#pass}}
-
-                                </ul>
-                            </div>
-                        </div>
-                        <!-- end s1 tab pane -->
-                    </div>
-                    <!-- end content -->
-                </div>
+<div id='content'>
+    <div class='well'>
+        {{if session.auth:}}
+            <div class='row'>
+                <h1 class="page-title txt-color-blueDark">
+                    Bienvenido {{=auth.user['first_name'] + ' ' + auth.user['last_name']}}
+                </h1>
             </div>
-            <!-- end widget div -->
-        </div>
-        <!-- end widget -->
-        </article>
-    </div>
-    <!-- end row -->
-    </section>
-    <!-- end widget grid -->
-
-<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
-
-<div id="modal_invitar" class="modalmask">
-    <div class="modalbox movedown">
-        <a href="#close" title="Cerrar" class="close">X</a>
-        <h2>Enviar invitación</h2>
-        <div id="form_invitar">
-        </div>
-    </div>
-</div>
-
+            {{if mias:}}
+            <div class='row'>
+                <header role="heading">
+                    <h2>Tu(s) empresa(s)</h2>
+                </header>
+                {{for m in mias:}}
+                <div class="col-sm-4 col-md-2">
+                    <div class="btn-box">
+                        <a href="{{=URL('cc_empresa', 'index', args=m.id)}}">
+                            <img src="{{=URL('static','images/logo-o.png')}}">
+                        </a>
+                        <div class="btn-group">
+                            <a class="dropdown-toggle" data-toggle="dropdown">
+                                <h4>{{=m.razon_social}}
+                                <span class="caret"> </span></h4>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{{=URL('cc_empresa', 'index', args=m.id)}}" class="btn btn-primary" role="button">Entrar
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id='{{=m.id}}' data-nombre='{{=m.razon_social}}' class="btn btn-danger eliminar-empresa" role="button" href="javascript:void();" >Eliminar</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!--btn box-->
+                </div><!--fin col-->
+                {{pass}}
+            </div><!--fin row-->
+            {{pass}}
+            {{if compartidas:}}
+            <div class='row'>
+                <header role="heading">
+                    <h2>Empresas compartidas contigo</h2>
+                </header>
+                {{for c in compartidas:}}
+                <div class="col-sm-4 col-md-2">
+                    <div class="btn-box">
+                        <a href="{{=URL('cc_empresa', 'index', args=c.id)}}">
+                            <img src="{{=URL('static','images/logo-o.png')}}">
+                        </a>
+                        <div class="btn-group">
+                            <a class="dropdown-toggle" data-toggle="dropdown">
+                                <h4>{{=c.razon_social}}
+                                <span class="caret"> </span></h4>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    <a href="{{=URL('cc_empresa', 'index', args=c.id)}}" class="btn btn-primary" role="button">Entrar
+                                    </a>
+                                </li>
+                                <li>
+                                    <a id='{{=c.id}}' data-nombre='{{=c.razon_social}}' class="btn btn-danger" role="button" href="javascript:void();" >Eliminar</a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div><!--btn box-->
+                </div><!--fin col-->
+                {{pass}}
+            </div>
+            {{pass}}
+        {{else:}}
+            <div class='row'>
+                <h1 class="page-title txt-color-blueDark">
+                    <span>No has iniciado sesión</span>
+                </h1>
+                <a class='btn btn-primary' href="{{=URL('default','login')}}">Iniciar sesión</a>
+            </div><!--fin row-->
+        {{pass}}
+    </div><!--fin well-->
+</div><!--content-->
+<style>
+    .dropdown-toggle{
+        color: #22262E;
+        text-decoration: none;
+    }
+    .dropdown-toggle:hover{
+        text-decoration: none;
+        cursor: pointer;
+    }
+    .dropdown-menu{
+        min-width: 0px;
+    }
+    .dropdown-menu > li > a {
+        color: #FFFFFF;
+    }
+    .dropdown-menu > li > a.btn-danger:hover {
+        background-color: #D2322D;
+        border-color: #d43f3a;
+    }
+    .btn-box{
+        border: 1px solid #bbbbbb;
+        background: #cccccc;
+        background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#cccccc));
+        background: -webkit-linear-gradient(top, #eeeeee, #cccccc);
+        background: -moz-linear-gradient(top, #eeeeee, #cccccc);
+        background: -ms-linear-gradient(top, #eeeeee, #cccccc);
+        background: -o-linear-gradient(top, #eeeeee, #cccccc);
+        color: #22262e;
+        padding: 10px;
+    }
+    .btn-box > a {
+        text-decoration: none;
+    }
+    .btn-box > a:hover{
+        text-decoration: none;
+    }
+    .btn-box > a > img:hover{
+        cursor: pointer;
+        opacity: 0.5;
+    }
+</style>
 <script>
-
     $(document).ready(function(){
-
-        /* Enviar email de invitación */
-        $('.invitar').click(function(e) {
-            e.preventDefault();
-            window.location.href = '#modal_invitar';
-            $("#form_invitar").load("{{=URL('empresa', 'invitar')}}");
+        $('.btn-box').click(function(){
+            console.log(this);
         });
-
-        /* Eliminar empresa */
+        $('.btn-group').click(function(){
+            console.log(this);
+        });
         $('.eliminar-empresa').click(function(e) {
-            e.preventDefault();
-
             id = $(this).attr('id');
+            nombre = $(this).data('nombre');
+            $.SmartMessageBox({
+                    title : "Eliminar empresa " + nombre,
+                    content : "¿Estas seguro de eliminar esta empresa?",
+                    buttons : "[Cancelar][Eliminar]",
+                }, function(ButtonPress, Value) {
+                    if (ButtonPress == "Eliminar") {
 
-            $.ajax({
-                type: "post",
-                url: "{{=URL('empresa', 'eliminar')}}",
-                data: {id: id},
-                success: function (response) {
-                    console.log('good');
-                    location.reload();
-                },
-                error: function (response) {
-                    console.log('bad');
-                },
-            });
-        });
-
-        /* Compartir empresa */
-        /*
-        $('.compartir-empresa').click(function(e) {
+                        $.ajax({
+                            type: "post",
+                            url: "{{=URL('cc_empresa', 'eliminar_empresa')}}",
+                            data: {id: id},
+                            success: function (response) {
+                                console.log('good');
+                                location.reload();
+                            },
+                            error: function (response) {
+                                console.log('bad');
+                            },
+                        });
+                        return 0;
+                    }
+                });
             e.preventDefault();
-
-            empresa_id = $(this).attr('id');
-            usuario_id = 3;
-
-            $.ajax({
-                type: "post",
-                url: "{{=URL('empresa', 'compartir')}}",
-                data: {empresa_id: empresa_id, usuario_id:usuario_id},
-                success: function (response) {
-                    console.log('good');
-                    location.reload();
-                },
-                error: function (response) {
-                    console.log('bad');
-                },
-            });
         });
-        */
-
     });
 </script>

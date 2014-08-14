@@ -17,6 +17,7 @@ locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
     db_maestro = DAL('postgres://web2py:w3b2py@localhost/contabilidad', migrate=False)
+    #db_maestro = DAL('postgres://web2py:w3b2py@develop.datawork.mx:5432/contabilidad', migrate=False)
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db_maestro = DAL('google:datastore+ndb')
@@ -353,7 +354,7 @@ db_maestro.define_table('reporte',
     )
 db_maestro.define_table('seccion_reporte',
     Field('reporte_id', 'reference reporte', label='Reporte'),
-    Field('nombre', 'string', label='Nombre de la sección'), 
+    Field('nombre', 'string', label='Nombre de la sección'),
     Field('descripcion', 'string', label='Etiqueta'),
     format='%(nombre)s %(descripcion)s',
     )

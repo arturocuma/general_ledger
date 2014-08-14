@@ -53,14 +53,12 @@ class EmpresaDB(object):
         for i in lista:
 
             nombre_hasheado = hashlib.sha1(i.razon_social).hexdigest()
-            print 'listar instancias'
-            print i.razon_social
-            print nombre_hasheado
 
             dbs[i.id] = DAL(
                     'postgres://web2py:w3b2py@localhost/_{}'.format(nombre_hasheado),
+                    #'postgres://web2py:w3b2py@develop.datawork.mx:5432/_{}'.format(nombre_hasheado),
                     check_reserved = ['all'],
-                    migrate = True
+                    migrate = False
                     )
 
         for instancia in dbs:
@@ -203,8 +201,8 @@ class EmpresaDB(object):
                 Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
                 Field('concepto_general', 'string', label='Concepto de la Póliza'),
                 Field('tipo', 'reference tipo_poliza'),
-                Field('importe', 'double', 
-                    default = 0.0, 
+                Field('importe', 'double',
+                    default = 0.0,
                     represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
             )
             dbs[instancia].poliza.id.label='#Póliza'
@@ -218,26 +216,23 @@ class EmpresaDB(object):
                 Field('haber', 'double', default=0.0)
             )
             dbs[instancia].asiento.id.label='#Asiento'
-            
+
             # Tablas para configuración de reportes
             dbs[instancia].define_table('reporte',
                 Field('nombre', 'string', label='Nombre'),
                 Field('descripcion', 'string', label='Descripción'),
-                format='%(descripcion)s',
-                migrate=False
+                format='%(descripcion)s'
                 )
             dbs[instancia].define_table('seccion_reporte',
                 Field('reporte_id', 'reference reporte', label='Reporte'),
-                Field('nombre', 'string', label='Nombre de la sección'), 
+                Field('nombre', 'string', label='Nombre de la sección'),
                 Field('descripcion', 'string', label='Etiqueta'),
-                format='%(nombre)s %(descripcion)s',
-                migrate=False
+                format='%(nombre)s %(descripcion)s'
                 )
             dbs[instancia].define_table('cuentas_seccion_reporte',
                 Field('seccion_reporte_id', 'reference seccion_reporte', label='Etiqueta'),
                 Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
-                format='%(cc_empresa_id)s',
-                migrate=False
+                format='%(cc_empresa_id)s'
                 )
 
         self.dbs = dbs
