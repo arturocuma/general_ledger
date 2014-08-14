@@ -58,7 +58,7 @@ class EmpresaDB(object):
                     'postgres://web2py:w3b2py@localhost/_{}'.format(nombre_hasheado),
                     #'postgres://web2py:w3b2py@develop.datawork.mx:5432/_{}'.format(nombre_hasheado),
                     check_reserved = ['all'],
-                    migrate = False
+                    migrate = True
                     )
 
         for instancia in dbs:

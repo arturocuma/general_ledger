@@ -49,6 +49,7 @@ def ul_list2():
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
 
+
     cadena='<div class="table-responsive">'\
 	'<table class="table">'\
 	'	<thead>'\
@@ -94,6 +95,9 @@ def ul_list2():
 def ul_list(tipo, empresa_id):
 
     db = empresas.dbs[int(empresa_id)]
+
+    print 'se crea la instancia', db
+    print db.tables
 
     cadena=''
     if tipo=='wizard':
