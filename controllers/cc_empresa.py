@@ -1,6 +1,4 @@
 # coding: utf8
-if session.instancias:
-    db=empresas.dbs[int(session.instancias)]
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
 
 import csv
@@ -26,9 +24,7 @@ def ancestor(num_cc):
 def cc_wizard():
     tipo="wizard"
     empresa_id = request.vars.empresa_id
-    #cc_empresa = ul_list(tipo, empresa_id)
-    #return dict(cc_empresa=cc_empresa)
-    cc_empresa = None
+    cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa=cc_empresa)
 
 ##@auth.requires_permission('cc_grid')
@@ -221,7 +217,6 @@ def descendants(num_cc, *fields):
 
 
 def add_node(
-        db_=None,
         padre_id=None,
         num_cc=None,
         descripcion=None,
@@ -230,9 +225,8 @@ def add_node(
         cc_vista_id=None
         ):
 
-    #empresa_id = request.vars.empresa_id
-    #db = empresas.dbs[int(empresa_id)]
-    db = db_
+    empresa_id = request.vars.empresa_id
+    db = empresas.dbs[int(empresa_id)]
     
     tabla = db['cc_empresa']
 
@@ -355,7 +349,7 @@ def wiz_cc():
         else:
             padre_id = None
 
-        add_node(db_, padre_id, str(cuenta[1]), str(cuenta[2]),
+        add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
                 str(cuenta[3]), cuenta[4], cuenta[5])
 
     return
