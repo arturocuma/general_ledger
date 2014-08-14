@@ -199,7 +199,7 @@ def carga_cc():
     """
     from json import loads, dumps
 
-    query = (db.cc_empresa.id > 0)
+    query = ((db.cc_empresa.id > 0) & (db.cc_empresa.cc_vista_id==2))
 
     result = db(query).select(
             db.cc_empresa.id,

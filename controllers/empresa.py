@@ -84,3 +84,11 @@ def compartir():
             empresa_id = empresa_id,
             tipo = 2
             )
+
+
+def respaldar():
+    """
+    Crea un respaldo de la base de datos
+    """
+    pass
+
