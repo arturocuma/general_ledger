@@ -234,6 +234,7 @@ class EmpresaDB(object):
                 Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
                 format='%(cc_empresa_id)s'
                 )
+            '''
             dbs[instancia].define_table('balanza',
                 Field('mes', 'reference mes'),
                 Field('anio', 'reference anio'),
@@ -244,7 +245,7 @@ class EmpresaDB(object):
                 Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
                 Field('cierre', 'boolean', default=False)
             )
-
+            '''    
         self.dbs = dbs
 
 

@@ -148,7 +148,6 @@ auth.settings.login_form=GoogleAccount()
 db_maestro.define_table('pais',
     Field('nombre', 'string'),
     format='%(nombre)s',
-    migrate=True,fake_migrate=True
     )
 
 db_maestro.define_table('estado',
@@ -369,7 +368,7 @@ db_maestro.define_table('mi_empresa',
                 Field('empresa_id','reference empresa'),
                 Field('tipo','integer', default=1, requires=IS_IN_SET({1:'PROPIA',2:'COMPARTIDA'})),
                 )
-
+'''
 db_maestro.define_table('balanza',
     Field('mes', 'reference mes'),
     Field('anio', 'reference anio'),
@@ -379,4 +378,6 @@ db_maestro.define_table('balanza',
     Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
     Field('cierre', 'boolean', default=False)
+    migrate=False
 )
+'''
