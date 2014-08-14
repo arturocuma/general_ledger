@@ -116,13 +116,17 @@ def ul_list():
 def balance_general():
     return dict(balance=tabla_balance())
 
-def tabla_balance():
-    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+def catalogo_cuentas():
+    catalogo = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node , cc_empresa AS parent "\
                    "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
+    return catalogo
+
+def tabla_balance():
+    categories = catalogo_cuentas()
     nivel=0
     cont=0
     cc_nivel=['','','']
@@ -207,3 +211,96 @@ def libro_diario():
     tipo_poliza = db(db.tipo_poliza.id > 0).select(db.tipo_poliza.ALL)
 
     return dict(datos = query, tipo_poliza= tipo_poliza)
+
+def estado_resultados():
+    nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.descripcion).first()
+    desc_ingresos= db(db.seccion_reporte.nombre=='ingresos').select(db.seccion_reporte.descripcion).first()
+    desc_costos= db(db.seccion_reporte.nombre=='costos').select(db.seccion_reporte.descripcion).first()
+    desc_gastos= db(db.seccion_reporte.nombre=='gastos').select(db.seccion_reporte.descripcion).first()
+    desc_otros= db(db.seccion_reporte.nombre=='otros').select(db.seccion_reporte.descripcion).first()
+    desc_impuestos= db(db.seccion_reporte.nombre=='impuestos').select(db.seccion_reporte.descripcion).first()
+    cuentas_ingresos=db( (db.seccion_reporte.nombre=='ingresos')
+                        & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                        & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+    cuentas_costos=db( (db.seccion_reporte.nombre=='costos')
+                        & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                        & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+    cuentas_gastos=db( (db.seccion_reporte.nombre=='gastos')
+                        & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                        & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+    cuentas_otros=db( (db.seccion_reporte.nombre=='otros')
+                        & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                        & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+    cuentas_impuestos=db( (db.seccion_reporte.nombre=='impuestos')
+                        & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                        & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+    
+    #Comienza la tabla
+    tabla='<table id="dt_basic" class="table table-striped table-bordered table-hover">'
+    #Encabezado
+    tabla+='<thead><tr><td>Cuentas</td><td>Este mes</td><td>% de las ventas</td><td>Acum. este mes</td><td>% de las ventas</td></tr></thead>'
+    #Etiqueta de ingresos
+    tabla+='<tbody>'
+    tabla+=cabecera_seccion_er(desc_ingresos)
+    tabla+=fila_seccion_er(cuentas_ingresos)
+    tabla+=cabecera_seccion_er(desc_costos)
+    tabla+=fila_seccion_er(cuentas_costos)
+    tabla+=cabecera_seccion_er(desc_gastos)
+    tabla+=fila_seccion_er(cuentas_gastos)
+    tabla+=cabecera_seccion_er(desc_otros)
+    tabla+=fila_seccion_er(cuentas_otros)
+    tabla+=cabecera_seccion_er(desc_impuestos)
+    tabla+=fila_seccion_er(cuentas_impuestos)
+    tabla+='</tbody>'
+    tabla+='</table>'
+    return dict(tabla=XML(tabla))
+
+def cabecera_seccion_er(desc):
+    cabecera='<tr><td>'+desc.descripcion+'</td><td></td><td></td><td></td><td></td></tr>'
+    return XML(cabecera)
+
+def importe_cuenta_er(cuenta):
+    cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 "FROM asiento, cc_empresa "\
+                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 "AND cc_empresa.num_cc like '"+str(cuenta.num_cc)+"%'")
+    debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+    haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
+    if cuenta.cc_naturaleza_id==2: #Deudora
+        importe=debe-haber
+    else:
+        importe=haber-debe
+    return importe
+
+def fila_seccion_er(cuentas):
+    seccion=[]
+    row=[]
+    total=0
+    for cuenta in cuentas:
+        row.append(cuenta.descripcion)
+        importe1 = importe_cuenta_er(cuenta)
+        row.append(importe1)
+        row.append(importe1)
+        importe2 = importe_cuenta_er(cuenta)
+        row.append(importe2)
+        row.append(importe2)
+        seccion.append(row)
+        total+=importe1
+        row=[]
+    #calculando el %    
+    for elemento in seccion:
+        elemento[2]=(100/total)*elemento[2] if total > 0 else 0.0
+        elemento[4]=(100/total)*elemento[4] if total > 0 else 0.0
+    fila=''
+    for elemento in seccion:
+        fila+='<tr><td>'+XML(elemento[0])+'</td>'\
+        +'<td>'+XML(elemento[1])+'</td>'\
+        +'<td>'+XML(elemento[2])+'</td>'\
+        +'<td>'+XML(elemento[3])+'</td>'\
+        +'<td>'+XML(elemento[4])
+    return XML(fila)
+
+def cuentas_especificas():
+    cc_empresa=catalogo_cuentas()
+    tabla=''
+    return dict(tabla=tabla, cc_empresa=cc_empresa)
