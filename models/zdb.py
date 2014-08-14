@@ -5,6 +5,7 @@ from psycopg2 import connect
 from psycopg2.extensions import ISOLATION_LEVEL_AUTOCOMMIT
 import sys
 import os
+import hashlib
 
 
 class EmpresaDB(object):
@@ -51,13 +52,13 @@ class EmpresaDB(object):
 
         for i in lista:
 
-            indice = i.razon_social.lower()
+            nombre_hasheado = hashlib.sha1(i.razon_social).hexdigest()
 
             dbs[i.id] = DAL(
-                    'postgres://web2py:w3b2py@localhost/{}'.format(indice),
-                    #'postgres://web2py:w3b2py@develop.datawork.mx:5432/{}'.format(indice),
+                    'postgres://web2py:w3b2py@localhost/_{}'.format(nombre_hasheado),
+                    #'postgres://web2py:w3b2py@develop.datawork.mx:5432/_{}'.format(nombre_hasheado),
                     check_reserved = ['all'],
-                    migrate = False
+                    migrate = True
                     )
 
         for instancia in dbs:
@@ -260,7 +261,10 @@ class Web2Postgress():
 
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
-        cur.execute('create database {}'.format(nombre))
+
+        nombre_hasheado = hashlib.sha1(nombre).hexdigest()
+        cur.execute('create database _{}'.format(nombre_hasheado))
+
         cur.close()
         con.close()
 
@@ -280,12 +284,8 @@ class Web2Postgress():
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        #cur.execute("select pg_terminate_backend(pg_stat_activity.procpid)\
-        #from pg_stat_activity\
-        #where pg_stat_activity.datname = '{}'\
-        #and procpid <> pg_backend_pid();".format(nombre))
-
-        cur.execute('drop database {}'.format(nombre))
+        nombre_hasheado = hashlib.sha1(nombre).hexdigest()
+        cur.execute('drop database _{}'.format(nombre_hasheado))
 
         cur.close()
         con.close()

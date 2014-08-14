@@ -141,7 +141,7 @@
 
                         $.ajax({
                             type: "post",
-                            url: "{{=URL('cc_empresa', 'eliminar_empresa')}}",
+                            url: "{{=URL('empresa', 'eliminar')}}",
                             data: {id: id},
                             success: function (response) {
                                 console.log('good');

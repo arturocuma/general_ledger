@@ -245,6 +245,7 @@ def empresa_wizard():
         instancia.crear_db(nombre)
 
         redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
+        #redirect(URL('default', 'index', vars=vars))
 
     elif form.errors:
         response.flash = 'Errores en el formulario'
@@ -462,8 +463,6 @@ def index():
     from gluon.storage import Storage
     from uuid import uuid4
     from gluon.storage import Storage
-
-    print session.instancias
 
     if session.auth:
 
