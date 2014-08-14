@@ -26,7 +26,9 @@ def ancestor(num_cc):
 def cc_wizard():
     tipo="wizard"
     empresa_id = request.vars.empresa_id
-    cc_empresa = ul_list(tipo, empresa_id)
+    #cc_empresa = ul_list(tipo, empresa_id)
+    #return dict(cc_empresa=cc_empresa)
+    cc_empresa = None
     return dict(cc_empresa=cc_empresa)
 
 ##@auth.requires_permission('cc_grid')
@@ -98,6 +100,9 @@ def ul_list(tipo, empresa_id):
 
     db = empresas.dbs[int(empresa_id)]
 
+    print 'se crea la instancia', db
+    print db.tables
+
     cadena=''
     if tipo=='wizard':
         empresa_id = empresa_id
@@ -109,9 +114,10 @@ def ul_list(tipo, empresa_id):
         empresa_id = empresa_id
         cadena='<div class="tree"><ul>'
         
-    categories = db.executesql("SELECT node.num_cc, node.descripcion, (COUNT(parent.descripcion) - 1) AS depth,\
+    categories = db.executesql("SELECT node.num_cc, node.descripcion,\
+                   (COUNT(parent.descripcion) - 1) AS depth,\
                    node.id, node.cc_vista_id\
-                   FROM cc_empresa AS node , cc_empresa AS parent\
+                   FROM cc_empresa AS node, cc_empresa AS parent\
                    WHERE node.lft BETWEEN parent.lft AND parent.rgt\
                    GROUP BY node.id\
                    ORDER BY node.lft;")
