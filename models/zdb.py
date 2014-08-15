@@ -236,7 +236,18 @@ class EmpresaDB(object):
                 Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
                 format='%(cc_empresa_id)s'
                 )
-
+            '''
+            dbs[instancia].define_table('balanza',
+                Field('mes', 'reference mes'),
+                Field('anio', 'reference anio'),
+                Field('saldo_inicial', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+                Field('cargo', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+                Field('abono', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+                Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
+                Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
+                Field('cierre', 'boolean', default=False)
+            )
+            '''    
         self.dbs = dbs
 
 

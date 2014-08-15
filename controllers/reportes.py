@@ -1,5 +1,7 @@
 # coding: utf8
 # try something like
+import time
+
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
@@ -116,13 +118,17 @@ def ul_list():
 def balance_general():
     return dict(balance=tabla_balance())
 
-def tabla_balance():
-    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+def catalogo_cuentas():
+    catalogo = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node , cc_empresa AS parent "\
                    "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
+    return catalogo
+
+def tabla_balance():
+    categories = catalogo_cuentas()
     nivel=0
     cont=0
     cc_nivel=['','','']
@@ -207,3 +213,197 @@ def libro_diario():
     tipo_poliza = db(db.tipo_poliza.id > 0).select(db.tipo_poliza.ALL)
 
     return dict(datos = query, tipo_poliza= tipo_poliza)
+
+def estado_resultados():
+    tabla=''
+    nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.descripcion).first()
+    if nombre_reporte:
+        desc_ingresos= db(db.seccion_reporte.nombre=='ingresos').select(db.seccion_reporte.descripcion).first()
+        desc_costos= db(db.seccion_reporte.nombre=='costos').select(db.seccion_reporte.descripcion).first()
+        desc_gastos= db(db.seccion_reporte.nombre=='gastos').select(db.seccion_reporte.descripcion).first()
+        desc_otros= db(db.seccion_reporte.nombre=='otros').select(db.seccion_reporte.descripcion).first()
+        desc_impuestos= db(db.seccion_reporte.nombre=='impuestos').select(db.seccion_reporte.descripcion).first()
+        cuentas_ingresos=db( (db.seccion_reporte.nombre=='ingresos')
+                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+        cuentas_costos=db( (db.seccion_reporte.nombre=='costos')
+                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+        cuentas_gastos=db( (db.seccion_reporte.nombre=='gastos')
+                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+        cuentas_otros=db( (db.seccion_reporte.nombre=='otros')
+                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+        cuentas_impuestos=db( (db.seccion_reporte.nombre=='impuestos')
+                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+        
+        #Obtenemos los datos de las cuentas
+        seccion_ingresos=fila_ingresos_er(cuentas_ingresos)
+        total_ingresos=dict(actual=0,acumulado=0)
+        total_ingresos['actual']=seccion_ingresos['actual']
+        total_ingresos['acumulado']=seccion_ingresos['acumulado']
+        seccion_costos=fila_seccion_er(cuentas_costos,total_ingresos)
+        seccion_gastos=fila_seccion_er(cuentas_gastos,total_ingresos)
+        seccion_otros=fila_seccion_er(cuentas_otros,total_ingresos)
+        seccion_impuestos=fila_seccion_er(cuentas_impuestos,total_ingresos)
+        utilidad_bruta=dict(actual=0,acumulado=0)
+        utilidad_bruta['actual']=seccion_ingresos['actual']-seccion_costos['actual']
+        utilidad_bruta['acumulado']=seccion_ingresos['acumulado']-seccion_costos['acumulado']
+        utilidad=dict(actual=0,acumulado=0)
+        utilidad['actual']=utilidad_bruta['actual']-seccion_gastos['actual']
+        utilidad['acumulado']=utilidad_bruta['acumulado']-seccion_gastos['acumulado']
+        total_otros=total_otros_er(cuentas_otros)
+        utilidad_neta=dict(actual=0,acumulado=0)
+        utilidad_neta['actual']=utilidad['actual']-total_otros['actual']+seccion_impuestos['actual']
+        utilidad_neta['acumulado']=utilidad['acumulado']-total_otros['acumulado']+seccion_impuestos['acumulado']
+        #Comienza la tabla
+        tabla='<table id="dt_basic" class="table table-striped table-bordered table-hover">'
+        #Encabezado
+        tabla+='<thead><tr><td>Cuentas</td><td>Este mes</td><td>% de las ventas</td><td>Acum. este mes</td><td>% de las ventas</td></tr></thead>'
+        #Etiqueta de ingresos
+        tabla+='<tbody>'
+        tabla+=cabecera_seccion_er(desc_ingresos)
+        tabla+=seccion_ingresos['fila']
+        tabla+=total_seccion_er(seccion_ingresos, desc_ingresos,total_ingresos)
+        tabla+=cabecera_seccion_er(desc_costos)
+        tabla+=seccion_costos['fila']
+        tabla+=total_seccion_er(seccion_costos, desc_costos,total_ingresos)
+        tabla+=utilidad_er(utilidad_bruta,'Utilidad bruta',total_ingresos)
+        tabla+=cabecera_seccion_er(desc_gastos)
+        tabla+=seccion_gastos['fila']
+        tabla+=total_seccion_er(seccion_gastos, desc_gastos,total_ingresos)
+        tabla+=utilidad_er(utilidad,'Utilidades antes de otros ingresos, gastos',total_ingresos)
+        tabla+=cabecera_seccion_er(desc_otros)
+        tabla+=seccion_otros['fila']
+        tabla+=utilidad_er(total_otros,'Total de otros ingresos y gastos',total_ingresos)
+        tabla+=cabecera_seccion_er(desc_impuestos)
+        tabla+=seccion_impuestos['fila']
+        tabla+=total_seccion_er(seccion_impuestos, desc_impuestos,total_ingresos)
+        tabla+=utilidad_er(utilidad_neta,'Utilidad Neta',total_ingresos)
+        tabla+='</tbody>'
+        tabla+='</table>'
+
+    else:
+        tabla+='<table><th><tr><td>Configure el reporte en la sección de Configuración</td></tr></th></table>'
+    return dict(tabla=XML(tabla))
+
+def total_seccion_er(total,desc, total_ingresos):
+    porc_actual=(100/total_ingresos['actual'])*total['actual'] if total_ingresos['actual'] > 0 else 0.0
+    porc_acumulado=(100/total_ingresos['acumulado'])*total['acumulado'] if total_ingresos['acumulado'] > 0 else 0.0
+    fila='<tr><td>'+desc.descripcion+'</td><td>'+XML(total['actual'])+'</td>'\
+        '<td>'+XML(round(porc_actual,2))+'</td><td>'+XML(total['acumulado'])+'</td><td>'+XML(round(porc_acumulado,2))+'</td></tr>'
+    return XML(fila)
+
+def utilidad_er(utilidad, desc,total_ingresos):
+    porc_actual=(100/total_ingresos['actual'])*utilidad['actual'] if total_ingresos['actual'] > 0 else 0.0
+    porc_acumulado=(100/total_ingresos['acumulado'])*utilidad['acumulado'] if total_ingresos['acumulado'] > 0 else 0.0
+    fila='<tr><td>'+desc+'</td><td>'+XML(utilidad['actual'])+'</td>'\
+        '<td>'+XML(round(porc_actual,2))+'</td><td>'+XML(utilidad['acumulado'])+'</td><td>'+XML(round(porc_acumulado,2))+'</td></tr>'
+    return XML(fila)
+def cabecera_seccion_er(desc):
+    cabecera='<tr><td>'+desc.descripcion+'</td><td></td><td></td><td></td><td></td></tr>'
+    return XML(cabecera)
+
+def importe_cuenta_er(cuenta, acumulado):
+    fecha_actual=time.strftime("%Y-%m-%d 23:59:59")
+    mes_actual=time.strftime("%Y-%m-01 00:00:00")
+    if acumulado==True:
+        cadena=" AND f_asiento < '"+mes_actual+"'"
+    elif acumulado==False:
+        cadena=" AND f_asiento between '"+mes_actual+"' and '"+fecha_actual+"'"
+    cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 "FROM asiento, cc_empresa "\
+                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 "AND cc_empresa.num_cc like '"+str(cuenta.num_cc)+"%'"\
+                                 +cadena)
+    debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+    haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
+    if cuenta.cc_naturaleza_id==2: #Deudora
+        importe=haber-debe
+    else:
+        importe=debe-haber
+    return importe
+
+def total_otros_er(cuentas):
+    total_acreedora=dict(actual=0,acumulado=0)
+    total_deudora=dict(actual=0,acumulado=0)
+    total=dict(actual=0,acumulado=0)
+    for cuenta in cuentas:
+        actual = importe_cuenta_er(cuenta,False)
+        acumulado = importe_cuenta_er(cuenta,True)
+        if cuenta.cc_naturaleza_id==1:
+            total_acreedora['actual']+=total_acreedora['actual']
+            total_acreedora['acumulado']+=total_acreedora['acumulado']
+        elif cuenta.cc_naturaleza_id==2:
+            total_deudora['actual']+=total_deudora['actual']
+            total_deudora['acumulado']+=total_deudora['acumulado']
+    total['actual']=total_acreedora['actual']-total_deudora['actual']
+    total['acumulado']=total_acreedora['acumulado']-total_deudora['acumulado']
+    return dict(actual=total['actual'],acumulado=total['acumulado'])
+        
+def fila_seccion_er(cuentas,total_ingresos):
+    seccion=[]
+    row=[]
+    total1=0
+    total2=0
+    for cuenta in cuentas:
+        row.append(cuenta.descripcion)
+        importe1 = importe_cuenta_er(cuenta,False)
+        row.append(importe1)
+        row.append(importe1)
+        importe2 = importe_cuenta_er(cuenta,True)
+        row.append(importe2)
+        row.append(importe2)
+        seccion.append(row)
+        total1+=importe1
+        total2+=importe2
+        row=[]    
+    #calculando el %    
+    for elemento in seccion:
+        elemento[2]=(100/total_ingresos['actual'])*elemento[2] if total_ingresos['actual'] > 0 else 0.0
+        elemento[4]=(100/total_ingresos['acumulado'])*elemento[4] if total_ingresos['acumulado'] > 0 else 0.0
+    fila=''
+    for elemento in seccion:
+        fila+='<tr><td>'+XML(elemento[0])+'</td>'\
+        +'<td>'+XML(elemento[1])+'</td>'\
+        +'<td>'+XML(round(elemento[2],2))+'</td>'\
+        +'<td>'+XML(elemento[3])+'</td>'\
+        +'<td>'+XML(round(elemento[4],2))
+    return dict(fila=fila, actual=total1, acumulado=total2)
+
+def fila_ingresos_er(cuentas):
+    seccion=[]
+    row=[]
+    total1=0
+    total2=0
+    for cuenta in cuentas:
+        row.append(cuenta.descripcion)
+        importe1 = importe_cuenta_er(cuenta,False)
+        row.append(importe1)
+        row.append(importe1)
+        importe2 = importe_cuenta_er(cuenta,True)
+        row.append(importe2)
+        row.append(importe2)
+        seccion.append(row)
+        total1+=importe1
+        total2+=importe2
+        row=[]    
+    #calculando el %    
+    for elemento in seccion:
+        elemento[2]=(100/total1)*elemento[2] if total1 > 0 else 0.0
+        elemento[4]=(100/total2)*elemento[4] if total2 > 0 else 0.0
+    fila=''
+    for elemento in seccion:
+        fila+='<tr><td>'+XML(elemento[0])+'</td>'\
+        +'<td>'+XML(elemento[1])+'</td>'\
+        +'<td>'+XML(round(elemento[2]))+'</td>'\
+        +'<td>'+XML(elemento[3])+'</td>'\
+        +'<td>'+XML(round(elemento[4]))
+    return dict(fila=fila, actual=total1, acumulado=total2)
+    
+def cuentas_especificas():
+    cc_empresa=catalogo_cuentas()
+    tabla=''
+    return dict(tabla=tabla, cc_empresa=cc_empresa)

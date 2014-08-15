@@ -117,6 +117,8 @@ $(function (){
     Para configurar el catálogo de cuentas debe elegir si utilizará el catálogo de cuentas del SAT mostrado previamente o si lo configurará posteriormente creando todas las cuentas necesarias.
     </div>
         <br>
+        <form action="{{=URL('wiz_cc')}}" method="post" enctype="multipart/form-data">
+        
      <div class="table">
         <div class="fila_form">
           <div class="cell">¿Desea utilizar el catálogo de cuentas del SAT? </div>
@@ -130,8 +132,18 @@ $(function (){
             </select>
             </div>
          </div>
+         <div class="fila_form">
+          <div class="cell">O puede cargar un catálogo de cuentas personalizado </div>
+          <div class="cell"><input name="csvfile" id="csvfile" type="file" size="30">
+            </div>
+         </div>
+         <div class="fila_form">
+             <div class="cell"> <input type="hidden" name="empresa_id" value="{{=request.vars.empresa_id}}"></div>
+              <div class="cell"><input  type="submit" value="Crear Catálogo propio">
+              </div>
+         </div>
     </div>
-      
+      </form>
   </section>
         
     </div>
@@ -152,13 +164,18 @@ $(function (){
 
                 empresa_id={{=request.vars.empresa_id}};
                 cc_preconf = $('#sel_preconf_cc').val();
-
-                $.post("{{=URL('wiz_cc')}}", {empresa_id:empresa_id, cc_preconf:cc_preconf}).success(function(data){
-                    window.location = "{{=URL('cc_empresa','index')}}/" + empresa_id;
-                });
+            //get file object
+                
+            
+                    $.post("{{=URL('wiz_cc')}}", {empresa_id:empresa_id, cc_preconf:cc_preconf}).success(function(data){
+                        window.location = "{{=URL('cc_empresa','index')}}/" + empresa_id;
+                    });
+                 
             });
         });
     });
+    
+    
 </script>
 
 </body>
