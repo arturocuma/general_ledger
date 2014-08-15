@@ -295,7 +295,7 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
     if cc_preconf=='1':
         archivo='cuentas_sat'
     else:
-        archivo='cuentas_sat_nivel1'
+        archivo='cuentas_sat_nivel_uno'
 
     with open('applications/general_ledger/private/'+archivo+'.csv', 'rb') as f:
         reader = csv.reader(f)
@@ -305,6 +305,14 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
 
     return cc_sat
 
+def cat_cuentas_personal(empresa_id,archivo):
+    cc_personal=[]
+    file = archivo
+    reader = csv.reader(file)
+    for row in reader:
+        row[0]=str(empresa_id)
+        cc_personal.append(row)
+    return cc_personal
 
 def wiz_cc():
 
@@ -313,7 +321,15 @@ def wiz_cc():
 
     tabla = db_['cc_empresa']
     cc_preconf = request.vars.cc_preconf
-    cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
+    if request.vars.csvfile != None:
+        cc_sat=[]
+        file = request.vars.csvfile.file
+        reader = csv.reader(file)
+        for row in reader:
+            row[0]=str(empresa_id)
+            cc_sat.append(row)
+    else:
+        cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
 
     db_(db_.cc_vista).delete()
     db_.executesql('alter sequence cc_vista_id_seq restart with 1')
@@ -348,7 +364,8 @@ def wiz_cc():
 
         add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
                 str(cuenta[3]), cuenta[4], cuenta[5])
-
+    
+    redirect(URL('index',args=[empresa_id]))
     return
 
 
