@@ -448,8 +448,9 @@ header,h1,h2,h3,h4{
 			<div id="project-context" class="open">
 				{{if session.instancias:}}
 				<span class="label">Empresa:</span>
-					<span id="project-selector">
-						Empresa {{=session.instancias}}
+				<span id="project-selector">
+					{{nom = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
+					Empresa {{=nom.razon_social}}
 				</span>
 				{{pass}}
 			</div>
@@ -617,6 +618,14 @@ header,h1,h2,h3,h4{
 									</li>
 								</ul>
 							</li>
+							<li>
+                                <a href="#"><i class="fa fa-fw  fa-building "></i> Empresa</a>
+                                <ul>
+                                    <li>
+                                        <a href="{{=URL('empresa','opciones')}}"><i class="fa fa-fw "></i> Configuración </a>
+                                    </li>
+                                </ul>
+                            </li>
 						</ul>
 					</li>
 				</ul>
