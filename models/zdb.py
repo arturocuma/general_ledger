@@ -45,18 +45,20 @@ class EmpresaDB(object):
                     (db.mi_empresa.empresa_id == db.empresa.id) &\
                     (db.mi_empresa.user_id == self.user_id)
             ).select(
-                db.empresa.razon_social, db.empresa.id
+                db.empresa.razon_social,db.empresa.id
             )
 
         dbs = {}
 
         for i in lista:
 
-            nombre_hasheado = hashlib.sha1(i.razon_social).hexdigest()
+            hashear = i.razon_social + auth.user['email']
+            nombre_hasheado = hashlib.sha1(hashear).hexdigest()
 
             dbs[i.id] = DAL(
-                    'postgres://web2py:w3b2py@localhost/_{}'.format(nombre_hasheado),
-                    #'postgres://web2py:w3b2py@develop.datawork.mx:5432/_{}'.format(nombre_hasheado),
+                    'postgres://web2py:w3b2py@localhost/_{}_{}'.format(
+                        auth.user['email'], nombre_hasheado
+                        ),
                     check_reserved = ['all'],
                     migrate = True
                     )
@@ -247,7 +249,7 @@ class Web2Postgress():
         self.egg = 'What are you looking for?'
 
 
-    def crear_db(self, nombre):
+    def crear_db(self, nombre, email):
         """
         #ToDo: crear exepciones
         """
@@ -262,14 +264,14 @@ class Web2Postgress():
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        nombre_hasheado = hashlib.sha1(nombre).hexdigest()
-        cur.execute('create database _{}'.format(nombre_hasheado))
+        nombre_hasheado = hashlib.sha1(nombre + email).hexdigest()
+        cur.execute('create database "_{}_{}"'.format(email, nombre_hasheado))
 
         cur.close()
         con.close()
 
 
-    def eliminar_db(self, nombre):
+    def eliminar_db(self, nombre, email):
         """
         #ToDo: crear exepciones
         """
@@ -284,8 +286,8 @@ class Web2Postgress():
         con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
         cur = con.cursor()
 
-        nombre_hasheado = hashlib.sha1(nombre).hexdigest()
-        cur.execute('drop database _{}'.format(nombre_hasheado))
+        nombre_hasheado = hashlib.sha1(nombre + email).hexdigest()
+        cur.execute('drop database "_{}_{}"'.format(email, nombre_hasheado))
 
         cur.close()
         con.close()

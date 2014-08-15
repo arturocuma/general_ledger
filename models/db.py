@@ -197,6 +197,7 @@ db_maestro.define_table('persona',
 db_maestro.define_table('empresa',
     Field('razon_social', 'string', label='Razón Social'),
     Field('nombre_comercial', 'string', label='Nombre Comercial'),
+    #Field('hash_instancia', 'string', label='Hash'),
     db_maestro.persona,
     format='%(razon_social)s'
     )

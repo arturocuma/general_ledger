@@ -232,17 +232,21 @@ def empresa_wizard():
     form = SQLFORM.factory(*campos)
 
     if form.process().accepted:
-        
+       
+        # generar hash :/ crear función para esto
+        nombre = form.vars.razon_social
+        email = auth.user['email']
+
+        #form.vars.hash_instancia = hashlib.sha1(nombre + email).hexdigest()
+
         empresa_id = db_maestro.empresa.insert(**db_maestro.empresa._filter_fields(form.vars))
         vars = {'empresa_id': empresa_id}
 
         session.flash = 'Se han configurado correctamente los datos de la empresa'
         db_maestro.mi_empresa.insert(user_id=auth.user['id'], empresa_id=empresa_id)
 
-        # se crea la base de datos con el nombre de la misma
-        nombre = form.vars.razon_social
         instancia = Web2Postgress()
-        instancia.crear_db(nombre)
+        instancia.crear_db(nombre, email)
 
         redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
         #redirect(URL('default', 'index', vars=vars))

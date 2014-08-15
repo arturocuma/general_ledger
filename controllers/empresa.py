@@ -32,7 +32,8 @@ def eliminar():
     empresas.dbs[int(id)].close()
     
     # eliminar instancia de base de datos
-    instancia.eliminar_db(nombre)
+    email = auth.user['email']
+    instancia.eliminar_db(nombre, email)
 
 
 def invitar():
