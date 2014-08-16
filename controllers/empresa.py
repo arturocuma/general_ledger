@@ -32,7 +32,8 @@ def eliminar():
     empresas.dbs[int(id)].close()
     
     # eliminar instancia de base de datos
-    instancia.eliminar_db(nombre)
+    email = auth.user['email']
+    instancia.eliminar_db(nombre, email)
 
     session.instancias = 0
 
@@ -79,13 +80,15 @@ def aceptar():
     """
 
     empresa_id = request.vars.empresa_id
-    usuario_id = request.vars.usuario_id
+    usuario_id = auth.user['id']
 
     db_maestro.mi_empresa.insert(
             user_id = usuario_id,
             empresa_id = empresa_id,
             tipo = 2
             )
+
+    redirect(URL('default','index'))
 
 
 def respaldar():
@@ -113,13 +116,14 @@ def opciones():
     import hashlib
     import datetime
 
-    empresa_id = request.vars.empresa_id
+    empresa_id = session.instancias
+
     fields = [Field('invitado', requires=IS_EMAIL(), label=T('Email'))]
     form = SQLFORM.factory(*fields)
 
     if form.process().accepted:
 
-        invitacion = form.vars.invitado + auth.user['email']
+        invitacion = form.vars.invitado + auth.user['email'] + empresa_id
         
         url_hash = hashlib.sha1(invitacion).hexdigest()
         url = URL('empresa', 'invitacion', args=[url_hash], host=True)
