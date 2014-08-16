@@ -1,5 +1,6 @@
 # coding: utf8
 # intente algo como
+import csv
 db=empresas.dbs[int(session.instancias)]
 
 def index(): return dict(message="hello from configuracion/reportes.py")
@@ -143,3 +144,44 @@ def estado_resultados():
                 tipo_msg='exito'
     
     return dict(cc_empresa=cc_empresa, nombre_reporte=nombre_reporte, desc_ingresos=desc_ingresos, desc_costos=desc_costos, desc_gastos=desc_gastos, desc_otros=desc_otros, desc_impuestos=desc_impuestos, cuentas_ingresos=cuentas_ingresos, cuentas_costos=cuentas_costos, cuentas_gastos=cuentas_gastos, cuentas_otros=cuentas_otros, cuentas_impuestos=cuentas_impuestos, msg=XML(msg), tipo_msg=XML(tipo_msg))
+
+def saldo_inicial():
+    saldo = 0
+    tipo_msg=''
+    msg=''
+    existe = db(db.poliza.id>0).count()
+    if existe > 0:
+        tipo_msg='error'
+        msg='Ya existen polizas cargadas, no se puede realizar la operación'
+    elif request.vars.csv_saldo_inicial != None:
+        try:
+            msg= 'Error al insertar la póliza'
+            poliza = db[db.poliza].insert(concepto_general='Saldo inicial', tipo=1,importe=0)
+            campos=['poliza_id','cc_empresa_id', 'concepto_asiento','debe', 'haber']
+            file = request.vars.csv_saldo_inicial.file
+            reader = csv.reader(file)
+            for row in reader:
+                    cc=db(db.cc_empresa.num_cc==row[0]).select(db.cc_empresa.id).first()
+                    if not cc:
+                        msg= 'El número de cuenta '+row[0]+' no existe'
+                    valores=[]
+                    valores.append(poliza)
+                    valores.append(int(cc.id))
+                    valores.append(row[1])
+                    valores.append(float(row[2]))
+                    valores.append(float(row[3]))
+                    #msg= 'Error al insertar los asientos'
+                    dictionary = dict(zip(campos, valores))
+                    db[db.asiento].insert(**dictionary)
+        except:
+            db.rollback()
+            tipo_msg='error'
+            
+        else:
+            db.commit()
+            tipo_msg='exito'
+            msg= 'Saldo inicial guardado'
+    else:
+        tipo_msg='error'
+        msg= 'Elija un archivo para subir'
+    return dict(saldo=saldo,tipo_msg=tipo_msg,msg=msg)
