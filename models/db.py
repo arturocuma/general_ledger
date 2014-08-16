@@ -148,6 +148,7 @@ auth.settings.login_form=GoogleAccount()
 db_maestro.define_table('pais',
     Field('nombre', 'string'),
     format='%(nombre)s',
+    migrate=True,fake_migrate=True
     )
 
 db_maestro.define_table('estado',
@@ -196,7 +197,6 @@ db_maestro.define_table('persona',
 db_maestro.define_table('empresa',
     Field('razon_social', 'string', label='Razón Social'),
     Field('nombre_comercial', 'string', label='Nombre Comercial'),
-    #Field('hash_instancia', 'string', label='Hash'),
     db_maestro.persona,
     format='%(razon_social)s'
     )
@@ -350,17 +350,20 @@ db_maestro.asiento.id.label='#Asiento'
 db_maestro.define_table('reporte',
     Field('nombre', 'string', label='Nombre'),
     Field('descripcion', 'string', label='Descripción'),
+    migrate=False,
     format='%(descripcion)s',
     )
 db_maestro.define_table('seccion_reporte',
     Field('reporte_id', 'reference reporte', label='Reporte'),
     Field('nombre', 'string', label='Nombre de la sección'),
     Field('descripcion', 'string', label='Etiqueta'),
+    migrate=False,
     format='%(nombre)s %(descripcion)s',
     )
 db_maestro.define_table('cuentas_seccion_reporte',
     Field('seccion_reporte_id', 'reference seccion_reporte', label='Etiqueta'),
     Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
+    migrate=False,
     format='%(cc_empresa_id)s',
     )
 
@@ -369,16 +372,11 @@ db_maestro.define_table('mi_empresa',
                 Field('empresa_id','reference empresa'),
                 Field('tipo','integer', default=1, requires=IS_IN_SET({1:'PROPIA',2:'COMPARTIDA'})),
                 )
-'''
-db_maestro.define_table('balanza',
-    Field('mes', 'reference mes'),
-    Field('anio', 'reference anio'),
-    Field('saldo_inicial', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('cargo', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('abono', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-    Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
-    Field('cierre', 'boolean', default=False)
-    migrate=False
-)
-'''
+
+db_maestro.define_table('invitacion',
+        Field('user_id', 'reference auth_user'),
+        Field('empresa_id', 'reference empresa'),
+        Field('email_invitado', requires=IS_EMAIL(), label='Email'),
+        Field('fecha', 'datetime'),
+        Field('url_hash', 'string')
+        )

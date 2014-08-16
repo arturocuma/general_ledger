@@ -19,6 +19,7 @@ class EmpresaDB(object):
         """
         instancia = db_maestro(
                 (db_maestro.mi_empresa.empresa_id == indice) &\
+                (db_maestro.mi_empresa.tipo == 1) &\
                 (db_maestro.mi_empresa.user_id == self.user_id)
             ).select(
                     db_maestro.empresa.razon_social,
@@ -43,25 +44,54 @@ class EmpresaDB(object):
 
         lista = db(
                     (db.mi_empresa.empresa_id == db.empresa.id) &\
-                    (db.mi_empresa.user_id == self.user_id)
+                    (db.mi_empresa.user_id == self.user_id) &\
+                    (db.mi_empresa.user_id == db.auth_user.id)
             ).select(
-                db.empresa.razon_social,db.empresa.id
+                db.empresa.id.with_alias('id'),
+                db.empresa.razon_social.with_alias('razon_social'),
+                db.mi_empresa.tipo.with_alias('tipo'),
             )
 
         dbs = {}
 
         for i in lista:
 
-            hashear = i.razon_social + auth.user['email']
-            nombre_hasheado = hashlib.sha1(hashear).hexdigest()
+            if i.tipo == 1:
+                # bases de datos propias
+                hashear = i.razon_social + auth.user['email']
+                nombre_hasheado = hashlib.sha1(hashear).hexdigest()
 
-            dbs[i.id] = DAL(
-                    'postgres://web2py:w3b2py@localhost/_{}_{}'.format(
-                        auth.user['email'], nombre_hasheado
-                        ),
-                    check_reserved = ['all'],
-                    migrate = True
-                    )
+                dbs[i.id] = DAL(
+                        'postgres://web2py:w3b2py@localhost/_{}_{}'.format(
+                            auth.user['email'], nombre_hasheado
+                            ),
+                        check_reserved = ['all'],
+                        migrate = True
+                        )
+            else:
+                # bases de datos que se le comparten al usuario
+
+                # obtener email propietario/invitador
+                email = db(
+                        (db.mi_empresa.empresa_id == i.id) &\
+                        (db.mi_empresa.tipo == 1) &\
+                        (db.mi_empresa.user_id == db.auth_user.id)
+                        ).select(
+                            db.auth_user.email.with_alias('email')
+                        ).first().email
+
+                hashear = i.razon_social + email
+                nombre_hasheado = hashlib.sha1(hashear).hexdigest()
+
+                dbs[i.id] = DAL(
+                        'postgres://web2py:w3b2py@localhost/_{}_{}'.format(
+                            email, nombre_hasheado
+                            ),
+                        check_reserved = ['all'],
+                        migrate = True
+                        )
+                pass
+
 
         for instancia in dbs:
 

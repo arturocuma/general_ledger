@@ -13,7 +13,6 @@ def listar():
 
     empresa_id = session.instancias
     db_ = empresas.dbs[int(empresa_id)]
-    print session.instancias, db_
 
     # modificaciones a campos de la tabla `asiento`
     db_.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
@@ -150,8 +149,8 @@ def cuadrar_poliza():
 
 
 def valida(form):
-    print "In onvalidation callback"
-    print form.vars
+    #print "In onvalidation callback"
+    #print form.vars
     #form.errors= True  #this prevents the submission from completing
 
     #...or to add messages to specific elements on the form
