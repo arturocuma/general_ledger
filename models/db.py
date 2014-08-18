@@ -376,7 +376,8 @@ db_maestro.define_table('mi_empresa',
 db_maestro.define_table('invitacion',
         Field('user_id', 'reference auth_user'),
         Field('empresa_id', 'reference empresa'),
-        Field('email_invitado', requires=IS_EMAIL(), label='Email'),
+        #Field('email_invitado', requires=IS_EMAIL(), label='Email'),
+        Field('email_invitado', label='Email'),
         Field('fecha', 'datetime'),
         Field('url_hash', 'string')
         )
