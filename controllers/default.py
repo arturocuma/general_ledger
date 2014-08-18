@@ -251,6 +251,8 @@ def empresa_wizard():
         instancia = Web2Postgress()
         instancia.crear_db(nombre, email)
 
+        empresas.cargar_modelo_de_instancia(email, nombre, vez_primera=True)
+
         redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
         #redirect(URL('default', 'index', vars=vars))
 
@@ -454,10 +456,12 @@ def cookieDelete():
         response.cookies['picture_usr']['expires'] = -10
         response.cookies['picture_usr']['path'] = '/'
 
+
 def login():
-    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-    auth = Auth(db_maestro)
-    #auth.settings.login_form=GoogleAccount()
+    #from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    #auth = Auth(db_maestro)
+
+    auth.settings.login_form=GoogleAccount()
     form = auth.login()
 
     return dict(form=form)

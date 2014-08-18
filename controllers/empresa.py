@@ -1,6 +1,12 @@
 # coding: utf8
-# try something like
-(auth.user or request.args(0) == 'login') or redirect(URL('default','login'))
+
+from gluon.utils import md5_hash
+from gluon.restricted import RestrictedError
+from gluon.tools import Mail
+
+vars={'_next':request.env.request_uri}
+(auth.user or request.args(0) == 'login') or\
+redirect(URL('default', 'user', args='login', vars=vars))
 
 def index(): return dict(message="hello from empresa.py")
 
@@ -40,43 +46,19 @@ def eliminar():
 
 def invitar():
     """
-    Envia un email a un usuario 
+    Lo que está en `opciones` debe ir aquí cuando se use AJAX en la vista
     """
-    from gluon.utils import md5_hash
-    from gluon.restricted import RestrictedError
-    from gluon.tools import Mail
-
-    empresa_id = request.vars.empresa_id
-    usuario = 'Cory Doctorow'
-    mensaje = '{} quiere compartir una base de datos contigo'.format(usuario)
-
-    fields = [Field('email_invitado', requires=IS_EMAIL(), label=T('Email'))]
-
-    form = SQLFORM.factory(*fields)
-
-    to = []
-    if form.process().accepted:
-
-        email_invitado = form.vars.email_invitado
-        to.append(email_invitado)
-        
-        if mail.send(to=to, subject=mensaje, message=mensaje):
-            redirect(URL('default', 'index'))
-        else:
-            response.flash = 'Mensaje no enviado'
-
-    elif form.errors:
-        print 'errores en el formulario'
-    else:
-        print 'formulario incompleto'
-
-    return dict(form = form)
+    pass
 
 
 def aceptar():
     """
-    Inserta un registro en la tabla `mi_empresa` para darle acceso a otro
+    Este controlador es ejecutado por el invitado:
+    - Inserta un registro en la tabla `mi_empresa` para darle acceso a otro
     usuario
+    - Elimina la invitación
+    - Envia una notificación al propietario de que la invitación ha sido
+    aceptada
     """
 
     empresa_id = request.vars.empresa_id
@@ -87,6 +69,20 @@ def aceptar():
             empresa_id = empresa_id,
             tipo = 2
             )
+
+    # eliminar invitación
+    url_hash = request.vars.url_hash
+    db_maestro(db_maestro.invitacion.url_hash == url_hash).delete()
+
+    # notificar al propietario
+    email_propietario = request.vars.email_propietario
+    asunto = 'La invitación a {} ha sido aceptada'.format('invitado')
+    mensaje = asunto
+    
+    if mail.send(to=[email_propietario], subject=asunto, message=mensaje):
+        redirect(URL('default', 'index'))
+    else:
+        response.flash = 'Mensaje no enviado'
 
     redirect(URL('default','index'))
 
@@ -110,9 +106,6 @@ def opciones():
     # se declara `to` como lista, para que se puedan agregar varios correos
     # ToDo: 
 
-    from gluon.utils import md5_hash
-    from gluon.restricted import RestrictedError
-    from gluon.tools import Mail
     import hashlib
     import datetime
 
@@ -143,7 +136,7 @@ def opciones():
                     user_id = auth.user['id'],
                     empresa_id = session.instancias,
                     email_invitado = form.vars.invitado,
-                    fecha = datetime.date.today(),
+                    fecha = datetime.datetime.now(),
                     url_hash = url_hash
                     )
         else:
@@ -163,7 +156,8 @@ def invitacion():
 
     invitacion = db_maestro(query).select(
             db_maestro.invitacion.empresa_id,
-            db_maestro.invitacion.user_id
+            db_maestro.invitacion.user_id,
+            db_maestro.invitacion.url_hash,
             ).first()
 
     razon_social = db_maestro(
@@ -176,11 +170,16 @@ def invitacion():
             db_maestro.auth_user.id == invitacion.user_id
             ).select(
                     db_maestro.auth_user.first_name,
-                    db_maestro.auth_user.last_name
+                    db_maestro.auth_user.last_name,
+                    db_maestro.auth_user.email
                 ).first()
+
+    email_propietario = usuario.email
     usuario = '{} {}'.format(usuario.first_name, usuario.last_name)
+
     vars = {'empresa_id': invitacion.empresa_id,
-            'usuario_id': invitacion.user_id}
+            'email_propietario': email_propietario,
+            'url_hash': invitacion.url_hash}
 
     return dict(
             usuario=usuario,
