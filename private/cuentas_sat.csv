@@ -1,280 +1,280 @@
-,1,Activo,,2,1
-,1.1,Activos Circulantes,,2,1
-,1.1.1,Caja,1,2,1
-,1.1.1.1,Caja y efectivo,1.1,2,2
-,1.1.2,Bancos,2,2,1
-,1.1.2.1,Bancos nacionales,2.1,2,2
-,1.1.2.2,Bancos extranjeros,2.2,2,2
-,1.1.3,Inversiones,3,2,1
-,1.1.3.1,Inversiones en Valores,3.1,2,2
-,1.1.3.2,Inversiones temporales,3.2,2,2
-,1.1.4,Clientes,4,2,1
-,1.1.4.1,Clientes nacionales,4.1,2,2
-,1.1.4.2,Clientes extranjeros,4.2,2,2
-,1.1.4.3,Partes relacionadas,4.3,2,2
-,1.1.5,Cuentas por Cobrar,5,2,1
-,1.1.5.1,Documentos por Cobrar corto plazo,5.1,2,2
-,1.1.5.2,Partes relacionadas,5.2,2,2
-,1.1.5.3,Intereses por cobrar,5.3,2,2
-,1.1.6,Títulos de crédito,6,2,1
-,1.1.6.1,Títulos de crédito,6.1,2,2
-,1.1.7,Créditos otorgados,7,2,1
-,1.1.7.1,Créditos otorgados,7.1,2,2
-,1.1.8,Deudores diversos,8,2,1
-,1.1.8.1,Funcionarios y Empleados,8.1,2,2
-,1.1.8.2,Socios y accionistas,8.2,2,2
-,1.1.8.3,Partes relacionadas,8.3,2,2
-,1.1.8.4,Otros deudores diversos,8.4,2,2
-,1.1.9,Estimación de Cuentas Incobrables,9,2,1
-,1.1.9.1,Estimación de Cuentas Incobrables,9.1,2,2
-,1.1.10,Pagos Anticipados,10,2,1
-,1.1.10.1,Seguros y Fianzas Pagadas por Anticipado,10.1,2,2
-,1.1.10.2,Rentas Pagadas por Anticipado,10.2,2,2
-,1.1.10.3,Intereses Pagados por Anticipado,10.3,2,2
-,1.1.10.4,Otros pagos anticipados,10.4,2,2
-,1.1.11,Impuestos a favor,11,2,1
-,1.1.11.1,IVA a favor,11.1,2,2
-,1.1.11.2,ISR a favor,11.2,2,2
-,1.1.11.3,IETU a favor,11.3,2,2
-,1.1.11.4,IDE a favor,11.4,2,2
-,1.1.11.5,IA a favor,11.5,2,2
-,1.1.11.6,Otros impuestos a favor,11.6,2,2
-,1.1.12,Pagos provisionales,12,2,1
-,1.1.12.1,Pagos provisionales de ISR,12.1,2,2
-,1.1.13,Inventarios,13,2,1
-,1.1.13.1,Inventarios,13.1,2,2
-,1.1.14,Obras en proceso,14,2,1
-,1.1.14.1,Obras en proceso,14.1,2,2
-,1.1.15,Impuestos acreditables pagados,15,2,1
-,1.1.15.1,IVA acreditable pagado,15.1,2,2
-,1.1.15.2,IVA acreditable de importación pagado,15.2,2,2
-,1.1.15.3,IEPS acreditable pagado,15.3,2,2
-,1.1.15.4,IEPS pagado en importación,15.4,2,2
-,1.1.16,Impuestos acreditables por pagar,16,2,1
-,1.1.16.1,IVA pendiente de pago,16.1,2,2
-,1.1.16.2,IVA de importación pendiente de pago,16.2,2,2
-,1.1.16.3,IEPS pendiente de pago,16.3,2,2
-,1.1.16.4,IEPS pendiente de pago en importación,16.4,2,2
-,1.1.17,Anticipo a proveedores,17,2,1
-,1.1.17.1,Anticipo a proveedores,17.1,2,2
-,1.1.18,Otros Activos Circulantes,18,2,1
-,1.1.18.1,Otros Activos Circulantes,18.1,2,2
-,1.2,Activos no circulantes,,2,1
-,1.2.1,Terrenos,19,2,1
-,1.2.1.1,Terrenos,19.1,2,2
-,1.2.2,Edificios,20,2,1
-,1.2.2.1,Edificios,20.1,2,2
-,1.2.3,Maquinaria y equipo,21,2,1
-,1.2.3.1,Maquinaria y equipo,21.1,2,2
-,1.2.4,Equipo de transporte,22,2,1
-,1.2.4.1,Equipo de transporte,22.1,2,2
-,1.2.5,Mobiliario y equipo de oficina,23,2,1
-,1.2.5.1,Mobiliario y equipo de oficina,23.1,2,2
-,1.2.6,Equipo de cómputo,24,2,1
-,1.2.6.1,Equipo de cómputo,24.1,2,2
-,1.2.7,Depreciación acumulada,25,2,1
-,1.2.7.1,Depreciación acumulada de edificios,25.1,2,2
-,1.2.7.2,Depreciación acumulada de maquinaria y equipo,25.2,2,2
-,1.2.7.3,Depreciación acumulada de equipo de transporte,25.3,2,2
-,1.2.7.4,Depreciación acumulada de mobiliario y equipo,25.4,2,2
-,1.2.7.5,Depreciación acumulada de equipo de cómputo,25.5,2,2
-,1.2.7.6,Depreciación acumulada de otros activos,25.6,2,2
-,1.2.8,Adaptaciones y mejoras,26,2,1
-,1.2.9,Adaptaciones y mejoras,26.1,2,2
-,1.2.10,Gastos Pre Operativos,27,2,1
-,1.2.10.1,Gastos Pre Operativos,27.1,2,2
-,1.2.11,Gastos de instalación,28,2,1
-,1.2.11.1,Gastos de instalación,28.1,2,2
-,1.2.12,Gastos de organización,29,2,1
-,1.2.12.1,Gastos de organización,29.1,2,2
-,1.2.13,Investigación y Desarrollo de Mercado,30,2,1
-,1.2.13.1,Investigación y Desarrollo de Mercado,30.1,2,2
-,1.2.14,Marcas y Patentes,31,2,1
-,1.2.14.1,Marcas y Patentes,31.1,2,2
-,1.2.15,Depósitos en Garantía,32,2,1
-,1.2.15.1,Depósitos en Garantía,32.1,2,2
-,1.2.16,Crédito Mercantil,33,2,1
-,1.2.16.1,Crédito Mercantil,33.1,2,2
-,1.2.17,Impuestos diferidos,34,2,1
-,1.2.17.1,Impuestos diferidos,34.1,2,2
-,1.2.18,Cuentas por cobrar a largo plazo,35,2,1
-,1.2.18.1,Cuentas por cobrar a largo plazo,35.1,2,2
-,1.2.19,Otros Activos No Circulantes,36,2,1
-,1.2.19.1,Otros Activos No Circulantes,36.1,2,2
-,2,Pasivo,,1,1
-,2.1,Pasivos circulantes,,1,1
-,2.1.1,Proveedores,37,1,1
-,2.1.1.1,Proveedores Nacionales,37.1,1,2
-,2.1.1.2,Proveedores Extranjeros,37.2,1,2
-,2.1.1.3,Partes Relacionadas,37.3,1,2
-,2.1.2,Cuentas por Pagar a corto plazo,38,1,1
-,2.1.2.1,Documentos por Pagar,38.1,1,2
-,2.1.2.2,Documentos por Pagar Bancarios,38.2,1,2
-,2.1.2.3,Dividendos por Pagar,38.3,1,2
-,2.1.2.4,Partes Relacionadas,38.4,1,2
-,2.1.2.5,Intereses por pagar,38.5,1,2
-,2.1.3,Acreedores diversos,39,1,1
-,2.1.3.1,Socios. Accionistas o Representante legal,39.1,1,2
-,2.1.3.2,Partes Relacionadas,39.2,1,2
-,2.1.3.3,Otros Acreedores Diversos,39.3,1,2
-,2.1.4,Anticipo de Clientes,40,1,1
-,2.1.4.1,Anticipo de clientes,40.1,1,2
-,2.1.5,Impuestos trasladados,41,1,1
-,2.1.5.1,IVA trasladado,41.1,1,2
-,2.1.5.2,IEPS trasladado,41.2,1,2
-,2.1.6,Impuestos trasladados cobrados,42,1,1
-,2.1.6.1,IVA trasladado cobrado,42.1,1,2
-,2.1.6.2,IEPS trasladado cobrado,42.2,1,2
-,2.1.7,Impuestos trasladados no cobrados,43,1,1
-,2.1.7.1,IVA trasladado no cobrado,43.1,1,2
-,2.1.7.2,IEPS trasladado no cobrado,43.2,1,2
-,2.1.8,Impuestos y Derechos por Pagar,44,1,1
-,2.1.8.1,IVA por pagar,44.1,1,2
-,2.1.8.2,IEPS por pagar,44.2,1,2
-,2.1.8.3,ISR por pagar,44.3,1,2
-,2.1.8.4,PTU por Pagar,44.4,1,2
-,2.1.8.5,IETU por Pagar,44.5,1,2
-,2.1.8.6,Impuestos estatales y municipales por pagar,44.6,1,2
-,2.1.8.7,Otros impuestos por pagar,44.7,1,2
-,2.1.8.8,Derechos por Pagar,44.8,1,2
-,2.1.9,Impuestos Retenidos,45,1,1
-,2.1.9.1,Retenciones salarios y asimilados,45.1,1,2
-,2.1.9.2,Retenciones IVA,45.2,1,2
-,2.1.9.3,Retenciones arrendamiento ISR,45.3,1,2
-,2.1.9.4,Retenciones servicios profesionales ISR,45.4,1,2
-,2.1.9.5,Retenciones dividendos,45.5,1,2
-,2.1.9.6,Otras retenciones,45.6,1,2
-,2.1.10,Pagos por terceros,46,1,1
-,2.1.10.1,Pagos por terceros,46.1,1,2
-,2.1.11,Otros Pasivos circulantes,47,1,1
-,2.1.11.1,Otros Pasivos circulantes,47.1,1,2
-,2.2,Pasivos no circulantes,,1,1
-,2.2.1,Acreedores a Largo Plazo,48,1,1
-,2.2.1.1,Socios. Accionistas o Representante legal,48.1,1,2
-,2.2.1.2,Partes Relacionadas,48.2,1,2
-,2.2.1.3,Otros Acreedores a largo plazo,48.3,1,2
-,2.2.2,Cuentas por Pagar a Largo Plazo,49,1,1
-,2.2.2.1,Documentos por Pagar a Largo Plazo,49.1,1,2
-,2.2.2.2,Documentos por Pagar Bancarios a Largo Plazo,49.2,1,2
-,2.2.2.3,Partes Relacionadas,49.3,1,2
-,2.2.2.4,Hipotecas por Pagar,49.4,1,2
-,2.2.2.5,Intereses por pagar a largo plazo,49.5,1,2
-,2.2.3,Cobros anticipados,50,1,1
-,2.2.3.1,Rentas Cobradas por Anticipado,50.1,1,2
-,2.2.3.2,Intereses Cobrados por Anticipado,50.2,1,2
-,2.2.3.3,Factoraje Financiero,50.3,1,2
-,2.2.3.4,Otros Cobros por Anticipado,50.4,1,2
-,2.2.4,Otros Pasivos a Largo Plazo,51,1,1
-,2.2.4.1,Otros Pasivos a Largo Plazo,51.1,1,2
-,3,Capital,,3,1
-,3.1,Capital social,52,3,1
-,3.1.1,Capital fijo,52.1,3,2
-,3.1.2,Capital variable,52.2,3,2
-,3.1.3,Aportaciones para Futuros Aumentos a Capital,52.3,3,2
-,3.2,Reserva Legal,53,3,1
-,3.2.1,Reserva Legal,53.1,3,2
-,3.3,Resultado del Ejercicio,54,3,1
-,3.3.1,Utilidad del Ejercicio,54.1,3,2
-,3.3.2,Pérdida del Ejercicio,54.2,3,2
-,3.4,Resultado de Ejercicios Anteriores,55,3,1
-,3.4.1,Utilidad de Ejercicios anteriores,55.1,3,2
-,3.4.2,Pérdida de Ejercicios anteriores,55.2,3,2
-,3.5,Otras Cuentas de Capital,56,3,1
-,3.5.1,Otras Cuentas de Capital,56.1,3,2
-,4,Ingresos,,4,1
-,4.1,Ventas,57,4,1
-,4.1.1,Ventas Gravadas a Tasa general contado,57.1,4,2
-,4.1.2,Ventas Gravadas a Tasa general crédito,57.2,4,2
-,4.1.3,Ventas Gravadas al 0% contado,57.3,4,2
-,4.1.4,Ventas Gravadas al 0% crédito,57.4,4,2
-,4.1.5,Ventas Exentas contado,57.5,4,2
-,4.1.6,Ventas Exentas crédito,57.6,4,2
-,4.2,Devoluciones. Descuentos y Rebajas Sobre Ventas,58,4,1
-,4.2.1,Devoluciones. Descuentos y Rebajas Sobre Ventas a tasa general,58.1,4,2
-,4.2.2,Devoluciones. Descuentos y Rebajas Sobre Ventas al 0%,58.2,4,2
-,4.2.3,Devoluciones. Descuentos y Rebajas Sobre Ventas exentas,58.3,4,2
-,4.3,Productos financieros,59,4,1
-,4.3.1,Productos financieros,59.1,4,2
-,4.4,Otros Ingresos,60,4,1
-,4.4.1,Otros Ingresos,60.1,4,2
-,5,Costos,,4,1
-,5.1,Costo de Ventas,61,4,1
-,5.1.1,Costo de Ventas,61.1,4,2
-,5.2,Compras,62,4,1
-,5.2.1,Compras nacionales,62.1,4,2
-,5.2.2,Compras al extranjero,62.2,4,2
-,5.3,Devoluciones. Descuentos y Rebajas Sobre Compras,63,4,1
-,5.3.1,Devoluciones. Descuentos y Rebajas Sobre Compras,63.1,4,2
-,5.4,Otras cuentas de costos,64,4,1
-,5.4.1,Otras cuentas de costos,64.1,4,2
-,6,Gastos,,4,1
-,6.1,Gastos Generales,65,4,1
-,6.1.1,Gastos Generales,65.1,4,2
-,6.1.2,Combustibles y lubricantes,65.2,4,2
-,6.1.3,Correos,65.3,4,2
-,6.1.4,Internet,65.4,4,2
-,6.1.5,Viáticos y gastos de viaje,65.5,4,2
-,6.1.6,Gastos de representación,65.6,4,2
-,6.1.7,Teléfono,65.7,4,2
-,6.1.8,Agua,65.8,4,2
-,6.1.9,Electricidad,65.9,4,2
-,6.1.10,Vigilancia y limpieza,65.10,4,2
-,6.1.11,Materiales de oficina,65.11,4,2
-,6.1.12,Gastos legales,65.12,4,2
-,6.1.13,Mantenimiento y conservación,65.13,4,2
-,6.1.14,Seguros y fianzas,65.14,4,2
-,6.1.15,Gastos no deducibles,65.15,4,2
-,6.1.16,Otros impuestos y derechos,65.16,4,2
-,6.1.17,Recargos fiscales,65.17,4,2
-,6.1.18,Cuotas y suscripciones,65.18,4,2
-,6.1.19,Propaganda y publicidad,65.19,4,2
-,6.1.20,Fotocopiado,65.20,4,2
-,6.1.21,Donativos,65.21,4,2
-,6.1.22,Asistencia técnica,65.22,4,2
-,6.1.23,Fletes,65.23,4,2
-,6.1.24,Impuesto de importación,65.24,4,2
-,6.1.25,Impuesto de exportación,65.25,4,2
-,6.1.26,Regalías sin retención,65.26,4,2
-,6.1.27,Regalías sujetas al 5%,65.27,4,2
-,6.1.28,Regalías sujetas al 10%,65.28,4,2
-,6.1.29,Regalías sujetas al 25%,65.29,4,2
-,6.1.30,Regalías sujetas al 30%,65.30,4,2
-,6.1.31,Comisiones sobre ventas,65.31,4,2
-,6.1.32,Patentes y marcas,65.32,4,2
-,6.1.33,Materias primas de producción,65.33,4,2
-,6.1.34,Materiales auxiliares de producción,65.34,4,2
-,6.1.35,Comisiones bancarias,65.35,4,2
-,6.2,Gastos de Ventas,66,4,1
-,6.2.1,Gastos de Ventas,66.1,4,2
-,6.3,Gastos de Administración,67,4,1
-,6.3.1,Gastos de Administración,67.1,4,2
-,6.4,Gastos Financieros,68,4,1
-,6.4.1,Gastos Financieros,68.1,4,2
-,6.5,Otros Gastos,69,4,1
-,6.5.1,Perdida en venta de terrenos,69.1,4,2
-,6.5.2,Perdida en venta de edificios y construcciones,69.2,4,2
-,6.5.3,Perdida en venta de maquinaria,69.3,4,2
-,6.5.4,Perdida en venta de equipo de transporte,69.4,4,2
-,6.5.5,Perdida en venta de mobiliario y equipo,69.5,4,2
-,6.5.6,Perdida en venta de equipo de computo,69.6,4,2
-,6.5.7,Perdida en enajenación de acciones,69.7,4,2
-,6.5.8,Perdida por deterioro de activos,69.8,4,2
-,6.5.9,Otros,69.9,4,2
-,6.6,Participación de los Trabajadores en las Utilidades,70,4,1
-,6.6.1,Participación de los Trabajadores en las Utilidades,70.1,4,2
-,6.7,Gastos no deducibles,71,4,1
-,6.7.1,Gastos no deducibles,71.1,4,2
-,6.8,Depreciación contable,72,4,1
-,6.8.1,Depreciación contable de edificios,72.1,4,2
-,6.8.2,Depreciación contable de maquinaria y equipo,72.2,4,2
-,6.8.3,Depreciación contable de equipo de transporte,72.3,4,2
-,6.8.4,Depreciación contable de mobiliario y equipo,72.4,4,2
-,6.8.5,Depreciación contable de equipo de cómputo,72.5,4,2
-,6.8.6,Depreciación contable de otros activos,72.6,4,2
-,6.9,Amortización contable,73,4,1
-,6.9.1,Amortización contable,73.1,4,2
-,7,Cuentas de Orden,,4,1
-,7.1,CUCA,74,4,1
-,7.1.1,CUCA,74.1,4,2
-,7.2,CUFIN,75,4,1
-,7.2.1,CUFIN,75.1,4,2
+1,Activo,,2,1
+1.1,Activos Circulantes,,2,1
+1.1.1,Caja,1,2,1
+1.1.1.1,Caja y efectivo,1.1,2,2
+1.1.2,Bancos,2,2,1
+1.1.2.1,Bancos nacionales,2.1,2,2
+1.1.2.2,Bancos extranjeros,2.2,2,2
+1.1.3,Inversiones,3,2,1
+1.1.3.1,Inversiones en Valores,3.1,2,2
+1.1.3.2,Inversiones temporales,3.2,2,2
+1.1.4,Clientes,4,2,1
+1.1.4.1,Clientes nacionales,4.1,2,2
+1.1.4.2,Clientes extranjeros,4.2,2,2
+1.1.4.3,Partes relacionadas,4.3,2,2
+1.1.5,Cuentas por Cobrar,5,2,1
+1.1.5.1,Documentos por Cobrar corto plazo,5.1,2,2
+1.1.5.2,Partes relacionadas,5.2,2,2
+1.1.5.3,Intereses por cobrar,5.3,2,2
+1.1.6,Títulos de crédito,6,2,1
+1.1.6.1,Títulos de crédito,6.1,2,2
+1.1.7,Créditos otorgados,7,2,1
+1.1.7.1,Créditos otorgados,7.1,2,2
+1.1.8,Deudores diversos,8,2,1
+1.1.8.1,Funcionarios y Empleados,8.1,2,2
+1.1.8.2,Socios y accionistas,8.2,2,2
+1.1.8.3,Partes relacionadas,8.3,2,2
+1.1.8.4,Otros deudores diversos,8.4,2,2
+1.1.9,Estimación de Cuentas Incobrables,9,2,1
+1.1.9.1,Estimación de Cuentas Incobrables,9.1,2,2
+1.1.10,Pagos Anticipados,10,2,1
+1.1.10.1,Seguros y Fianzas Pagadas por Anticipado,10.1,2,2
+1.1.10.2,Rentas Pagadas por Anticipado,10.2,2,2
+1.1.10.3,Intereses Pagados por Anticipado,10.3,2,2
+1.1.10.4,Otros pagos anticipados,10.4,2,2
+1.1.11,Impuestos a favor,11,2,1
+1.1.11.1,IVA a favor,11.1,2,2
+1.1.11.2,ISR a favor,11.2,2,2
+1.1.11.3,IETU a favor,11.3,2,2
+1.1.11.4,IDE a favor,11.4,2,2
+1.1.11.5,IA a favor,11.5,2,2
+1.1.11.6,Otros impuestos a favor,11.6,2,2
+1.1.12,Pagos provisionales,12,2,1
+1.1.12.1,Pagos provisionales de ISR,12.1,2,2
+1.1.13,Inventarios,13,2,1
+1.1.13.1,Inventarios,13.1,2,2
+1.1.14,Obras en proceso,14,2,1
+1.1.14.1,Obras en proceso,14.1,2,2
+1.1.15,Impuestos acreditables pagados,15,2,1
+1.1.15.1,IVA acreditable pagado,15.1,2,2
+1.1.15.2,IVA acreditable de importación pagado,15.2,2,2
+1.1.15.3,IEPS acreditable pagado,15.3,2,2
+1.1.15.4,IEPS pagado en importación,15.4,2,2
+1.1.16,Impuestos acreditables por pagar,16,2,1
+1.1.16.1,IVA pendiente de pago,16.1,2,2
+1.1.16.2,IVA de importación pendiente de pago,16.2,2,2
+1.1.16.3,IEPS pendiente de pago,16.3,2,2
+1.1.16.4,IEPS pendiente de pago en importación,16.4,2,2
+1.1.17,Anticipo a proveedores,17,2,1
+1.1.17.1,Anticipo a proveedores,17.1,2,2
+1.1.18,Otros Activos Circulantes,18,2,1
+1.1.18.1,Otros Activos Circulantes,18.1,2,2
+1.2,Activos no circulantes,,2,1
+1.2.1,Terrenos,19,2,1
+1.2.1.1,Terrenos,19.1,2,2
+1.2.2,Edificios,20,2,1
+1.2.2.1,Edificios,20.1,2,2
+1.2.3,Maquinaria y equipo,21,2,1
+1.2.3.1,Maquinaria y equipo,21.1,2,2
+1.2.4,Equipo de transporte,22,2,1
+1.2.4.1,Equipo de transporte,22.1,2,2
+1.2.5,Mobiliario y equipo de oficina,23,2,1
+1.2.5.1,Mobiliario y equipo de oficina,23.1,2,2
+1.2.6,Equipo de cómputo,24,2,1
+1.2.6.1,Equipo de cómputo,24.1,2,2
+1.2.7,Depreciación acumulada,25,2,1
+1.2.7.1,Depreciación acumulada de edificios,25.1,2,2
+1.2.7.2,Depreciación acumulada de maquinaria y equipo,25.2,2,2
+1.2.7.3,Depreciación acumulada de equipo de transporte,25.3,2,2
+1.2.7.4,Depreciación acumulada de mobiliario y equipo,25.4,2,2
+1.2.7.5,Depreciación acumulada de equipo de cómputo,25.5,2,2
+1.2.7.6,Depreciación acumulada de otros activos,25.6,2,2
+1.2.8,Adaptaciones y mejoras,26,2,1
+1.2.9,Adaptaciones y mejoras,26.1,2,2
+1.2.10,Gastos Pre Operativos,27,2,1
+1.2.10.1,Gastos Pre Operativos,27.1,2,2
+1.2.11,Gastos de instalación,28,2,1
+1.2.11.1,Gastos de instalación,28.1,2,2
+1.2.12,Gastos de organización,29,2,1
+1.2.12.1,Gastos de organización,29.1,2,2
+1.2.13,Investigación y Desarrollo de Mercado,30,2,1
+1.2.13.1,Investigación y Desarrollo de Mercado,30.1,2,2
+1.2.14,Marcas y Patentes,31,2,1
+1.2.14.1,Marcas y Patentes,31.1,2,2
+1.2.15,Depósitos en Garantía,32,2,1
+1.2.15.1,Depósitos en Garantía,32.1,2,2
+1.2.16,Crédito Mercantil,33,2,1
+1.2.16.1,Crédito Mercantil,33.1,2,2
+1.2.17,Impuestos diferidos,34,2,1
+1.2.17.1,Impuestos diferidos,34.1,2,2
+1.2.18,Cuentas por cobrar a largo plazo,35,2,1
+1.2.18.1,Cuentas por cobrar a largo plazo,35.1,2,2
+1.2.19,Otros Activos No Circulantes,36,2,1
+1.2.19.1,Otros Activos No Circulantes,36.1,2,2
+2,Pasivo,,1,1
+2.1,Pasivos circulantes,,1,1
+2.1.1,Proveedores,37,1,1
+2.1.1.1,Proveedores Nacionales,37.1,1,2
+2.1.1.2,Proveedores Extranjeros,37.2,1,2
+2.1.1.3,Partes Relacionadas,37.3,1,2
+2.1.2,Cuentas por Pagar a corto plazo,38,1,1
+2.1.2.1,Documentos por Pagar,38.1,1,2
+2.1.2.2,Documentos por Pagar Bancarios,38.2,1,2
+2.1.2.3,Dividendos por Pagar,38.3,1,2
+2.1.2.4,Partes Relacionadas,38.4,1,2
+2.1.2.5,Intereses por pagar,38.5,1,2
+2.1.3,Acreedores diversos,39,1,1
+2.1.3.1,Socios. Accionistas o Representante legal,39.1,1,2
+2.1.3.2,Partes Relacionadas,39.2,1,2
+2.1.3.3,Otros Acreedores Diversos,39.3,1,2
+2.1.4,Anticipo de Clientes,40,1,1
+2.1.4.1,Anticipo de clientes,40.1,1,2
+2.1.5,Impuestos trasladados,41,1,1
+2.1.5.1,IVA trasladado,41.1,1,2
+2.1.5.2,IEPS trasladado,41.2,1,2
+2.1.6,Impuestos trasladados cobrados,42,1,1
+2.1.6.1,IVA trasladado cobrado,42.1,1,2
+2.1.6.2,IEPS trasladado cobrado,42.2,1,2
+2.1.7,Impuestos trasladados no cobrados,43,1,1
+2.1.7.1,IVA trasladado no cobrado,43.1,1,2
+2.1.7.2,IEPS trasladado no cobrado,43.2,1,2
+2.1.8,Impuestos y Derechos por Pagar,44,1,1
+2.1.8.1,IVA por pagar,44.1,1,2
+2.1.8.2,IEPS por pagar,44.2,1,2
+2.1.8.3,ISR por pagar,44.3,1,2
+2.1.8.4,PTU por Pagar,44.4,1,2
+2.1.8.5,IETU por Pagar,44.5,1,2
+2.1.8.6,Impuestos estatales y municipales por pagar,44.6,1,2
+2.1.8.7,Otros impuestos por pagar,44.7,1,2
+2.1.8.8,Derechos por Pagar,44.8,1,2
+2.1.9,Impuestos Retenidos,45,1,1
+2.1.9.1,Retenciones salarios y asimilados,45.1,1,2
+2.1.9.2,Retenciones IVA,45.2,1,2
+2.1.9.3,Retenciones arrendamiento ISR,45.3,1,2
+2.1.9.4,Retenciones servicios profesionales ISR,45.4,1,2
+2.1.9.5,Retenciones dividendos,45.5,1,2
+2.1.9.6,Otras retenciones,45.6,1,2
+2.1.10,Pagos por terceros,46,1,1
+2.1.10.1,Pagos por terceros,46.1,1,2
+2.1.11,Otros Pasivos circulantes,47,1,1
+2.1.11.1,Otros Pasivos circulantes,47.1,1,2
+2.2,Pasivos no circulantes,,1,1
+2.2.1,Acreedores a Largo Plazo,48,1,1
+2.2.1.1,Socios. Accionistas o Representante legal,48.1,1,2
+2.2.1.2,Partes Relacionadas,48.2,1,2
+2.2.1.3,Otros Acreedores a largo plazo,48.3,1,2
+2.2.2,Cuentas por Pagar a Largo Plazo,49,1,1
+2.2.2.1,Documentos por Pagar a Largo Plazo,49.1,1,2
+2.2.2.2,Documentos por Pagar Bancarios a Largo Plazo,49.2,1,2
+2.2.2.3,Partes Relacionadas,49.3,1,2
+2.2.2.4,Hipotecas por Pagar,49.4,1,2
+2.2.2.5,Intereses por pagar a largo plazo,49.5,1,2
+2.2.3,Cobros anticipados,50,1,1
+2.2.3.1,Rentas Cobradas por Anticipado,50.1,1,2
+2.2.3.2,Intereses Cobrados por Anticipado,50.2,1,2
+2.2.3.3,Factoraje Financiero,50.3,1,2
+2.2.3.4,Otros Cobros por Anticipado,50.4,1,2
+2.2.4,Otros Pasivos a Largo Plazo,51,1,1
+2.2.4.1,Otros Pasivos a Largo Plazo,51.1,1,2
+3,Capital,,3,1
+3.1,Capital social,52,3,1
+3.1.1,Capital fijo,52.1,3,2
+3.1.2,Capital variable,52.2,3,2
+3.1.3,Aportaciones para Futuros Aumentos a Capital,52.3,3,2
+3.2,Reserva Legal,53,3,1
+3.2.1,Reserva Legal,53.1,3,2
+3.3,Resultado del Ejercicio,54,3,1
+3.3.1,Utilidad del Ejercicio,54.1,3,2
+3.3.2,Pérdida del Ejercicio,54.2,3,2
+3.4,Resultado de Ejercicios Anteriores,55,3,1
+3.4.1,Utilidad de Ejercicios anteriores,55.1,3,2
+3.4.2,Pérdida de Ejercicios anteriores,55.2,3,2
+3.5,Otras Cuentas de Capital,56,3,1
+3.5.1,Otras Cuentas de Capital,56.1,3,2
+4,Ingresos,,4,1
+4.1,Ventas,57,4,1
+4.1.1,Ventas Gravadas a Tasa general contado,57.1,4,2
+4.1.2,Ventas Gravadas a Tasa general crédito,57.2,4,2
+4.1.3,Ventas Gravadas al 0% contado,57.3,4,2
+4.1.4,Ventas Gravadas al 0% crédito,57.4,4,2
+4.1.5,Ventas Exentas contado,57.5,4,2
+4.1.6,Ventas Exentas crédito,57.6,4,2
+4.2,Devoluciones. Descuentos y Rebajas Sobre Ventas,58,4,1
+4.2.1,Devoluciones. Descuentos y Rebajas Sobre Ventas a tasa general,58.1,4,2
+4.2.2,Devoluciones. Descuentos y Rebajas Sobre Ventas al 0%,58.2,4,2
+4.2.3,Devoluciones. Descuentos y Rebajas Sobre Ventas exentas,58.3,4,2
+4.3,Productos financieros,59,4,1
+4.3.1,Productos financieros,59.1,4,2
+4.4,Otros Ingresos,60,4,1
+4.4.1,Otros Ingresos,60.1,4,2
+5,Costos,,4,1
+5.1,Costo de Ventas,61,4,1
+5.1.1,Costo de Ventas,61.1,4,2
+5.2,Compras,62,4,1
+5.2.1,Compras nacionales,62.1,4,2
+5.2.2,Compras al extranjero,62.2,4,2
+5.3,Devoluciones. Descuentos y Rebajas Sobre Compras,63,4,1
+5.3.1,Devoluciones. Descuentos y Rebajas Sobre Compras,63.1,4,2
+5.4,Otras cuentas de costos,64,4,1
+5.4.1,Otras cuentas de costos,64.1,4,2
+6,Gastos,,4,1
+6.1,Gastos Generales,65,4,1
+6.1.1,Gastos Generales,65.1,4,2
+6.1.2,Combustibles y lubricantes,65.2,4,2
+6.1.3,Correos,65.3,4,2
+6.1.4,Internet,65.4,4,2
+6.1.5,Viáticos y gastos de viaje,65.5,4,2
+6.1.6,Gastos de representación,65.6,4,2
+6.1.7,Teléfono,65.7,4,2
+6.1.8,Agua,65.8,4,2
+6.1.9,Electricidad,65.9,4,2
+6.1.10,Vigilancia y limpieza,65.1,4,2
+6.1.11,Materiales de oficina,65.11,4,2
+6.1.12,Gastos legales,65.12,4,2
+6.1.13,Mantenimiento y conservación,65.13,4,2
+6.1.14,Seguros y fianzas,65.14,4,2
+6.1.15,Gastos no deducibles,65.15,4,2
+6.1.16,Otros impuestos y derechos,65.16,4,2
+6.1.17,Recargos fiscales,65.17,4,2
+6.1.18,Cuotas y suscripciones,65.18,4,2
+6.1.19,Propaganda y publicidad,65.19,4,2
+6.1.20,Fotocopiado,65.2,4,2
+6.1.21,Donativos,65.21,4,2
+6.1.22,Asistencia técnica,65.22,4,2
+6.1.23,Fletes,65.23,4,2
+6.1.24,Impuesto de importación,65.24,4,2
+6.1.25,Impuesto de exportación,65.25,4,2
+6.1.26,Regalías sin retención,65.26,4,2
+6.1.27,Regalías sujetas al 5%,65.27,4,2
+6.1.28,Regalías sujetas al 10%,65.28,4,2
+6.1.29,Regalías sujetas al 25%,65.29,4,2
+6.1.30,Regalías sujetas al 30%,65.3,4,2
+6.1.31,Comisiones sobre ventas,65.31,4,2
+6.1.32,Patentes y marcas,65.32,4,2
+6.1.33,Materias primas de producción,65.33,4,2
+6.1.34,Materiales auxiliares de producción,65.34,4,2
+6.1.35,Comisiones bancarias,65.35,4,2
+6.2,Gastos de Ventas,66,4,1
+6.2.1,Gastos de Ventas,66.1,4,2
+6.3,Gastos de Administración,67,4,1
+6.3.1,Gastos de Administración,67.1,4,2
+6.4,Gastos Financieros,68,4,1
+6.4.1,Gastos Financieros,68.1,4,2
+6.5,Otros Gastos,69,4,1
+6.5.1,Perdida en venta de terrenos,69.1,4,2
+6.5.2,Perdida en venta de edificios y construcciones,69.2,4,2
+6.5.3,Perdida en venta de maquinaria,69.3,4,2
+6.5.4,Perdida en venta de equipo de transporte,69.4,4,2
+6.5.5,Perdida en venta de mobiliario y equipo,69.5,4,2
+6.5.6,Perdida en venta de equipo de computo,69.6,4,2
+6.5.7,Perdida en enajenación de acciones,69.7,4,2
+6.5.8,Perdida por deterioro de activos,69.8,4,2
+6.5.9,Otros,69.9,4,2
+6.6,Participación de los Trabajadores en las Utilidades,70,4,1
+6.6.1,Participación de los Trabajadores en las Utilidades,70.1,4,2
+6.7,Gastos no deducibles,71,4,1
+6.7.1,Gastos no deducibles,71.1,4,2
+6.8,Depreciación contable,72,4,1
+6.8.1,Depreciación contable de edificios,72.1,4,2
+6.8.2,Depreciación contable de maquinaria y equipo,72.2,4,2
+6.8.3,Depreciación contable de equipo de transporte,72.3,4,2
+6.8.4,Depreciación contable de mobiliario y equipo,72.4,4,2
+6.8.5,Depreciación contable de equipo de cómputo,72.5,4,2
+6.8.6,Depreciación contable de otros activos,72.6,4,2
+6.9,Amortización contable,73,4,1
+6.9.1,Amortización contable,73.1,4,2
+7,Cuentas de Orden,,4,1
+7.1,CUCA,74,4,1
+7.1.1,CUCA,74.1,4,2
+7.2,CUFIN,75,4,1
+7.2.1,CUFIN,75.1,4,2

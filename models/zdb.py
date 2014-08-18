@@ -55,7 +55,7 @@ class EmpresaDB(object):
         dbs = {}
 
         for i in lista:
-
+            instancia=i.id
             if i.tipo == 1:
                 # bases de datos propias
                 hashear = i.razon_social + auth.user['email']
@@ -66,7 +66,7 @@ class EmpresaDB(object):
                             auth.user['email'], nombre_hasheado
                             ),
                         check_reserved = ['all'],
-                        migrate = True
+                        migrate = False
                         )
             else:
                 # bases de datos que se le comparten al usuario
@@ -88,12 +88,12 @@ class EmpresaDB(object):
                             email, nombre_hasheado
                             ),
                         check_reserved = ['all'],
-                        migrate = True
+                        migrate = False
                         )
                 pass
 
 
-        for instancia in dbs:
+        
 
             dbs[instancia].define_table('pais',
                     Field('nombre', 'string'),

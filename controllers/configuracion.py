@@ -7,11 +7,11 @@ def index(): return dict(message="hello from configuracion/reportes.py")
 def estado_resultados():
     msg=''
     tipo_msg=''
-    nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.descripcion)
-    desc_ingresos= db(db.seccion_reporte.nombre=='ingresos').select(db.seccion_reporte.descripcion)
-    desc_costos= db(db.seccion_reporte.nombre=='costos').select(db.seccion_reporte.descripcion)
-    desc_gastos= db(db.seccion_reporte.nombre=='gastos').select(db.seccion_reporte.descripcion)
-    desc_otros= db(db.seccion_reporte.nombre=='otros').select(db.seccion_reporte.descripcion)
+    nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.ALL)
+    desc_ingresos= db(db.seccion_reporte.nombre=='ingresos').select(db.seccion_reporte.ALL)
+    desc_costos= db(db.seccion_reporte.nombre=='costos').select(db.seccion_reporte.ALL)
+    desc_gastos= db(db.seccion_reporte.nombre=='gastos').select(db.seccion_reporte.ALL)
+    desc_otros= db(db.seccion_reporte.nombre=='otros').select(db.seccion_reporte.ALL)
     desc_impuestos= db(db.seccion_reporte.nombre=='impuestos').select(db.seccion_reporte.ALL)
     cuentas_ingresos=db( (db.seccion_reporte.nombre=='ingresos')
                         & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
@@ -70,78 +70,82 @@ def estado_resultados():
             tipo_msg='error'
             msg='Asigne al menos una cuenta a las cuentas de impuestos'
         else:
-            try:
+            #try:
                 #Nombre del reporte
                 msg='Error en el nombre del reporte'
                 reporte=db.reporte.update_or_insert(db.reporte.nombre=='estado_resultados', nombre='estado_resultados', descripcion=request.vars.nombre_reporte)
                 #ingresos
                 msg='Error en la etiqueta de ingresos'
-                ingresos=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==reporte) & (db.seccion_reporte.nombre=='ingresos')), reporte_id=reporte, nombre='ingresos', descripcion=request.vars.etiqueta_ingresos)
+                ingresos=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==nombre_reporte[0].id) & (db.seccion_reporte.nombre=='ingresos')), reporte_id=nombre_reporte[0].id, nombre='ingresos', descripcion=request.vars.etiqueta_ingresos)
+                desc_ingresos= db(db.seccion_reporte.nombre=='ingresos').select(db.seccion_reporte.ALL)
                 msg='Error al eliminar las cuentas de ingresos'
-                db(db.cuentas_seccion_reporte.seccion_reporte_id==ingresos).delete()
+                db(db.cuentas_seccion_reporte.seccion_reporte_id==desc_ingresos[0].id).delete()
                 if isinstance(request.vars.sel_ingresos, list):
                     msg='Error en la seccion de ingresos (1)'
                     for cc_ingresos in request.vars.sel_ingresos:
-                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=ingresos,
+                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_ingresos[0].id,
                                                       cc_empresa_id=cc_ingresos)
                 else:
                     msg='Error en la seccion de ingresos (2)'
-                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=ingresos,
+                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_ingresos[0].id,
                                                       cc_empresa_id=request.vars.sel_ingresos)
                 #costos
                 msg='Error en la etiqueta de costos'
-                costos=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==reporte) & (db.seccion_reporte.nombre=='costos')), reporte_id=reporte, nombre='costos', descripcion=request.vars.etiqueta_costos)
+                costos=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==nombre_reporte[0].id) & (db.seccion_reporte.nombre=='costos')), reporte_id=nombre_reporte[0].id, nombre='costos', descripcion=request.vars.etiqueta_costos)
+                desc_costos= db(db.seccion_reporte.nombre=='costos').select(db.seccion_reporte.ALL)
                 msg='Error al eliminar las cuentas de costos'
-                db(db.cuentas_seccion_reporte.seccion_reporte_id==costos).delete()
+                db(db.cuentas_seccion_reporte.seccion_reporte_id==desc_costos[0].id).delete()
                 if isinstance(request.vars.sel_costos, list):
                     msg='Error en la sección de costos (1) '
                     for cc_costos in request.vars.sel_costos:
-                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=costos, cc_empresa_id=cc_costos)
+                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_costos[0].id, cc_empresa_id=cc_costos)
                 else:
                     msg='Error en la sección de costos (2)'
-                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=costos, cc_empresa_id=request.vars.sel_costos)
+                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_costos[0].id, cc_empresa_id=request.vars.sel_costos)
                 #gastos
                 msg='Error en la etiqueta de gastos'
-                gastos=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==reporte) & (db.seccion_reporte.nombre=='gastos')), reporte_id=reporte, nombre='gastos', descripcion=request.vars.etiqueta_gastos)
+                gastos=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==nombre_reporte[0].id) & (db.seccion_reporte.nombre=='gastos')), reporte_id=nombre_reporte[0].id, nombre='gastos', descripcion=request.vars.etiqueta_gastos)
+                desc_gastos= db(db.seccion_reporte.nombre=='gastos').select(db.seccion_reporte.ALL)
                 msg='Error al eliminar las cuentas de gastos'
-                db(db.cuentas_seccion_reporte.seccion_reporte_id==gastos).delete()
+                db(db.cuentas_seccion_reporte.seccion_reporte_id==desc_gastos[0].id).delete()
                 if isinstance(request.vars.sel_gastos, list):
                     msg='Error en la seccion de gastos (1)'
                     for cc_gastos in request.vars.sel_gastos:
-                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=gastos, cc_empresa_id=cc_gastos)
+                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_gastos[0].id, cc_empresa_id=cc_gastos)
                 else:
                     msg='Error en la seccion de gastos (2)'
-                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=gastos, cc_empresa_id=request.vars.sel_gastos)
+                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_gastos[0].id, cc_empresa_id=request.vars.sel_gastos)
                 #otros
                 msg='Error en la etiqueta de otros'
-                otros=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==reporte) & (db.seccion_reporte.nombre=='otros')), reporte_id=reporte, nombre='otros', descripcion=request.vars.etiqueta_otros)
-                db(db.cuentas_seccion_reporte.seccion_reporte_id==otros).delete()
+                otros=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==nombre_reporte[0].id) & (db.seccion_reporte.nombre=='otros')), reporte_id=nombre_reporte[0].id, nombre='otros', descripcion=request.vars.etiqueta_otros)
+                desc_otros= db(db.seccion_reporte.nombre=='otros').select(db.seccion_reporte.ALL)
+                db(db.cuentas_seccion_reporte.seccion_reporte_id==desc_otros[0].id).delete()
                 if isinstance(request.vars.sel_otros, list):
                     msg='Error en la seccion de otros (1)'
                     for cc_otros in request.vars.sel_otros:
-                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=otros, cc_empresa_id=cc_otros)
+                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_otros[0].id, cc_empresa_id=cc_otros)
                 else:
                     msg='Error en la seccion de otros (2)'
-                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=otros, cc_empresa_id=request.vars.sel_otros)
+                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_otros[0].id, cc_empresa_id=request.vars.sel_otros)
                 #impuestos
                 msg='Error en la etiqueta de impuestos'           
-                impuestos=db.seccion_reporte.update_or_insert((db.seccion_reporte.reporte_id==reporte) & (db.seccion_reporte.nombre=='impuestos'), reporte_id=reporte, nombre='impuestos', descripcion=request.vars.etiqueta_impuestos)
-                db(db.cuentas_seccion_reporte.seccion_reporte_id==impuestos).delete()
+                impuestos=db.seccion_reporte.update_or_insert((db.seccion_reporte.reporte_id==nombre_reporte[0].id) & (db.seccion_reporte.nombre=='impuestos'), reporte_id=nombre_reporte[0].id, nombre='impuestos', descripcion=request.vars.etiqueta_impuestos)
+                desc_impuestos= db(db.seccion_reporte.nombre=='impuestos').select(db.seccion_reporte.ALL)
+                db(db.cuentas_seccion_reporte.seccion_reporte_id==desc_impuestos[0].id).delete()
                 if isinstance(request.vars.sel_impuestos, list):
                     msg='Error en la seccion de impuestos (1)'
                     for cc_impuestos in request.vars.sel_impuestos:
-                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=impuestos, cc_empresa_id=cc_impuestos)
+                        db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_impuestos[0].id, cc_empresa_id=cc_impuestos)
                 else:
                     msg='Error en la seccion de impuestos (2)'
-                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=impuestos, cc_empresa_id=request.vars.sel_impuestos)
-                    
-            except:
-                tipo_msg='error'
-                db.rollback()
-            else:
-                msg='Configuración del reporte realizadas'
-                db.commit()
+                    db.cuentas_seccion_reporte.insert(seccion_reporte_id=desc_impuestos[0].id, cc_empresa_id=request.vars.sel_impuestos)
+                msg='Configuración del reporte realizada'
+            #    db.commit()
                 tipo_msg='exito'
+            #except:
+            #    tipo_msg='error'
+            #    db.rollback()
+                
     
     return dict(cc_empresa=cc_empresa, nombre_reporte=nombre_reporte, desc_ingresos=desc_ingresos, desc_costos=desc_costos, desc_gastos=desc_gastos, desc_otros=desc_otros, desc_impuestos=desc_impuestos, cuentas_ingresos=cuentas_ingresos, cuentas_costos=cuentas_costos, cuentas_gastos=cuentas_gastos, cuentas_otros=cuentas_otros, cuentas_impuestos=cuentas_impuestos, msg=XML(msg), tipo_msg=XML(tipo_msg))
 
