@@ -11,10 +11,13 @@ redirect(URL('default', 'login', vars=vars))
 import csv
 import sqlite3
 db=db_maestro
+
+
 def crear_permisos():
     """
     Crear permisos por default
     """
+    db.auth_permission.insert(name = 'compartir')
     return dict()
 
 
