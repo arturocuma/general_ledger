@@ -1,0 +1,6 @@
+{{extend 'layout.html'}}
+
+<h2>
+El usuario {{=usuario}} quiere compartir contigo la empresa {{=razon_social}}.
+<h2>
+{{=A('Aceptar', _href=URL('empresa', 'aceptar', vars=vars))}}

@@ -42,9 +42,6 @@ def calcula_importe(poliza_id):
         deb = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.debe for asi in asientos])
         hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
 
-        print deb
-        print hab
-
         if comparar_flotantes(deb, hab):
             flag = DIV('{}'.format(locale.currency(deb, grouping=True )), _class='verde')
         else:
