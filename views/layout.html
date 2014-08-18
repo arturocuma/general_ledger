@@ -223,7 +223,7 @@ span.divider{
 .web2py_breadcrumbs ul li + li:before{
     padding: 0 5px;
     color: #22262E;
-    content: "\25b6";
+    content: "\27A4";
     cursor: default;
 }
 .web2py_breadcrumbs ul li.active a{
@@ -535,45 +535,52 @@ header,h1,h2,h3,h4{
 
 				<ul>
 					<li class="">
-						<a href="{{=URL('default','index.html')}}" title="Dashboard"><i class="fa fa-lg fa-fw fa-home"></i> <span class="menu-item-parent">Dashboard</span></a>
+						<a href="{{=URL('default','index.html')}}" title="Dashboard">
+							<i class="fa fa-lg fa-fw fa-home"></i>
+							<span class="menu-item-parent">Dashboard</span>
+						</a>
+						<ul>
+							<li>
+								<a href="{{=URL('default','empresa')}}">
+									<i class="fa fa-lg fa-fw  fa-building"></i>
+									Empresa
+								</a>
+							</li>
+						</ul>
 					</li>
 					<li>
 						<a href="#">
-							<i class="fa fa-lg fa-fw fa-book"></i>
+							<i class="fa fa-lg fa-fw  fa-file-text-o "></i>
 							<span class="menu-item-parent">Pólizas</span>
 						</a>
 						<ul>
 							<li>
 								<a href="{{=URL('poliza','listar')}}">
-									<i class="fa fa-lg fa-fw fa-edit"></i>
+									<i class="fa fa-lg fa-fw  fa-list-ol "></i>
 									Listar
 								</a>
 							</li>
 						</ul>
 					</li>
 					<li>
-						<a href="#"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> <span class="menu-item-parent">Reportes</span></a>
+						<a href="#"><i class="fa fa-lg fa-fw fa-clipboard  "></i> <span class="menu-item-parent">Reportes</span></a>
 						<ul>
 							<li>
-                                <a href="{{=URL('cc_empresa','cc_grid2')}}">
-									<i class="fa fa-list-ol"></i>
-									Cuentas con saldo
-								</a>
-								 <a href="{{=URL('reportes','balance_general')}}">
-									<i class="fa fa-bar-chart-o"></i>
-									Balance general
-								</a>
 								<a href="{{=URL('reportes','libro_diario')}}">
 									<i class="fa fa-book"></i>
 									Libro diario
 								</a>
-								<a href="#">
-									<i class="fa fa-lg fa-fw fa-usd"></i>
-									Balanza
-								</a>
                                 <a href="{{=URL('reportes','estado_resultados')}}">
 									<i class="fa fa-lg fa-fw fa-usd"></i>
 									Estado de resultados
+								</a>
+                                <a href="{{=URL('cc_empresa','cc_grid2')}}">
+									<i class="fa fa-filter"></i>
+									Balanza
+								</a>
+								 <a href="{{=URL('reportes','balance_general')}}">
+									<i class="fa fa-bar-chart-o"></i>
+									Balance general
 								</a>
 							</li>
 						</ul>
@@ -656,51 +663,11 @@ header,h1,h2,h3,h4{
 
 		<!-- MAIN PANEL -->
 		<div id="main" role="main">
-
-			<!-- RIBBON -->
-			<!--<div id="ribbon">-->
-
-				<!--<span class="ribbon-button-alignment"> <span id="refresh" class="btn btn-ribbon" data-title="refresh"  rel="tooltip" data-placement="bottom" data-original-title="<i class='text-warning fa fa-warning'></i> Resetear las configuraciones de los widgets." data-html="true"><i class="fa fa-refresh"></i></span> </span>-->
-
-				<!-- breadcrumb -->
-
-				<!-- end breadcrumb -->
-
-				<!-- You can also add more buttons to the
-				ribbon for further usability
-
-				Example below:
-
-				<span class="ribbon-button-alignment pull-right">
-				<span id="search" class="btn btn-ribbon hidden-xs" data-title="search"><i class="fa-grid"></i> Change Grid</span>
-				<span id="add" class="btn btn-ribbon hidden-xs" data-title="add"><i class="fa-plus"></i> Add</span>
-				<span id="search" class="btn btn-ribbon" data-title="search"><i class="fa-search"></i> <span class="hidden-mobile">Search</span></span>
-				</span> -->
-
-			<!--</div>-->
-			<!-- END RIBBON -->
 			<!-- MAIN CONTENT -->
-			<div id="content">
-		        {{if left_sidebar_enabled:}}
-		            {{block left_sidebar}}
-		            <h3>Left Sidebar</h3>
-		            <p></p>
-		            {{end}}
-
-		        {{pass}}
-		        <div class="{{=middle_columns}}">
-		            {{block center}}
-		            {{include}}
-		            {{end}}
+			<div id="content">				
+				<div class="well">
+		        	{{include}}
 		        </div>
-		        {{if right_sidebar_enabled:}}
-		            {{block right_sidebar}}
-		            <h3>Right Sidebar</h3>
-		            <p></p>
-		            {{end}}
-		        {{pass}}
-
-
 			</div>
 			<!-- END MAIN CONTENT -->
 		</div>

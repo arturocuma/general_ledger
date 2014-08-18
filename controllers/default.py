@@ -13,7 +13,10 @@ import csv
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
 
-def a():
+def empresa():
+    empresa_id = request.args(0)
+    if empresa_id:
+        session.instancias = empresa_id
     return dict()
 
 def insertar_pais(nombre):
