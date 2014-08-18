@@ -32,7 +32,7 @@
                 </header>
                 {{for m in mias:}}
                 <div class="col-sm-4 col-md-2">
-                    <a href="{{=URL('cc_empresa', 'index', args=m.id)}}">
+                    <a href="{{=URL('default', 'index', args=m.id)}}">
                         <div class="thumbnail">
                             <img src="{{=URL('static','images/logo-o.png')}}">
                             <div class="caption">
@@ -51,7 +51,7 @@
                 </header>
                 {{for c in compartidas:}}
                 <div class="col-sm-4 col-md-2">
-                    <a href="{{=URL('cc_empresa', 'index', args=c.id)}}">
+                    <a href="{{=URL('default', 'index', args=c.id)}}">
                         <div class="thumbnail">
                             <img src="{{=URL('static','images/logo-o.png')}}">
                             <div class="caption">
