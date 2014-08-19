@@ -137,11 +137,11 @@ background:#22262e !important;
 }
 
 .smart-style-1 nav ul b .fa-expand-o:before {
-	content: "\f104";
+	content: "\f107";
 }
 
 .smart-style-1 nav ul b .fa-collapse-o:before {
-	content: "\f107";
+	content: "\f106";
 }
 
 .smart-style-1 .header-search > input[type="text"] {
