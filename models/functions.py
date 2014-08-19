@@ -79,13 +79,38 @@ def calcula_importe(poliza_id):
 
 def obtener_tipo_poliza(tipo_poliza_id):
     """
-    Retorna el tipo de poliza a partir de un id
+    Retorna el tipo de póliza a partir de un id
     """
-    resultado = db_maestro(db_maestro.tipo_poliza.id == tipo_poliza_id).select(
-            db_maestro.tipo_poliza.nombre
+    resultado = db(db.tipo_poliza.id == tipo_poliza_id).select(
+            db.tipo_poliza.nombre
             ).first()
 
     return resultado.nombre
+
+
+def crear_selector_status(id):
+    """
+    Retorna el estatus de la póliza a partir de un id
+    """
+    opciones_estatus = [OPTION(estatus.nombre, _value=estatus.id) for\
+            estatus in db().select(
+                db.estatus_poliza.ALL,
+                cache=(cache.ram,3600)
+                )]
+
+    estatus = db(db.poliza.id == id).select(
+            db.poliza.estatus
+            ).first().estatus
+
+    select = SELECT(
+            _name='estatus{}'.format(id),
+            _id='{}.estatus_poliza'.format(id),
+            _class='seleccionar_estatus',
+            value = estatus,
+            *opciones_estatus
+            )
+
+    return select
 
 
 def eliminar(ids):
