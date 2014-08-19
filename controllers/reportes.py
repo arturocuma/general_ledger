@@ -232,7 +232,7 @@ def libro_diario():
         filtro = " AND p.id = "+ str(request.vars.num_poliza)
 
     query = "SELECT p.id , tp.nombre AS tipo_poliza, p.f_poliza, \
-            p.concepto_general, cc.num_cc,cc.descripcion, a.concepto_asiento, a.debe, a.haber, p.importe\
+            p.concepto_general, cc.num_cc,cc.descripcion,a.id AS asiento_id, a.concepto_asiento, a.debe, a.haber, p.importe\
             FROM poliza p \
             LEFT JOIN asiento a ON (a.poliza_id = p.id) \
             LEFT JOIN cc_empresa cc ON (a.cc_empresa_id = cc.id)\

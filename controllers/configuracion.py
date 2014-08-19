@@ -187,6 +187,6 @@ def saldo_inicial():
             tipo_msg='exito'
             msg= 'Saldo inicial guardado'
     else:
-        tipo_msg='error'
+        tipo_msg='info'
         msg= 'Elija un archivo para subir'
     return dict(saldo=saldo,tipo_msg=tipo_msg,msg=msg)
