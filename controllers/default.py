@@ -461,10 +461,10 @@ def cookieDelete():
 
 
 def login():
-    #from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-    #auth = Auth(db_maestro)
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
 
-    auth.settings.login_form=GoogleAccount()
+    #auth.settings.login_form=GoogleAccount()
     form = auth.login()
 
     return dict(form=form)
