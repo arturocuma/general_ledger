@@ -13,6 +13,12 @@ import csv
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
 
+def empresa():
+    empresa_id = request.args(0)
+    if empresa_id:
+        session.instancias = empresa_id
+    return dict()
+
 def insertar_pais(nombre):
     """
     Inserta un registro `pais` si no existe,
@@ -471,6 +477,10 @@ def index():
     from gluon.storage import Storage
     from uuid import uuid4
     from gluon.storage import Storage
+
+    empresa_id = request.args(0)
+    if empresa_id:
+        session.instancias = empresa_id
 
     if session.auth:
 

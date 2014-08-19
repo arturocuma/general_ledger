@@ -1,0 +1,344 @@
+{{extend 'layout.html'}}
+{{if session.instancias:}}
+	{{nombre = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
+{{pass}}
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<legend>
+			<h1>
+				<i class="fa-fw fa fa-building"></i>
+				Empresa {{=nombre.razon_social}}
+			</h1>
+		</legend>
+	</div>
+</div>
+<div class="row">
+	<!-- NEW WIDGET START -->
+	<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+
+		<!-- Widget ID (each widget will need unique ID)-->
+		<div class="jarviswidget" id="wid-id-2" data-widget-editbutton="false">
+			<header role='heading'>
+				<div class="jarviswidget-ctrls" role="menu">
+				</div>
+				<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+				<h2>Estado de resultados</h2>
+			</header>
+			<!-- widget div-->
+			<div>
+				<!-- widget edit box -->
+				<div class="jarviswidget-editbox">
+					<!-- This area used as dropdown edit box -->
+				</div>
+				<!-- end widget edit box -->
+				<!-- widget content -->
+				<div class="widget-body no-padding">
+					<div id="updating-chart" class="chart"></div>
+				</div>
+				<!-- end widget content -->
+			</div>
+			<!-- end widget div -->
+		</div>
+		<!-- end widget -->
+	</article>
+	<!-- WIDGET END -->
+</div>
+<!-- row -->
+<div class="row">
+
+	<!-- NEW WIDGET START -->
+	<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+
+		<!-- Widget ID (each widget will need unique ID)-->
+		<div class="jarviswidget" id="wid-id-7" data-widget-editbutton="false">
+			<header>
+				<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+				<h2>Activos/Pasivos</h2>
+			</header>
+			<!-- widget div-->
+			<div>
+				<!-- widget edit box -->
+				<div class="jarviswidget-editbox">
+					<!-- This area used as dropdown edit box -->
+				</div>
+				<!-- end widget edit box -->
+				<!-- widget content -->
+				<div class="widget-body no-padding">
+					<div id="site-stats" class="chart has-legend"></div>
+				</div>
+				<!-- end widget content -->
+			</div>
+			<!-- end widget div -->
+		</div>
+		<!-- end widget -->							
+	</article>
+	<!-- WIDGET END -->
+	<!-- NEW WIDGET START -->
+	<article class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<!-- Widget ID (each widget will need unique ID)-->
+		<div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+			<header>
+				<span class="widget-icon"> <i class="fa fa-bar-chart-o"></i> </span>
+				<h2>Balanza</h2>
+			</header>
+			<!-- widget div-->
+			<div>
+				<!-- widget edit box -->
+				<div class="jarviswidget-editbox">
+					<!-- This area used as dropdown edit box -->
+				</div>
+				<!-- end widget edit box -->
+				<!-- widget content -->
+				<div class="widget-body no-padding">
+					<div id="bar-chart" class="chart"></div>
+				</div>
+				<!-- end widget content -->
+			</div>
+			<!-- end widget div -->
+		</div>
+		<!-- end widget -->
+	</article>
+	<!-- WIDGET END -->
+</div>
+<!-- end row -->
+<script>
+	/* chart colors default */
+	var $chrt_border_color = "#efefef";
+	var $chrt_grid_color = "#DDD"
+	var $chrt_main = "#E24913";
+	/* red       */
+	var $chrt_second = "#6595b4";
+	/* blue      */
+	var $chrt_third = "#FF9F01";
+	/* orange    */
+	var $chrt_fourth = "#7e9d3a";
+	/* green     */
+	var $chrt_fifth = "#BD362F";
+	/* dark red  */
+	var $chrt_mono = "#000";
+
+		$(document).ready(function() {
+
+				// DO NOT REMOVE : GLOBAL FUNCTIONS!
+				pageSetUp();
+				
+				/* updating chart */
+				if ($('#updating-chart').length) {
+
+					// For the demo we use generated data, but normally it would be coming from the server
+					var data = [], totalPoints = 200;
+					function getRandomData() {
+						if (data.length > 0)
+							data = data.slice(1);
+
+						// do a random walk
+						while (data.length < totalPoints) {
+							var prev = data.length > 0 ? data[data.length - 1] : 50;
+							var y = prev + Math.random() * 10 - 5;
+							if (y < 0)
+								y = 0;
+							if (y > 100)
+								y = 100;
+							data.push(y);
+						}
+
+						// zip the generated y values with the x values
+						var res = [];
+						for (var i = 0; i < data.length; ++i)
+							res.push([i, data[i]])
+						return res;
+					}
+
+					// setup control widget
+					var updateInterval = 1000;
+					$("#updating-chart").val(updateInterval).change(function() {
+						var v = $(this).val();
+						if (v && !isNaN(+v)) {
+							updateInterval = +v;
+							if (updateInterval < 1)
+								updateInterval = 1;
+							if (updateInterval > 2000)
+								updateInterval = 2000;
+							$(this).val("" + updateInterval);
+						}
+					});
+
+					// setup plot
+					var options = {
+						yaxis : {
+							min : 0,
+							max : 100
+						},
+						xaxis : {
+							min : 0,
+							max : 100
+						},
+						colors : [$chrt_fourth],
+						series : {
+							lines : {
+								lineWidth : 1,
+								fill : true,
+								fillColor : {
+									colors : [{
+										opacity : 0.4
+									}, {
+										opacity : 0
+									}]
+								},
+								steps : false
+
+							}
+						}
+					};
+					var plot = $.plot($("#updating-chart"), [getRandomData()], options);
+
+					function update() {
+						plot.setData([getRandomData()]);
+						// since the axes don't change, we don't need to call plot.setupGrid()
+						plot.draw();
+
+						setTimeout(update, updateInterval);
+					}
+
+					//update();
+
+				}
+
+				/*end updating chart*/
+				/* site stats chart */
+
+				if ($("#site-stats").length) {
+
+					var pageviews = [[1, 75], [3, 87], [4, 93], [5, 127], [6, 116], [7, 137], [8, 135], [9, 130], [10, 167], [11, 169], [12, 179], [13, 185], [14, 176], [15, 180], [16, 174], [17, 193], [18, 186], [19, 177], [20, 153], [21, 149], [22, 130], [23, 100], [24, 50]];
+					var visitors = [[1, 65], [3, 50], [4, 73], [5, 100], [6, 95], [7, 103], [8, 111], [9, 97], [10, 125], [11, 100], [12, 95], [13, 141], [14, 126], [15, 131], [16, 146], [17, 158], [18, 160], [19, 151], [20, 125], [21, 110], [22, 100], [23, 85], [24, 37]];
+					//console.log(pageviews)
+					var plot = $.plot($("#site-stats"), [{
+						data : pageviews,
+						label : "Activos"
+					}, {
+						data : visitors,
+						label : "Pasivos"
+					}], {
+						series : {
+							lines : {
+								show : true,
+								lineWidth : 1,
+								fill : true,
+								fillColor : {
+									colors : [{
+										opacity : 0.1
+									}, {
+										opacity : 0.15
+									}]
+								}
+							},
+							points : {
+								show : true
+							},
+							shadowSize : 0
+						},
+						xaxis : {
+							mode : "time",
+							tickLength : 10
+						},
+
+						yaxes : [{
+							min : 20,
+							tickLength : 5
+						}],
+						grid : {
+							hoverable : true,
+							clickable : true,
+							tickColor : $chrt_border_color,
+							borderWidth : 0,
+							borderColor : $chrt_border_color,
+						},
+						tooltip : true,
+						tooltipOpts : {
+							content : "%s for <b>%x:00 hrs</b> was %y",
+							dateFormat : "%y-%0m-%0d",
+							defaultTheme : false
+						},
+						colors : [$chrt_main, $chrt_second],
+						xaxis : {
+							ticks : 15,
+							tickDecimals : 2
+						},
+						yaxis : {
+							ticks : 15,
+							tickDecimals : 0
+						},
+					});
+
+				}
+
+				/* end site stats */
+				/* bar chart */
+
+				if ($("#bar-chart").length) {
+
+					var data1 = [];
+					for (var i = 0; i <= 12; i += 1)
+						data1.push([i, parseInt(Math.random() * 30)]);
+
+					var data2 = [];
+					for (var i = 0; i <= 12; i += 1)
+						data2.push([i, parseInt(Math.random() * 30)]);
+
+					var data3 = [];
+					for (var i = 0; i <= 12; i += 1)
+						data3.push([i, parseInt(Math.random() * 30)]);
+
+					var ds = new Array();
+
+					ds.push({
+						data : data1,
+						bars : {
+							show : true,
+							barWidth : 0.2,
+							order : 1,
+						}
+					});
+					ds.push({
+						data : data2,
+						bars : {
+							show : true,
+							barWidth : 0.2,
+							order : 2
+						}
+					});
+					ds.push({
+						data : data3,
+						bars : {
+							show : true,
+							barWidth : 0.2,
+							order : 3
+						}
+					});
+
+					//Display graph
+					$.plot($("#bar-chart"), ds, {
+						colors : [$chrt_second, $chrt_fourth, "#666", "#BBB"],
+						grid : {
+							show : true,
+							hoverable : true,
+							clickable : true,
+							tickColor : $chrt_border_color,
+							borderWidth : 0,
+							borderColor : $chrt_border_color,
+						},
+						legend : true,
+						tooltip : true,
+						tooltipOpts : {
+							content : "<b>%x</b> = <span>%y</span>",
+							defaultTheme : false
+						}
+
+					});
+
+				}
+
+				/* end bar chart */
+
+			});
+</script>
