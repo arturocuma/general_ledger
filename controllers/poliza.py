@@ -260,7 +260,7 @@ def agregar_poliza():
                 )
         consecutivo += 1
 
-    print 'consecutivo: {}', consecutivo
+    # print 'consecutivo: {}', consecutivo
 
     folio = armar_folio(consecutivo, fila.tipo, fila.f_poliza)
     db(db.poliza.id == id).update(folio = folio)
