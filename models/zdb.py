@@ -68,6 +68,8 @@ class EmpresaDB(object):
         """
         Carga una sola instancia
         """
+        import locale
+        locale.setlocale( locale.LC_ALL, 'es_ES.UTF-8' )
 
         hashear = razon_social + email
         nombre_hasheado = hashlib.sha1(hashear).hexdigest()
@@ -210,14 +212,21 @@ class EmpresaDB(object):
             )
 
         db.define_table('tipo_poliza',
-            Field('nombre','string'),
+            Field('nombre', 'string'),
+            format='%(nombre)s'
+        )
+
+        db.define_table('estatus_poliza',
+            Field('nombre', 'string'),
             format='%(nombre)s'
         )
 
         db.define_table('poliza',
+            Field('folio', 'string'),
             Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
             Field('tipo', 'reference tipo_poliza'),
+            Field('estatus', 'reference estatus_poliza', default=1),
             Field('importe', 'double',
                 default = 0.0,
                 represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
@@ -240,17 +249,24 @@ class EmpresaDB(object):
             Field('descripcion', 'string', label='Descripción'),
             format='%(descripcion)s'
             )
+
         db.define_table('seccion_reporte',
             Field('reporte_id', 'reference reporte', label='Reporte'),
             Field('nombre', 'string', label='Nombre de la sección'),
             Field('descripcion', 'string', label='Etiqueta'),
             format='%(nombre)s %(descripcion)s'
             )
+
         db.define_table('cuentas_seccion_reporte',
             Field('seccion_reporte_id', 'reference seccion_reporte', label='Etiqueta'),
             Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
             format='%(cc_empresa_id)s'
             )
+
+        db.define_table('misc',
+            Field('consecutivo_polizas', 'integer'),
+        )
+
         '''
         db.define_table('balanza',
             Field('mes', 'reference mes'),

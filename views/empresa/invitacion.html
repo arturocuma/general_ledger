@@ -1,6 +1,17 @@
 {{extend 'layout.html'}}
 
+{{if no_invitado:}}
+
+<h2>
+La página que usted solicitó no existe
+</h2>
+
+{{else:}}
+
 <h2>
 El usuario {{=usuario}} quiere compartir contigo la empresa {{=razon_social}}.
-<h2>
+<br>
 {{=A('Aceptar', _href=URL('empresa', 'aceptar', vars=vars))}}
+</h2>
+
+{{pass}}
