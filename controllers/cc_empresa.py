@@ -349,6 +349,10 @@ def wiz_cc():
     db_.tipo_poliza.insert(nombre = 'EGRESO')
     db_.tipo_poliza.insert(nombre = 'DIARIO')
 
+    db_(db_.tipo_poliza).delete()
+    db_.executesql('alter sequence misc_id_seq restart with 1')
+    db_.misc.insert(consecutivo_polizas = 0)
+
     for cuenta in cc_sat:
 
         num_cc = cuenta[1]
