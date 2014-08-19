@@ -34,7 +34,6 @@ def listar():
                 _id=str(row.id)+'.tipo_poliza'
                 )
 
-
     # Columna `estatus_poliza`
     db.poliza.estatus.represent = lambda value, row:\
             crear_selector_status(row.id)

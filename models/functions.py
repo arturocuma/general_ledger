@@ -103,9 +103,9 @@ def crear_selector_status(id):
             ).first().estatus
 
     select = SELECT(
-            _name='estatus{}'.format(id),
-            _id='{}.estatus_poliza'.format(id),
-            _class='seleccionar_estatus',
+            _name = 'estatus{}'.format(id),
+            _id = '{}.estatus'.format(id),
+            _class = 'cambiar_estatus',
             value = estatus,
             *opciones_estatus
             )
