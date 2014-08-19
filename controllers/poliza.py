@@ -11,26 +11,23 @@ def index(): return dict(message="hello from poliza.py")
 
 def listar():
 
-    empresa_id = session.instancias
-    db_ = empresas.dbs[int(empresa_id)]
-
     # modificaciones a campos de la tabla `asiento`
-    db_.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
-    db_.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db_.cc_empresa.descripcion, id_field=db_.cc_empresa.id, limitby=(0,10), min_length=1)
-    db_.asiento.cc_empresa_id.represent = lambda value, row: DIV( db_.cc_empresa(value).num_cc + ' ' + db_.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
-    db_.asiento.concepto_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
-    db_.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
-    db_.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
+    db.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
+    db.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db.cc_empresa.descripcion, id_field=db.cc_empresa.id, limitby=(0,10), min_length=1)
+    db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
+    db.asiento.concepto_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
+    db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
+    db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
 
     # modificaciones a campos de la tabla `poliza`
-    db_.poliza.importe.writable = False
-    db_.poliza.concepto_general.represent = lambda value, row:\
+    db.poliza.importe.writable = False
+    db.poliza.concepto_general.represent = lambda value, row:\
             DIV(
                 value if value != '' else '-',
                 _class='concepto_general',
                 _id=str(row.id)+'.concepto_general'
                 )
-    db_.poliza.tipo.represent = lambda value, row:\
+    db.poliza.tipo.represent = lambda value, row:\
             DIV(
                 obtener_tipo_poliza(value) if value != None else '-',
                 _class='tipo_poliza',
@@ -43,7 +40,7 @@ def listar():
             #]
 
     polizas = SQLFORM.smartgrid(
-            db_.poliza,
+            db.poliza,
             linked_tables=['asiento'],
             onvalidation=valida,
             #selectable=selectable,
@@ -220,14 +217,53 @@ def agregar_poliza():
     Agrega un elemento a la tabla `póliza`
     """
 
-    empresa_id = session.instancias
-    db_ = empresas.dbs[int(empresa_id)]
+    ultimo = db(db.poliza.id > 0).select(
+            db.poliza.id,
+            db.poliza.f_poliza,
+            orderby =~ db.poliza.id
+        ).first()
 
-    db_.poliza.insert(
+    # en caso de que no existan pólizas
+    if ultimo:
+        ultimo = int(ultimo.f_poliza.strftime('%m'))
+    else:
+        ultimo = int(datetime.now().strftime('%m'))
+    # fin-en caso de que no existan pólizas
+
+    id = db.poliza.insert(
+            folio = '',
             concepto_general = '',
             tipo = '',
             importe = 0,
             )
+
+    fila = db(db.poliza.id == id).select(
+            db.poliza.tipo,
+            db.poliza.f_poliza,
+            ).first()
+    ahora = int(fila.f_poliza.strftime('%m'))
+
+    consecutivo_actual = db(db.misc.id > 0).select(
+            db.misc.consecutivo_polizas
+            ).first().consecutivo_polizas
+
+    if ultimo < ahora:
+        # cambio de mes
+        consecutivo = 1 
+        db(db.misc.consecutivo_polizas == consecutivo_actual).update(
+                consecutivo_polizas = 1
+                )
+    else:
+        consecutivo = consecutivo_actual 
+        db(db.misc.consecutivo_polizas == consecutivo_actual).update(
+                consecutivo_polizas = consecutivo + 1
+                )
+        consecutivo += 1
+
+    # print 'consecutivo: {}', consecutivo
+
+    folio = armar_folio(consecutivo, fila.tipo, fila.f_poliza)
+    db(db.poliza.id == id).update(folio = folio)
 
     redirect(URL('poliza', 'listar'))
 
@@ -253,12 +289,22 @@ def actualiza_tipo_poliza():
             db.tipo_poliza.id,
             ).first()
 
-    print resultado.id
-
     db(db.poliza.id == id).update(**{
         'tipo':resultado.id,
         'f_poliza':datetime.now()
         })
+
+    # reducir el código aquí
+    fila = db(db.poliza.id == id).select(
+            db.poliza.folio,
+            db.poliza.tipo,
+            db.poliza.f_poliza,
+            ).first()
+
+    consecutivo = int(fila.folio[2:8])
+    folio = armar_folio(consecutivo, fila.tipo, fila.f_poliza)
+    db(db.poliza.id == id).update(folio = folio)
+    # fin-reducir el código aquí
 
     return value
 

@@ -522,7 +522,6 @@ def index():
         #session.instancias = []
         session.instancias = 0
 
-        print 'first'
         mias = db_maestro(
                 (db_maestro.mi_empresa.user_id == auth.user['id']) &\
                 (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
@@ -531,7 +530,7 @@ def index():
                    db_maestro.empresa.razon_social,
                    db_maestro.empresa.id
                    )
-        print 'second'
+
         compartidas = db_maestro(
                 (db_maestro.mi_empresa.user_id == auth.user['id']) &\
                 (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
@@ -540,7 +539,6 @@ def index():
                     db_maestro.empresa.razon_social,
                     db_maestro.empresa.id
                     )
-        print 'third'
 
     else:
         # the user is not logged

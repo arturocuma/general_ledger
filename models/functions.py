@@ -4,6 +4,30 @@
 Colección de funciones/hacks
 """
 
+def armar_folio(consecutivo, tipo, fecha):
+
+    folio = ''
+
+    # tipo de póliza
+    if tipo == 1:
+        folio += 'IN' 
+    elif tipo == 2:
+        folio += 'EG' 
+    elif tipo == 3:
+        folio += 'DI' 
+    else:
+        folio += 'XX'
+    
+    # números consecutivos
+    folio += str(consecutivo).zfill(6)
+
+    # mes y año
+    folio += fecha.strftime('%b').upper()
+    folio += fecha.strftime('%y')
+
+    return folio
+
+
 def comparar_flotantes(a, b):
     """
     compara flotantes que en apariencia son iguales D:
