@@ -339,6 +339,7 @@ def wiz_cc():
         #f request.vars.csvfile!=None:
             file = request.vars.csvfile.file
             cc_sat = cat_cuentas_personal(empresa_id, file)
+
         else:
             cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
     
@@ -360,7 +361,17 @@ def wiz_cc():
         db_.tipo_poliza.insert(nombre = 'INGRESO')
         db_.tipo_poliza.insert(nombre = 'EGRESO')
         db_.tipo_poliza.insert(nombre = 'DIARIO')
+        
+        db_(db_.misc).delete()
+        db_.executesql('alter sequence misc_id_seq restart with 1')
+        db_.misc.insert(consecutivo_polizas = 0)
     
+        db_(db_.estatus_poliza).delete()
+        db_.executesql('alter sequence estatus_poliza_id_seq restart with 1')
+        db_.estatus_poliza.insert(nombre = 'EN  REVISIÓN')
+        db_.estatus_poliza.insert(nombre = 'REVISADA')
+        db_.estatus_poliza.insert(nombre = 'APLICADA')
+        
         for cuenta in cc_sat:
     
             num_cc = cuenta[1]

@@ -154,35 +154,42 @@ def invitacion():
     url_hash = request.args(0)
     query = url_hash == db_maestro.invitacion.url_hash
 
+    invitado = auth.user['email']
+
     invitacion = db_maestro(query).select(
             db_maestro.invitacion.empresa_id,
+            db_maestro.invitacion.email_invitado,
             db_maestro.invitacion.user_id,
             db_maestro.invitacion.url_hash,
             ).first()
 
-    razon_social = db_maestro(
-            db_maestro.empresa.id == invitacion.empresa_id
-            ).select(
-                    db_maestro.empresa.razon_social
-                ).first().razon_social
+    if invitado != invitacion.email_invitado:
+        return dict(no_invitado=True)
+    else:
+        razon_social = db_maestro(
+                db_maestro.empresa.id == invitacion.empresa_id
+                ).select(
+                        db_maestro.empresa.razon_social
+                    ).first().razon_social
 
-    usuario = db_maestro(
-            db_maestro.auth_user.id == invitacion.user_id
-            ).select(
-                    db_maestro.auth_user.first_name,
-                    db_maestro.auth_user.last_name,
-                    db_maestro.auth_user.email
-                ).first()
+        usuario = db_maestro(
+                db_maestro.auth_user.id == invitacion.user_id
+                ).select(
+                        db_maestro.auth_user.first_name,
+                        db_maestro.auth_user.last_name,
+                        db_maestro.auth_user.email
+                    ).first()
 
-    email_propietario = usuario.email
-    usuario = '{} {}'.format(usuario.first_name, usuario.last_name)
+        email_propietario = usuario.email
+        usuario = '{} {}'.format(usuario.first_name, usuario.last_name)
 
-    vars = {'empresa_id': invitacion.empresa_id,
-            'email_propietario': email_propietario,
-            'url_hash': invitacion.url_hash}
+        vars = {'empresa_id': invitacion.empresa_id,
+                'email_propietario': email_propietario,
+                'url_hash': invitacion.url_hash}
 
-    return dict(
-            usuario=usuario,
-            razon_social=razon_social,
-            vars = vars
-            )
+        return dict(
+                no_invitado=False,
+                usuario=usuario,
+                razon_social=razon_social,
+                vars = vars
+                )

@@ -331,8 +331,12 @@ db_maestro.define_table('poliza',
     Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
     Field('concepto_general', 'string', label='Concepto de la Póliza'),
     Field('tipo', 'reference tipo_poliza'),
-    Field('importe', 'double', default=0.0, represent = lambda value, row: calcula_importe(row.id) if row.id else 0.0
-            )
+    Field(
+        'importe',
+        'double', 
+        default=0.0,
+        represent = lambda value, row: calcula_importe(row.id) if row.id else 0.0
+        )
 )
 db_maestro.poliza.id.label='#Póliza'
 
