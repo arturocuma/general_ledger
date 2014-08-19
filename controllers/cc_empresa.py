@@ -27,6 +27,7 @@ def cc_wizard():
     cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa=cc_empresa)
 
+
 ##@auth.requires_permission('cc_grid')
 def cc_grid2():
     tipo="grid"
@@ -99,8 +100,9 @@ def ul_list(tipo, empresa_id):
 
     cadena=''
     if tipo=='wizard':
+        db = db_maestro
         empresa_id = empresa_id
-        cadena='<div class="tree well"><ul>'
+        cadena='<div class="tree "><ul>'
     elif tipo=='grid':
         empresa_id = empresa_id
         cadena='<div class="tree"><ul>'
@@ -115,13 +117,8 @@ def ul_list(tipo, empresa_id):
                    WHERE node.lft BETWEEN parent.lft AND parent.rgt\
                    GROUP BY node.id\
                    ORDER BY node.lft;")
-    algo="(SUM(asiento.debe)/COUNT(parent.descripcion)) as cantidad "
 
-    seed = DIV(_class="tree well")
-    child = UL()
-    seed.append(UL())
     n=0
-
     for cat in categories:
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  "FROM asiento, cc_empresa "\
@@ -227,7 +224,7 @@ def add_node(
 
     empresa_id = request.vars.empresa_id
     db = empresas.dbs[int(empresa_id)]
-    
+    #db = db_maestro
     tabla = db['cc_empresa']
 
     if padre_id:
@@ -330,58 +327,63 @@ def cat_cuentas_personal(empresa_id,archivo):
     return cc_personal
 
 def wiz_cc():
-
+    #db_ = db_maestro
     empresa_id = request.vars.empresa_id
     db_ = empresas.dbs[int(empresa_id)]
-
-    tabla = db_['cc_empresa']
-    cc_preconf = request.vars.cc_preconf
-    if request.vars.csvfile != None:
-        cc_sat=[]
-        file = request.vars.csvfile.file
-        reader = csv.reader(file)
-        for row in reader:
-            row[0]=str(empresa_id)
-            cc_sat.append(row)
-    else:
-        cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
-
-    db_(db_.cc_vista).delete()
-    db_.executesql('alter sequence cc_vista_id_seq restart with 1')
-    db_.cc_vista.insert(nombre = 'ACUMULATIVA')
-    db_.cc_vista.insert(nombre = 'DETALLE')
-
-    db_(db_.cc_naturaleza).delete()
-    db_.executesql('alter sequence cc_naturaleza_id_seq restart with 1')
-    db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
-    db_.cc_naturaleza.insert(nombre = 'DEUDORA')
-    db_.cc_naturaleza.insert(nombre = 'CAPITAL')
-    db_.cc_naturaleza.insert(nombre = 'RESULTADO')
-
-    db_(db_.tipo_poliza).delete()
-    db_.executesql('alter sequence tipo_poliza_id_seq restart with 1')
-    db_.tipo_poliza.insert(nombre = 'INGRESO')
-    db_.tipo_poliza.insert(nombre = 'EGRESO')
-    db_.tipo_poliza.insert(nombre = 'DIARIO')
-
-    for cuenta in cc_sat:
-
-        num_cc = cuenta[1]
-        len_num_cc = len(num_cc)
-
-        if len_num_cc > 1:
-            num_cc_i = num_cc[::-1]
-            ultimo_punto = num_cc_i.find(".")
-            num_cc = num_cc[:-(ultimo_punto+1)]
-            padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
+    msg=""
+    try:
+        tabla = db_['cc_empresa']
+        cc_preconf = request.vars.cc_preconf
+        #cc_preconf = '1'
+        if type(request.vars.csvfile) != str:
+        #f request.vars.csvfile!=None:
+            file = request.vars.csvfile.file
+            cc_sat = cat_cuentas_personal(empresa_id, file)
         else:
-            padre_id = None
-
-        add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
-                str(cuenta[3]), cuenta[4], cuenta[5])
+            cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
     
-    redirect(URL('default','index',args=[empresa_id]))
-    return
+    
+        db_(db_.cc_vista).delete()
+        db_.executesql('alter sequence cc_vista_id_seq restart with 1')
+        db_.cc_vista.insert(nombre = 'ACUMULATIVA')
+        db_.cc_vista.insert(nombre = 'DETALLE')
+    
+        db_(db_.cc_naturaleza).delete()
+        db_.executesql('alter sequence cc_naturaleza_id_seq restart with 1')
+        db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
+        db_.cc_naturaleza.insert(nombre = 'DEUDORA')
+        db_.cc_naturaleza.insert(nombre = 'CAPITAL')
+        db_.cc_naturaleza.insert(nombre = 'RESULTADO')
+    
+        db_(db_.tipo_poliza).delete()
+        db_.executesql('alter sequence tipo_poliza_id_seq restart with 1')
+        db_.tipo_poliza.insert(nombre = 'INGRESO')
+        db_.tipo_poliza.insert(nombre = 'EGRESO')
+        db_.tipo_poliza.insert(nombre = 'DIARIO')
+    
+        for cuenta in cc_sat:
+    
+            num_cc = cuenta[1]
+            len_num_cc = len(num_cc)
+    
+            if len_num_cc > 1:
+                num_cc_i = num_cc[::-1]
+                ultimo_punto = num_cc_i.find(".")
+                num_cc = num_cc[:-(ultimo_punto+1)]
+                padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
+            else:
+                padre_id = None
+    
+            add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
+                    str(cuenta[3]), cuenta[4], cuenta[5])
+        
+    except:
+        msg="Hubo un error al leer el archivo"
+        db_.rollback()
+    else:
+        db_.commit()
+        redirect(URL('default','index',args=[empresa_id]))
+    return XML(msg)
 
 
 def crear_cc(form):
