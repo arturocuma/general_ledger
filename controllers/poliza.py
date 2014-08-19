@@ -243,8 +243,6 @@ def agregar_poliza():
             ).first()
     ahora = int(fila.f_poliza.strftime('%m'))
 
-    print 'último {} -- ahora {}'.format(ultimo, ahora)
-
     consecutivo_actual = db(db.misc.id > 0).select(
             db.misc.consecutivo_polizas
             ).first().consecutivo_polizas
@@ -253,13 +251,16 @@ def agregar_poliza():
         # cambio de mes
         consecutivo = 1 
         db(db.misc.consecutivo_polizas == consecutivo_actual).update(
-                consecutivo_polizas = 0
+                consecutivo_polizas = 1
                 )
     else:
-        consecutivo = consecutivo_actual
+        consecutivo = consecutivo_actual 
         db(db.misc.consecutivo_polizas == consecutivo_actual).update(
                 consecutivo_polizas = consecutivo + 1
                 )
+        consecutivo += 1
+
+    print 'consecutivo: {}', consecutivo
 
     folio = armar_folio(consecutivo, fila.tipo, fila.f_poliza)
     db(db.poliza.id == id).update(folio = folio)
