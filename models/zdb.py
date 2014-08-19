@@ -212,12 +212,12 @@ class EmpresaDB(object):
             )
 
         db.define_table('tipo_poliza',
-            Field('nombre','string'),
+            Field('nombre', 'string'),
             format='%(nombre)s'
         )
 
         db.define_table('estatus_poliza',
-            Field('nombre','string'),
+            Field('nombre', 'string'),
             format='%(nombre)s'
         )
 
@@ -226,6 +226,7 @@ class EmpresaDB(object):
             Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
             Field('tipo', 'reference tipo_poliza'),
+            Field('estatus', 'reference estatus_poliza', default=1),
             Field('importe', 'double',
                 default = 0.0,
                 represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
