@@ -41,7 +41,7 @@ class EmpresaDB(object):
         dbs = {}
 
         for i in lista:
-
+            instancia=i.id
             if i.tipo == 1:
                 # bases de datos propias
                 email = auth.user['email']
