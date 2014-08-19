@@ -74,6 +74,7 @@ def estado_resultados():
                 #Nombre del reporte
                 msg='Error en el nombre del reporte'
                 reporte=db.reporte.update_or_insert(db.reporte.nombre=='estado_resultados', nombre='estado_resultados', descripcion=request.vars.nombre_reporte)
+                nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.ALL)
                 #ingresos
                 msg='Error en la etiqueta de ingresos'
                 ingresos=db.seccion_reporte.update_or_insert(((db.seccion_reporte.reporte_id==nombre_reporte[0].id) & (db.seccion_reporte.nombre=='ingresos')), reporte_id=nombre_reporte[0].id, nombre='ingresos', descripcion=request.vars.etiqueta_ingresos)

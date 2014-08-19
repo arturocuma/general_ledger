@@ -1,0 +1,214 @@
+{{extend 'layout.html'}}
+
+<style>
+
+table > tbody > tr:hover{
+    background-color: #eee;
+    background-image: -moz-linear-gradient(center top , #f2f2f2 0px, #fafafa 100%);
+}
+
+</style>
+
+
+
+                                <!-- widget grid -->
+                                <section id="widget-grid" class="">
+                                        <!-- row -->
+                                        <div class="row">
+                                                <article class="col-sm-12">
+                                                        <!-- new widget -->
+                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+                                                                <!-- widget options:
+                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                                                                data-widget-colorbutton="false"
+                                                                data-widget-editbutton="false"
+                                                                data-widget-togglebutton="false"
+                                                                data-widget-deletebutton="false"
+                                                                data-widget-fullscreenbutton="false"
+                                                                data-widget-custombutton="false"
+                                                                data-widget-collapsed="true"
+                                                                data-widget-sortable="false"
+                                                                -->
+                                                                <header>
+                                                                        <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+                                                                        <h2>Catalogo Cuentas Contables</h2>
+                                                                        <ul class="nav nav-tabs pull-right in" id="myTab">
+                                                                                <li class="active">
+                                                                                        <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
+                                                                                </li>
+                                                                        </ul>
+                                                                </header>
+                                                                <!-- widget div-->
+                                                                <div class="no-padding">
+                                                                        <!-- widget edit box -->
+                                                                        <div class="jarviswidget-editbox">
+                                                                                test
+                                                                        </div>
+                                                                        <!-- end widget edit box -->
+                                                                        <div class="widget-body">
+                                                                                <!-- content -->
+                                                                                <div id="myTabContent" class="tab-content">
+                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+                                                <div class="padding-10">
+                                                    
+           <div class="panel-body" id="campos-filtro">
+		      <form class="smart-form" method="POST" id="filtros" name="filtros">
+			<!--<article class="col-sm-12 col-md-12 col-lg-4">-->
+			<div role="content">
+			  <div class="widget-body no-padding" >
+			    <fieldset class="col-sm-12 col-md-12 col-lg-4">
+			      <section>
+				<label class="label">Tipo de cuenta</label>
+				<label class="select">
+				  <select id="tipo_cuentas" name="tipo_cuentas" class="activo">
+				    <option value="">Elegir</option>
+				    <option value="con_saldo" {{=XML("selected='selected'") if request.vars.tipo_cuentas=="con_saldo" else ""}}>Con saldo</option></option>
+				   <option value="todas" {{=XML("selected='selected'") if request.vars.tipo_cuentas=="todas" else ""}}>Todas</option>
+				  </select>
+				</label>
+			      </section>
+			      <section>
+				<label class="label">Fecha inicial</label>
+				<label class="input">
+				  <div class="input-group">
+				    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				    <input type="text" name="fecha_ini" class="activo fecha form-control input-sm" placeholder="Fecha inicio" value="{{=XML(request.vars.fecha_ini) if request.vars.fecha_ini else ''}}">
+				  </div>
+				</label>
+			      </section>
+			      <section>
+				<label class="label">Fecha final</label>
+				<label class="input">
+				  <div class="input-group">
+				    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+				    <input type="text" name="fecha_fin" class="activo fecha form-control input-sm" placeholder="Fecha fin" value="{{=XML(request.vars.fecha_fin) if request.vars.fecha_fin else ''}}">
+				  </div>
+				</label>
+			      </section>
+			      <input type="submit" value="Buscar">
+			      <button class="btn btn-default" type="button" onclick="location.href='{{=URL('reportes','libro_diario')}}'"> Limpiar </button>
+			    </fieldset>
+			  </div>
+			</div>
+		      </form>
+		    </div>                                         
+                                                    <ul id="expList">
+            <br><br>
+                                                        <div id="div_cat_cuentas">
+                                                             {{=cc_empresa}}
+                                                        </div>
+
+                                                    </ul>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <!-- end s1 tab pane -->
+                                                                                    
+                                                                                    
+                                                                                    
+                                                                                </div>
+                                                                                <!-- end content -->
+                                                                        </div>
+                                                                </div>
+                                                                <!-- end widget div -->
+                                                        </div>
+                                                        <!-- end widget -->
+                                                </article>
+                                        </div>
+                                        <!-- end row -->
+                                </section>
+                                <!-- end widget grid -->
+<script>
+    $(function() {
+        /*      
+        $('#tipo_cuentas').on('change', function (e) {
+
+            tipo_cuentas=$(this).val();
+            if (tipo_cuentas!=''){
+                $( "#div_cat_cuentas" ).load( '{{=URL("tabla_responsiva")}}', { tipo_cuentas: tipo_cuentas }, function(){
+                        $('tr')
+                        .filter(function() {
+                            return this.id.match(/\d./);
+                        }).hide();
+
+                        $('tr.padre')
+            .css("cursor","pointer")
+            .attr("title","Click para abrir/cerrar")
+            .click(function(){
+
+                var id = $(this).attr('id');
+                var exp = new RegExp("^"+id+".");
+                var exp2 = new RegExp("^"+id+".[0-9]+$");//mostrar
+                var btn = $(this).find('i');
+                if ($(btn).hasClass('fa-minus-circle')){
+                    $(btn).removeClass( "fa-minus-circle" ).addClass( "fa-plus-circle" );
+                    if( $('tr').filter(function() {    return this.id.match(exp);    }).is(':visible') ){
+                        $('tr').filter(function() {
+                            return this.id.match(exp);
+                        }).hide(function(){
+                            var btn_i = $(this).find('i');
+                            $(btn_i).removeClass( "fa-minus-circle" ).addClass( "fa-plus-circle" );
+                        });
+                    }
+                }else{
+                    $(btn).removeClass( "fa-plus-circle" ).addClass( "fa-minus-circle" );
+                    if( $('tr').filter(function() {    return this.id.match(exp2);    }).is(':hidden') ){
+                        $('tr').filter(function() {
+                            return this.id.match(exp2);
+                        }).show();
+                    }
+                }
+
+            });
+                    });
+            }
+        });
+        */   
+        $(document).ready(function(){
+            $('tr')
+            .filter(function() {
+                return this.id.match(/\d./);
+            }).hide();
+
+        });
+
+    $('tr.padre')
+            .css("cursor","pointer")
+            .attr("title","Click para abrir/cerrar")
+            .click(function(){
+
+                var id = $(this).attr('id');
+                var exp = new RegExp("^"+id+".");
+                var exp2 = new RegExp("^"+id+".[0-9]+$");//mostrar
+                var btn = $(this).find('i');
+                if ($(btn).hasClass('fa-minus-circle')){
+                    $(btn).removeClass( "fa-minus-circle" ).addClass( "fa-plus-circle" );
+                    if( $('tr').filter(function() {    return this.id.match(exp);    }).is(':visible') ){
+                        $('tr').filter(function() {
+                            return this.id.match(exp);
+                        }).hide(function(){
+                            var btn_i = $(this).find('i');
+                            $(btn_i).removeClass( "fa-minus-circle" ).addClass( "fa-plus-circle" );
+                        });
+                    }
+                }else{
+                    $(btn).removeClass( "fa-plus-circle" ).addClass( "fa-minus-circle" );
+                    if( $('tr').filter(function() {    return this.id.match(exp2);    }).is(':hidden') ){
+                        $('tr').filter(function() {
+                            return this.id.match(exp2);
+                        }).show();
+                    }
+                }
+
+            });
+
+            $(".fa-calendar").click(function () {
+				$(".fecha").datepicker({
+						dateFormat: 'yy-mm-dd',
+					});
+			});
+			$(".fecha").datepicker({
+				dateFormat: 'yy-mm-dd',
+			});
+});
+
+</script>

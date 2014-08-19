@@ -168,7 +168,7 @@ $(function (){
                 
             
                     $.post("{{=URL('wiz_cc')}}", {empresa_id:empresa_id, cc_preconf:cc_preconf}).success(function(data){
-                        window.location = "{{=URL('cc_empresa','index')}}/" + empresa_id;
+                        window.location = "{{=URL('default','empresa')}}/" + empresa_id;
                     });
                  
             });

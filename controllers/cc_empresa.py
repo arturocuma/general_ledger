@@ -77,15 +77,16 @@ def ul_list2():
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
-
+        debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+        haber=cantidad[0][0] if cantidad[0][0]!=None else 0.0    
         id_row = cat[0] #.replace('.', '')
         color=XML(color_nivel(cat[2]))
         padding=XML(str(cat[2]*20))
         if tipo_cuentas=='con_saldo':
             if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
-                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(debe)+'</td><td>'+XML(haber)+'</td></tr>'
         else:
-            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(debe)+'</td><td>'+XML(haber)+'</td></tr>'
 
     cadena+='</tbody></table></div>'
     cadena=XML(cadena)
@@ -126,6 +127,8 @@ def ul_list(tipo, empresa_id):
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
+        debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+        haber=cantidad[0][0] if cantidad[0][0]!=None else 0.0
         if cat[2]>n:
             cadena+='<ul><li>'
         elif cat[2]==n:
@@ -144,7 +147,7 @@ def ul_list(tipo, empresa_id):
         elif tipo=="wizard":
             cadena+='<span><i class="fa fa-minus-circle"></i> '+cat[0]+' '+cat[1]+'</span> '
         elif tipo=="grid":
-            cadena+='<span><i class="fa fa-minus-circle"></i><div class="row_grid"><div class="cell_grid"></div><div class="cell_grid">   '+cat[0]+' </div><div class="cell_grid"> '+cat[1]+' </div><div class="cell_grid"> '+str(cantidad[0][0]) +' </div><div class="cell_grid">'+str(cantidad[0][1])+'</div>  </div></span> '
+            cadena+='<span><i class="fa fa-minus-circle"></i><div class="row_grid"><div class="cell_grid"></div><div class="cell_grid">   '+XML(cat[0])+' </div><div class="cell_grid"> '+cat[1]+' </div><div class="cell_grid"> '+XML(debe) +' </div><div class="cell_grid">'+XML(haber)+'</div>  </div></span> '
         n=cat[2]
     cadena+='</li></ul></div>'
     cadena=XML(cadena)
@@ -300,8 +303,14 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
     with open('applications/general_ledger/private/'+archivo+'.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
-            row[0]=str(empresa_id)
-            cc_sat.append(row)
+            fila=[]
+            fila.append(str(empresa_id))
+            fila.append(row[0])
+            fila.append(row[1])
+            fila.append(row[2])
+            fila.append(row[3])
+            fila.append(row[4])
+            cc_sat.append(fila)
 
     return cc_sat
 
@@ -310,8 +319,14 @@ def cat_cuentas_personal(empresa_id,archivo):
     file = archivo
     reader = csv.reader(file)
     for row in reader:
-        row[0]=str(empresa_id)
-        cc_personal.append(row)
+        fila=[]
+        fila.append(str(empresa_id))
+        fila.append(row[0])
+        fila.append(row[1])
+        fila.append(row[2])
+        fila.append(row[3])
+        fila.append(row[4])
+        cc_personal.append(fila)
     return cc_personal
 
 def wiz_cc():
@@ -365,7 +380,7 @@ def wiz_cc():
         add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
                 str(cuenta[3]), cuenta[4], cuenta[5])
     
-    redirect(URL('index',args=[empresa_id]))
+    redirect(URL('default','index',args=[empresa_id]))
     return
 
 
