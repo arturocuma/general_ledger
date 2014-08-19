@@ -216,6 +216,11 @@ class EmpresaDB(object):
             format='%(nombre)s'
         )
 
+        db.define_table('estatus_poliza',
+            Field('nombre','string'),
+            format='%(nombre)s'
+        )
+
         db.define_table('poliza',
             Field('folio', 'string'),
             Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
