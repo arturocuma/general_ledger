@@ -27,12 +27,10 @@ def listar():
                 _class='concepto_general',
                 _id=str(row.id)+'.concepto_general'
                 )
+
+    # Columna `tipo_poliza`
     db.poliza.tipo.represent = lambda value, row:\
-            DIV(
-                obtener_tipo_poliza(value) if value != None else '-',
-                _class='tipo_poliza',
-                _id=str(row.id)+'.tipo_poliza'
-                )
+            crear_selector_tipo(row.id)
 
     # Columna `estatus_poliza`
     db.poliza.estatus.represent = lambda value, row:\
@@ -51,7 +49,8 @@ def listar():
             #deletable=auth.has_permission('delete_poliza') or False,
             deletable=True,
             searchable=False,
-            editable=True,
+            editable=False,
+            details=False,
             create=False,
             user_signature=True,
             exportclasses=dict(
