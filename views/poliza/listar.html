@@ -56,6 +56,17 @@ $(document).ready(function(){
         });
     });
 
+    $('.cambiar_tipo').change(function() {
+
+        var id = $(this).attr('id');
+        var value = $(this).val();
+        var datos = {id: id, value:value};
+
+        $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
+            $(id).html(data);
+        });
+    });
+
     $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator : "Actualizando...",
