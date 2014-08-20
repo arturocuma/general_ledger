@@ -41,7 +41,7 @@ class EmpresaDB(object):
         dbs = {}
 
         for i in lista:
-
+            instancia=i.id
             if i.tipo == 1:
                 # bases de datos propias
                 email = auth.user['email']
@@ -69,7 +69,7 @@ class EmpresaDB(object):
         Carga una sola instancia
         """
         import locale
-        locale.setlocale( locale.LC_ALL, 'es_ES.UTF-8' )
+        locale.setlocale( locale.LC_ALL, 'es_MX.UTF-8' )
 
         hashear = razon_social + email
         nombre_hasheado = hashlib.sha1(hashear).hexdigest()

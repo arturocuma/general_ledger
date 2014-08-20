@@ -27,6 +27,7 @@ def cc_wizard():
     cc_empresa = ul_list(tipo, empresa_id)
     return dict(cc_empresa=cc_empresa)
 
+
 ##@auth.requires_permission('cc_grid')
 def cc_grid2():
     tipo="grid"
@@ -77,15 +78,16 @@ def ul_list2():
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
-
+        debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+        haber=cantidad[0][0] if cantidad[0][0]!=None else 0.0    
         id_row = cat[0] #.replace('.', '')
         color=XML(color_nivel(cat[2]))
         padding=XML(str(cat[2]*20))
         if tipo_cuentas=='con_saldo':
             if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
-                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(debe)+'</td><td>'+XML(haber)+'</td></tr>'
         else:
-            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(str(cantidad[0][0]))+'</td><td>'+XML(str(cantidad[0][1]))+'</td></tr>'
+            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(debe)+'</td><td>'+XML(haber)+'</td></tr>'
 
     cadena+='</tbody></table></div>'
     cadena=XML(cadena)
@@ -98,8 +100,9 @@ def ul_list(tipo, empresa_id):
 
     cadena=''
     if tipo=='wizard':
+        db = db_maestro
         empresa_id = empresa_id
-        cadena='<div class="tree well"><ul>'
+        cadena='<div class="tree "><ul>'
     elif tipo=='grid':
         empresa_id = empresa_id
         cadena='<div class="tree"><ul>'
@@ -114,18 +117,15 @@ def ul_list(tipo, empresa_id):
                    WHERE node.lft BETWEEN parent.lft AND parent.rgt\
                    GROUP BY node.id\
                    ORDER BY node.lft;")
-    algo="(SUM(asiento.debe)/COUNT(parent.descripcion)) as cantidad "
 
-    seed = DIV(_class="tree well")
-    child = UL()
-    seed.append(UL())
     n=0
-
     for cat in categories:
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
+        debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+        haber=cantidad[0][0] if cantidad[0][0]!=None else 0.0
         if cat[2]>n:
             cadena+='<ul><li>'
         elif cat[2]==n:
@@ -144,7 +144,7 @@ def ul_list(tipo, empresa_id):
         elif tipo=="wizard":
             cadena+='<span><i class="fa fa-minus-circle"></i> '+cat[0]+' '+cat[1]+'</span> '
         elif tipo=="grid":
-            cadena+='<span><i class="fa fa-minus-circle"></i><div class="row_grid"><div class="cell_grid"></div><div class="cell_grid">   '+cat[0]+' </div><div class="cell_grid"> '+cat[1]+' </div><div class="cell_grid"> '+str(cantidad[0][0]) +' </div><div class="cell_grid">'+str(cantidad[0][1])+'</div>  </div></span> '
+            cadena+='<span><i class="fa fa-minus-circle"></i><div class="row_grid"><div class="cell_grid"></div><div class="cell_grid">   '+XML(cat[0])+' </div><div class="cell_grid"> '+cat[1]+' </div><div class="cell_grid"> '+XML(debe) +' </div><div class="cell_grid">'+XML(haber)+'</div>  </div></span> '
         n=cat[2]
     cadena+='</li></ul></div>'
     cadena=XML(cadena)
@@ -224,7 +224,7 @@ def add_node(
 
     empresa_id = request.vars.empresa_id
     db = empresas.dbs[int(empresa_id)]
-    
+    #db = db_maestro
     tabla = db['cc_empresa']
 
     if padre_id:
@@ -300,8 +300,14 @@ def cat_cuentas_sat(empresa_id,cc_preconf):
     with open('applications/general_ledger/private/'+archivo+'.csv', 'rb') as f:
         reader = csv.reader(f)
         for row in reader:
-            row[0]=str(empresa_id)
-            cc_sat.append(row)
+            fila=[]
+            fila.append(str(empresa_id))
+            fila.append(row[0])
+            fila.append(row[1])
+            fila.append(row[2])
+            fila.append(row[3])
+            fila.append(row[4])
+            cc_sat.append(fila)
 
     return cc_sat
 
@@ -310,73 +316,85 @@ def cat_cuentas_personal(empresa_id,archivo):
     file = archivo
     reader = csv.reader(file)
     for row in reader:
-        row[0]=str(empresa_id)
-        cc_personal.append(row)
+        fila=[]
+        fila.append(str(empresa_id))
+        fila.append(row[0])
+        fila.append(row[1])
+        fila.append(row[2])
+        fila.append(row[3])
+        fila.append(row[4])
+        cc_personal.append(fila)
     return cc_personal
 
 def wiz_cc():
-
+    #db_ = db_maestro
     empresa_id = request.vars.empresa_id
     db_ = empresas.dbs[int(empresa_id)]
+    msg=""
+    try:
+        tabla = db_['cc_empresa']
+        cc_preconf = request.vars.cc_preconf
+        #cc_preconf = '1'
+        if type(request.vars.csvfile) != str:
+        #f request.vars.csvfile!=None:
+            file = request.vars.csvfile.file
+            cc_sat = cat_cuentas_personal(empresa_id, file)
 
-    tabla = db_['cc_empresa']
-    cc_preconf = request.vars.cc_preconf
-    if request.vars.csvfile != None:
-        cc_sat=[]
-        file = request.vars.csvfile.file
-        reader = csv.reader(file)
-        for row in reader:
-            row[0]=str(empresa_id)
-            cc_sat.append(row)
-    else:
-        cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
-
-    db_(db_.cc_vista).delete()
-    db_.executesql('alter sequence cc_vista_id_seq restart with 1')
-    db_.cc_vista.insert(nombre = 'ACUMULATIVA')
-    db_.cc_vista.insert(nombre = 'DETALLE')
-
-    db_(db_.cc_naturaleza).delete()
-    db_.executesql('alter sequence cc_naturaleza_id_seq restart with 1')
-    db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
-    db_.cc_naturaleza.insert(nombre = 'DEUDORA')
-    db_.cc_naturaleza.insert(nombre = 'CAPITAL')
-    db_.cc_naturaleza.insert(nombre = 'RESULTADO')
-
-    db_(db_.tipo_poliza).delete()
-    db_.executesql('alter sequence tipo_poliza_id_seq restart with 1')
-    db_.tipo_poliza.insert(nombre = 'INGRESO')
-    db_.tipo_poliza.insert(nombre = 'EGRESO')
-    db_.tipo_poliza.insert(nombre = 'DIARIO')
-
-    db_(db_.misc).delete()
-    db_.executesql('alter sequence misc_id_seq restart with 1')
-    db_.misc.insert(consecutivo_polizas = 0)
-
-    db_(db_.estatus_poliza).delete()
-    db_.executesql('alter sequence estatus_poliza_id_seq restart with 1')
-    db_.estatus_poliza.insert(nombre = 'EN REVISIÓN')
-    db_.estatus_poliza.insert(nombre = 'REVISADA')
-    db_.estatus_poliza.insert(nombre = 'APLICADA')
-
-    for cuenta in cc_sat:
-
-        num_cc = cuenta[1]
-        len_num_cc = len(num_cc)
-
-        if len_num_cc > 1:
-            num_cc_i = num_cc[::-1]
-            ultimo_punto = num_cc_i.find(".")
-            num_cc = num_cc[:-(ultimo_punto+1)]
-            padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
         else:
-            padre_id = None
-
-        add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
-                str(cuenta[3]), cuenta[4], cuenta[5])
+            cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
     
-    redirect(URL('index',args=[empresa_id]))
-    return
+    
+        db_(db_.cc_vista).delete()
+        db_.executesql('alter sequence cc_vista_id_seq restart with 1')
+        db_.cc_vista.insert(nombre = 'ACUMULATIVA')
+        db_.cc_vista.insert(nombre = 'DETALLE')
+    
+        db_(db_.cc_naturaleza).delete()
+        db_.executesql('alter sequence cc_naturaleza_id_seq restart with 1')
+        db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
+        db_.cc_naturaleza.insert(nombre = 'DEUDORA')
+        db_.cc_naturaleza.insert(nombre = 'CAPITAL')
+        db_.cc_naturaleza.insert(nombre = 'RESULTADO')
+    
+        db_(db_.tipo_poliza).delete()
+        db_.executesql('alter sequence tipo_poliza_id_seq restart with 1')
+        db_.tipo_poliza.insert(nombre = 'INGRESO')
+        db_.tipo_poliza.insert(nombre = 'EGRESO')
+        db_.tipo_poliza.insert(nombre = 'DIARIO')
+        
+        db_(db_.misc).delete()
+        db_.executesql('alter sequence misc_id_seq restart with 1')
+        db_.misc.insert(consecutivo_polizas = 0)
+    
+        db_(db_.estatus_poliza).delete()
+        db_.executesql('alter sequence estatus_poliza_id_seq restart with 1')
+        db_.estatus_poliza.insert(nombre = 'EN  REVISIÓN')
+        db_.estatus_poliza.insert(nombre = 'REVISADA')
+        db_.estatus_poliza.insert(nombre = 'APLICADA')
+        
+        for cuenta in cc_sat:
+    
+            num_cc = cuenta[1]
+            len_num_cc = len(num_cc)
+    
+            if len_num_cc > 1:
+                num_cc_i = num_cc[::-1]
+                ultimo_punto = num_cc_i.find(".")
+                num_cc = num_cc[:-(ultimo_punto+1)]
+                padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
+            else:
+                padre_id = None
+    
+            add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
+                    str(cuenta[3]), cuenta[4], cuenta[5])
+        
+    except:
+        msg="Hubo un error al leer el archivo"
+        db_.rollback()
+    else:
+        db_.commit()
+        redirect(URL('default','index',args=[empresa_id]))
+    return XML(msg)
 
 
 def crear_cc(form):
