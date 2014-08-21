@@ -132,7 +132,6 @@ def tabla_responsiva():
                                  " AND cc_empresa.num_cc like '"+cat[0]+"%'"\
                                  +filtro)
 
-
         debe=cantidad[0][0] or 0.0
         haber=cantidad[0][1] or 0.0
 
