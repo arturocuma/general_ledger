@@ -24,10 +24,10 @@
         </div>
         <div class="col-md-4">
             <div class="alert alert-success">
-                <h2 style="color: #356635;"><i class='fa fa-hand-o-right'></i> Compartir</h2>
+                <a href="javascript:void();" data-toggle="modal" data-target="#modal-compartir" style="cursor:pointer; text-decoration:none;">
+                    <h2 style="color: #356635;"><i class='fa fa-hand-o-right'></i> Compartir</h2>
+                </a>
                 <p>Comparte tu empresa con otros usuarios</p>
-                <br>
-                {{=form}}
             </div>
         </div>
         <div class="col-md-4">
@@ -41,14 +41,40 @@
     </div><!--fin row-->
 {{pass}}
 
-<div id="modal_invitar" class="modalmask">
-    <div class="modalbox movedown">
-        <a href="#close" title="Cerrar" class="close">X</a>
-        <h2>Enviar invitación</h2>
-        <div id="form_invitar">
-        </div>
-    </div>
-</div>
+
+<!-- Modal -->
+<div class="modal fade" id="modal-compartir" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            {{=form.custom.begin}}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><i class='fa fa-hand-o-right'></i> Compartir empresa</h4>
+            </div>
+            <div class="modal-body">                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <p>
+                                <label>Escribe el correo del usuario con quien quieres compartir tu empresa</label>
+                            </p>
+                            {{=form.custom.widget.invitado}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancelar
+                </button>
+                    {{=form.custom.submit}}
+            </div>
+            {{=form.custom.end}}
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 <script>
 

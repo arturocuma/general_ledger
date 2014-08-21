@@ -445,14 +445,53 @@ header,h1,h2,h3,h4{
 				</div>
 				<!-- END AJAX-DROPDOWN -->
 			</div>
-			<div id="project-context" class="open">
+			<div id="project-context" class="">
 				{{if session.instancias:}}
 				<span class="label">Empresa:</span>
-				<span id="project-selector">
+				<span id="project-selector" class="popover-trigger-element dropdown-toggle" data-toggle="dropdown" rel="tooltip" data-placement="bottom" data-original-title="Click para ver/cambiar de empresa">
 					{{nom = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
 					Empresa {{=nom.razon_social}}
+					<i class="fa fa-angle-down"></i>
 				</span>
+				<ul class="dropdown-menu">
+				{{if session.auth:
+					mias = db_maestro(
+					                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+					                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+					                (db_maestro.mi_empresa.tipo == 1)
+						           ).select(
+						                   db_maestro.empresa.razon_social,
+						                   db_maestro.empresa.id
+						                   )
+		            compartidas = db_maestro(
+							                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+							                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+							                (db_maestro.mi_empresa.tipo == 2)
+							            	).select(
+							                    db_maestro.empresa.razon_social,
+							                    db_maestro.empresa.id
+							                 	)
+
+				}}
+				 	{{if mias:}}
+				 		<li class="divider"></li>
+				 		<li style="font-weight:bold;">Mis empresas</li>
+				 		<li class="divider"></li>
+				 		{{for m in mias:}}
+				 			<li><a href="{{=URL('default', 'empresa', args=m.id)}}">{{=m.razon_social}}</a></li>				 			
+				 		{{pass}}
+				 	{{pass}}
+				 	{{if compartidas:}}
+				 		<li class="divider"></li>
+				 		<li style="font-weight:bold;">Compartidas conmigo</li>
+				 		<li class="divider"></li>
+				 		{{for c in compartidas:}}
+				 			<li><a href="{{=URL('default', 'empresa', args=c.id)}}">{{=c.razon_social}}</a></li>				 			
+				 		{{pass}}
+				 	{{pass}}				 		
 				{{pass}}
+				</ul>
+				{{pass}}				
 			</div>
 
 
@@ -535,18 +574,10 @@ header,h1,h2,h3,h4{
 
 				<ul>
 					<li class="">
-						<a href="{{=URL('default','index.html')}}" title="Dashboard">
+						<a href="{{=URL('default','index')}}">
 							<i class="fa fa-lg fa-fw fa-home"></i>
-							<span class="menu-item-parent">Dashboard</span>
+							<span class="menu-item-parent">Home</span>
 						</a>
-						<ul>
-							<li>
-								<a href="{{=URL('default','empresa')}}">
-									<i class="fa fa-lg fa-fw  fa-building"></i>
-									Empresa
-								</a>
-							</li>
-						</ul>
 					</li>
 					<li>
 						<a href="javascript:void();">
@@ -584,7 +615,7 @@ header,h1,h2,h3,h4{
 									<i class="fa fa-filter"></i>
 									Balanza
 								</a>
-								 <a href="{{=URL('reportes','cuentas_con_saldo')}}">
+								 <a href="{{=URL('reportes','balance_general')}}">
 									<i class="fa fa-bar-chart-o"></i>
 									Balance general
 								</a>

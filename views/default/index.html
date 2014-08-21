@@ -22,47 +22,49 @@
         </div>
     </div>
 </div>
-    {{if mias:}}
-    <div class='row'>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <header role="heading">
-                <h2>Tu(s) empresa(s)</h2>
-            </header>
-            {{for m in mias:}}
-            <div class="col-sm-4 col-md-2">
-                <a href="{{=URL('default', 'empresa', args=m.id)}}">
-                    <div class="thumbnail">
-                        <img src="{{=URL('static','images/logo-o.png')}}">
-                        <div class="caption">
-                            <h3>{{=m.razon_social}}</h3>
-                        </div>
-                    </div><!--thumbnail-->
-                </a>
-            </div><!--fin col-->
-            {{pass}}
-        </div><!--fin col 12-->
-    </div><!--fin row-->
-    {{pass}}
-    {{if compartidas:}}
-    <div class='row'>
-        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <header role="heading">
-                <h2>Empresas compartidas contigo</h2>
-            </header>
-            {{for c in compartidas:}}
-            <div class="col-sm-4 col-md-2">
-                <a href="{{=URL('default', 'empresa', args=c.id)}}">
-                    <div class="thumbnail">
-                        <img src="{{=URL('static','images/logo-o.png')}}">
-                        <div class="caption">
-                            <h3>{{=c.razon_social}}</h3>
-                        </div>
-                    </div><!--thumbnail-->
-                </a>
-            </div><!--fin col-->
-            {{pass}}
+    {{if not session.instancias:}}
+        {{if mias:}}
+        <div class='row'>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <header role="heading">
+                    <h2>Tu(s) empresa(s)</h2>
+                </header>
+                {{for m in mias:}}
+                <div class="col-sm-4 col-md-2">
+                    <a href="{{=URL('default', 'empresa', args=m.id)}}">
+                        <div class="thumbnail">
+                            <img src="{{=URL('static','images/logo-o.png')}}">
+                            <div class="caption">
+                                <h3>{{=m.razon_social}}</h3>
+                            </div>
+                        </div><!--thumbnail-->
+                    </a>
+                </div><!--fin col-->
+                {{pass}}
+            </div><!--fin col 12-->
+        </div><!--fin row-->
+        {{pass}}
+        {{if compartidas:}}
+        <div class='row'>
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                <header role="heading">
+                    <h2>Empresas compartidas contigo</h2>
+                </header>
+                {{for c in compartidas:}}
+                <div class="col-sm-4 col-md-2">
+                    <a href="{{=URL('default', 'empresa', args=c.id)}}">
+                        <div class="thumbnail">
+                            <img src="{{=URL('static','images/logo-o.png')}}">
+                            <div class="caption">
+                                <h3>{{=c.razon_social}}</h3>
+                            </div>
+                        </div><!--thumbnail-->
+                    </a>
+                </div><!--fin col-->
+                {{pass}}
+            </div>
         </div>
-    </div>
+        {{pass}}
     {{pass}}
 {{else:}}
     <div class="row">
