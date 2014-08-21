@@ -100,7 +100,7 @@
 														  <td style="text-align: right">{{=calcula_importe(d['id'])}}</td>
 														</tr>
 															{{if d['asiento_id'] != None:}}
-															<tr class="asiento titulo" data-hijo="{{=d['id']}}">
+															<tr class="asiento titulo" data-hijo="{{=d['id']}}" style="display:none;">
 															  <th></th>
 															  <th>No. cuenta</th>
 															  <th>Depto</th>
@@ -109,7 +109,7 @@
 															  <th>Debe</th>
 															  <th>Haber</th>
 															</tr>
-															<tr class="asiento detalle"  data-hijo="{{=d['id']}}">
+															<tr class="asiento detalle"  data-hijo="{{=d['id']}}" style="display:none;">
 															  <td></td>
 															  <td>{{=d['num_cc']}}</td>
 															  <td>--</td>
@@ -120,7 +120,7 @@
 															</tr>
 															{{pass}}
 														{{else:}}
-														<tr class=" asiento detalle"  data-hijo="{{=d['id']}}">
+														<tr class=" asiento detalle"  data-hijo="{{=d['id']}}" style="display:none;">
 														  <td></td>
 														  <td>{{=d['num_cc']}}</td>
 														  <td>--</td>
@@ -221,7 +221,7 @@
 <script>
 	$(document).ready(function(){
 
-		$('.asiento').hide();
+		//$('.asiento').hide();
 
 		$('tr.poliza.detalle')
 			.css("cursor","pointer")
