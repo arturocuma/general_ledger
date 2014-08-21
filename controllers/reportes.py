@@ -171,7 +171,7 @@ def tabla_balance():
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  " FROM poliza, asiento, cc_empresa "\
                                  " WHERE asiento.cc_empresa_id = cc_empresa.id "\
-                                 " AND poliza.id==asiento.poliza_id "\
+                                 " AND poliza.id=asiento.poliza_id "\
                                  " AND cc_empresa.num_cc like '"+cat[0]+"%'")
         nivel_cc=cat[2]
         digito=int(cat[0][0])

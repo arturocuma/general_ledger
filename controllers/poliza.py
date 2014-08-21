@@ -68,8 +68,8 @@ def listar():
     if request.args(-3) == 'poliza' and request.args(-2) == 'asiento.poliza_id':
 
         boton_agregar_asiento = A(
-                SPAN(_class="glyphicon glyphicon-indent-left"),
-                'Agregar Asiento',
+                SPAN(_class="fa fa-plus-square"),
+                ' Agregar Asiento',
                 _class="button btn btn-default",
                 _href=URL(
                     "poliza",
@@ -81,8 +81,8 @@ def listar():
         polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
     else:
         boton_agregar_poliza = A(
-                SPAN(_class="glyphicon glyphicon-indent-left"),
-                'Agregar Póliza',
+                SPAN(_class="fa fa-plus-square"),
+                ' Agregar Póliza',
                 _class="button btn btn-default",
                 _href=URL(
                     "poliza",

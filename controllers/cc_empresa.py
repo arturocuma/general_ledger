@@ -29,7 +29,7 @@ def cc_wizard():
 
 
 ##@auth.requires_permission('cc_grid')
-def cc_grid2():
+def balanza():
     tipo="grid"
     cc_empresa = ul_list2()
     return dict(cc_empresa=cc_empresa)
@@ -393,7 +393,7 @@ def wiz_cc():
         db_.rollback()
     else:
         db_.commit()
-        redirect(URL('default','index',args=[empresa_id]))
+        redirect(URL('default','empresa',args=[empresa_id]))
     return XML(msg)
 
 
