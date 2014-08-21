@@ -35,10 +35,6 @@ def cc_grid2():
     return dict(cc_empresa=XML(tabla))
 
 
-def cuentas_con_saldo():
-    cc_empresa = tabla_responsiva()
-    return dict(cc_empresa=cc_empresa)
-
 def hijos_nivel(num_cc,nivel):
     if num_cc!='':
         cuenta= " AND node.num_cc = "+num_cc
@@ -86,91 +82,6 @@ def color_nivel(nivel):
         color = '#28DDFF'
     return color
 
-def tabla_responsiva():
-    filtro = ""
-    tipo_cuentas=request.vars.tipo_cuentas
-    if request.vars.fecha_ini:
-        filtro += " AND poliza.creada_en >= '"+str(request.vars.fecha_ini) +"'"
-    if request.vars.fecha_fin:
-        filtro += " AND poliza.creada_en < '"+str(request.vars.fecha_fin) +"'"
-        
-    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
-                   "node.id, node.cc_vista_id "\
-                   " FROM cc_empresa AS node , cc_empresa AS parent "\
-                   " WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
-                   " GROUP BY node.id "\
-                   " ORDER BY node.lft;")
-
-
-    cadena='<div class="table-responsive">'\
-	'<table class="table">'\
-	'	<thead>'\
-	'		<tr>'\
-	'			<th style="width:10px;">Op</th>'\
-	'			<th>No. cuenta</th>'\
-	'			<th>Descripción</th>'\
-	'			<th>Debe</th>'\
-	'			<th>Haber</th>'\
-	'		</tr>'\
-	'	</thead>'\
-	'	<tbody>'
-
-    for cat in categories:
-        id_padre= ancestor(cat[0])
-        if id_padre:
-            padre=id_padre.num_cc
-        else:
-            padre=''
-
-        padre = padre.replace('.', '')
-        clase_tr= 'hijo-'+XML(str(padre))+' padre'
-        #clase_tr= "child-row "+str(id_padre)+" parent"
-        cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
-                                 " FROM poliza, asiento, cc_empresa "\
-                                 " WHERE asiento.cc_empresa_id = cc_empresa.id "\
-                                 " AND poliza.id = asiento.poliza_id "\
-                                 " AND cc_empresa.num_cc like '"+cat[0]+"%'"\
-                                 +filtro)
-
-        debe=cantidad[0][0] or 0.0
-        haber=cantidad[0][1] or 0.0
-
-        id_row = cat[0]
-        color=XML(color_nivel(cat[2]))
-        padding=XML(str(cat[2]*20))
-        
-        if tipo_cuentas=='con_saldo':
-            if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
-                print id_row, debe, haber
-                cadena += """<tr id='{}' class='{}' style=color:'{}'>\
-                <td><i class='fa fa-plus-circle'></i></td>\
-                <td style="padding-left: {}px;">{}</td>\
-                <td>{}</td>\
-                <td>{}</td>\
-                <td>{}</td>\
-                </tr>""".format(XML(id_row), clase_tr, color,
-                        padding, XML(cat[0]), 
-                        XML(cat[1]), 
-                        XML(debe), 
-                        XML(haber)
-                        )
-        else:
-            cadena += """<tr id='{}' class='{}' style=color:'{}'>\
-            <td><i class='fa fa-plus-circle'></i></td>\
-            <td style="padding-left: {}px;">{}</td>\
-            <td>{}</td>\
-            <td>{}</td>\
-            <td>{}</td>\
-            </tr>""".format(XML(id_row), clase_tr, color,
-                    padding, XML(cat[0]), 
-                    XML(cat[1]), 
-                    XML(debe), 
-                    XML(haber)
-                    )
-            
-    cadena+='</tbody></table></div>'
-
-    return XML(cadena)
 
 def balance_general():
     return dict(balance=tabla_balance())
