@@ -163,33 +163,38 @@ def invitacion():
             db_maestro.invitacion.url_hash,
             ).first()
 
-    if invitado != invitacion.email_invitado:
-        return dict(no_invitado=True)
+    if invitacion: 
+        if invitado == invitacion.email_invitado:
+            razon_social = db_maestro(
+                    db_maestro.empresa.id == invitacion.empresa_id
+                    ).select(
+                            db_maestro.empresa.razon_social
+                        ).first().razon_social
+
+            usuario = db_maestro(
+                    db_maestro.auth_user.id == invitacion.user_id
+                    ).select(
+                            db_maestro.auth_user.first_name,
+                            db_maestro.auth_user.last_name,
+                            db_maestro.auth_user.email
+                        ).first()
+
+            email_propietario = usuario.email
+            usuario = '{} {}'.format(usuario.first_name, usuario.last_name)
+
+            vars = {'empresa_id': invitacion.empresa_id,
+                    'email_propietario': email_propietario,
+                    'url_hash': invitacion.url_hash}
+
+            return dict(
+                    no_invitado=False,
+                    usuario=usuario,
+                    razon_social=razon_social,
+                    vars = vars
+                    )
+        else:
+            # invitado incorrecto
+            return dict(no_invitado=True)
     else:
-        razon_social = db_maestro(
-                db_maestro.empresa.id == invitacion.empresa_id
-                ).select(
-                        db_maestro.empresa.razon_social
-                    ).first().razon_social
-
-        usuario = db_maestro(
-                db_maestro.auth_user.id == invitacion.user_id
-                ).select(
-                        db_maestro.auth_user.first_name,
-                        db_maestro.auth_user.last_name,
-                        db_maestro.auth_user.email
-                    ).first()
-
-        email_propietario = usuario.email
-        usuario = '{} {}'.format(usuario.first_name, usuario.last_name)
-
-        vars = {'empresa_id': invitacion.empresa_id,
-                'email_propietario': email_propietario,
-                'url_hash': invitacion.url_hash}
-
-        return dict(
-                no_invitado=False,
-                usuario=usuario,
-                razon_social=razon_social,
-                vars = vars
-                )
+        # invitacion inexistente
+        return dict(no_invitado=True)
