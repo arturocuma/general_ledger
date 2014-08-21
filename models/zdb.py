@@ -69,6 +69,7 @@ class EmpresaDB(object):
         Carga una sola instancia
         """
         import locale
+        from gluon.sql import Table
         locale.setlocale( locale.LC_ALL, 'es_MX.UTF-8' )
 
         hashear = razon_social + email
@@ -81,6 +82,26 @@ class EmpresaDB(object):
                 check_reserved = ['all'],
                 migrate = vez_primera
                 )
+
+        # WARNING: auth.user.id es del modelo maestro
+        historico = Table(None, 'tmp',
+            Field('creada_en', 'datetime',
+                default=request.now,
+                label='Fecha'
+                ),
+            Field('creada_por', 'string',
+                default=auth.user.id,
+                readable=False
+                ),
+            Field('actualizada_en', 'datetime',
+                default=request.now,
+                readable=False
+                ),
+            Field('actualizada_por', 'string',
+                default=auth.user.id,
+                readable=False
+                )
+        )
 
         db.define_table('pais',
                 Field('nombre', 'string'),
@@ -223,7 +244,7 @@ class EmpresaDB(object):
 
         db.define_table('poliza',
             Field('folio', 'string'),
-            Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
+            historico,
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
             Field('tipo', 'reference tipo_poliza', default=3),
             Field('estatus', 'reference estatus_poliza', default=1),
@@ -235,7 +256,7 @@ class EmpresaDB(object):
 
         db.define_table('asiento',
             Field('poliza_id', 'reference poliza', label='#Póliza'),
-            Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
+            historico,
             Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
