@@ -225,7 +225,7 @@ class EmpresaDB(object):
             Field('folio', 'string'),
             Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
-            Field('tipo', 'reference tipo_poliza'),
+            Field('tipo', 'reference tipo_poliza', default=3),
             Field('estatus', 'reference estatus_poliza', default=1),
             Field('importe', 'double',
                 default = 0.0,
@@ -334,8 +334,46 @@ class Web2Postgress():
         cur.close()
         con.close()
 
+
+    def respaldar_db(self, nombre, email):
+        """
+        #ToDo: crear exepciones
+        """
+        """
+        con = connect(
+                dbname = 'postgres',
+                user = 'web2py',
+                host = 'localhost',
+                password = 'w3b2py'
+                )
+
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        nombre_hasheado = hashlib.sha1(nombre + email).hexdigest()
+        cur.execute('drop database "_{}_{}"'.format(email, nombre_hasheado))
+
+        cur.close()
+        con.close()
+
+
+        try:
+            con = psycopg2.connect(database='local', user='local', password='local',port='1970')
+            cur = con.cursor()
+            cur.execute('SELECT x FROM t')
+            f = open('test.sql', 'w')
+            for row in cur:
+              f.write("insert into t values (" + str(row) + ");")
+        except psycopg2.DatabaseError, e:
+            print 'Error %s' % e
+            sys.exit(1)
+        finally:
+            if con:
+                con.close()
+        """
+
+
     def cerrar_sesiones():
         pass
-
 
 empresas = EmpresaDB(db_maestro)

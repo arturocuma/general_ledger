@@ -12,12 +12,18 @@ def index(): return dict(message="hello from poliza.py")
 def listar():
 
     # modificaciones a campos de la tabla `asiento`
-    db.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
+
+    db.asiento.f_asiento.represent = lambda value, row:\
+        DIV(value or '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
     db.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db.cc_empresa.descripcion, id_field=db.cc_empresa.id, limitby=(0,10), min_length=1)
-    db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
-    db.asiento.concepto_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
-    db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
-    db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
+    db.asiento.cc_empresa_id.represent = lambda value, row:\
+            DIV(db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
+    db.asiento.concepto_asiento.represent = lambda value, row:\
+            DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
+    db.asiento.debe.represent = lambda value, row: \
+            DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
+    db.asiento.haber.represent = lambda value, row: \
+            DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
 
     # modificaciones a campos de la tabla `poliza`
     db.poliza.importe.writable = False
@@ -27,6 +33,10 @@ def listar():
                 _class='concepto_general',
                 _id=str(row.id)+'.concepto_general'
                 )
+
+    # Columna `folio`
+    db.poliza.folio.represent = lambda value, row:\
+            DIV(value, _class='folio', _id='{}folio'.format(row.id))
 
     # Columna `tipo_poliza`
     db.poliza.tipo.represent = lambda value, row:\
@@ -236,7 +246,6 @@ def agregar_poliza():
     id = db.poliza.insert(
             folio = '',
             concepto_general = '',
-            tipo = '',
             importe = 0,
             )
 
@@ -263,8 +272,6 @@ def agregar_poliza():
                 )
         consecutivo += 1
 
-    # print 'consecutivo: {}', consecutivo
-
     folio = armar_folio(consecutivo, fila.tipo, fila.f_poliza)
     db(db.poliza.id == id).update(folio = folio)
 
@@ -287,8 +294,9 @@ def actualiza_tipo_poliza():
     """
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
+    db(db.poliza.id == id).update(**{column:value, 'f_poliza':datetime.now()})
 
-    resultado = db(db.tipo_poliza.nombre == value).select(
+    resultado = db(db.tipo_poliza.id == value).select(
             db.tipo_poliza.id,
             ).first()
 
@@ -309,7 +317,7 @@ def actualiza_tipo_poliza():
     db(db.poliza.id == id).update(folio = folio)
     # fin-reducir el código aquí
 
-    return value
+    return folio
 
 
 def carga_tipo_poliza():
