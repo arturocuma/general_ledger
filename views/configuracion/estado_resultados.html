@@ -1,8 +1,6 @@
 {{extend 'layout.html'}}
 
 <link href="{{=URL('static', 'chosen/chosen.css')}}" rel="stylesheet">
-<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
-
 <script>
     $(function() {
         
@@ -41,358 +39,293 @@ table > tbody > tr:hover{
 
     
 </style>
-
-
-
-                                <!-- widget grid -->
-                                <section id="widget-grid" class="">
-                                        <!-- row -->
-                                        <div class="row">
-                                                <article class="col-sm-12">
-                                                        <!-- new widget -->
-                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-                                                                <!-- widget options:
-                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                                                                data-widget-colorbutton="false"
-                                                                data-widget-editbutton="false"
-                                                                data-widget-togglebutton="false"
-                                                                data-widget-deletebutton="false"
-                                                                data-widget-fullscreenbutton="false"
-                                                                data-widget-custombutton="false"
-                                                                data-widget-collapsed="true"
-                                                                data-widget-sortable="false"
-                                                                -->
-                                                                <header>
-                                                                        <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
-                                                                    <h2>Configuración del Reporte: Estado de Resultados</h2>
-                                                                        <ul class="nav nav-tabs pull-right in" id="myTab">
-                                                                                <li class="active">
-                                                                                        <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Configuración</span></a>
-                                                                                </li>
-                                                                        </ul>
-                                                                </header>
-                                                                <!-- widget div-->
-                                                                <div class="no-padding">
-                                                                        <!-- widget edit box -->
-                                                                        <div class="jarviswidget-editbox">
-                                                                                test
-                                                                        </div>
-                                                                        <!-- end widget edit box -->
-                                                                        <div class="widget-body">
-                                                                                <!-- content -->
-                                                                                <div id="myTabContent" class="tab-content">
-                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
-           <div class="padding-10">
-                <ul id="expList">
-                           <form action="{{URL('configuracion','estado_resultados')}}" method="post">  
-                              
-                                                            
-                            <div id="div_error" class="alert alert-block alert-warning" style="display:None">
-                                   <a class="close" data-dismiss="alert" href="#">×</a>
+<div class="row">
+    <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+        <legend>
+            <h1>
+                <p>
+                    <i class="fa-fw fa  fa-usd"></i>
+                    Estado de resultados
+                </p>
+            </h1>
+        </legend>
+    </article>
+</div>
+<!-- widget grid -->
+<section id="widget-grid" class="">
+   <!-- row -->
+   <div class="row">
+      <article class="col-sm-12">
+         <!-- new widget -->
+         <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+            <header>
+               <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+               <h2>Configuración del Reporte: Estado de Resultados</h2>
+            </header>
+            <!-- widget div-->
+            <div class="no-padding">
+               <div class="widget-body">
+               <!-- content -->
+                  <div id="myTabContent" class="tab-content">
+                     <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+                        <div class="padding-10">
+                           <ul id="expList">
+                              <form action="{{URL('configuracion','estado_resultados')}}" method="post">  
+                                 <div id="div_error" class="alert alert-block alert-warning" style="display:None">
+                                    <a class="close" data-dismiss="alert" href="#">×</a>
                                     <h4 class="alert-heading">
-                                {{if tipo_msg=='error': }}
-                                    Advertencia!
-                                {{elif tipo_msg=='exito':}}
-                                    Éxito!
-                                {{pass}}
-                                   </h4>
-                                {{=msg}}
-                            </div>
-                                                        
-                                                        
-                                     <div class="table">
-                                                       <div class="fila">
-                                                       <div class="cell">
-                                                           Nombre del reporte:
-                                                       </div>
-                                                       <div class="cell">
-                                                           <input name="nombre_reporte" type="text" style="width:450px;"
-                                                                  {{if request.vars.nombre_reporte:}}
-                                                                      value="{{=request.vars.nombre_reporte}}"
-                                                                  {{elif nombre_reporte:}}
-                                                                      value="{{=nombre_reporte[0].descripcion}}"
-                                                                  {{else:}}
-                                                                      value="{{=''}}"
-                                                                  {{pass}}
-                                                           >
-                                                        </div> 
-                                                        </div>
-                                                        <div class="fila">
-                                                       <div class="cell">
-                                                           Etiqueta para ingresos:
-                                                       </div>
-                                                       <div class="cell">
-                                                           <input name="etiqueta_ingresos" type="text" style="width:450px;"
-                                                                  {{if request.vars.etiqueta_ingresos:}}
-                                                                      value="{{=request.vars.etiqueta_ingresos}}"
-                                                                  {{elif desc_ingresos:}}
-                                                                      value="{{=desc_ingresos[0].descripcion}}"
-                                                                  {{else:}}
-                                                                      value="{{=''}}"
-                                                                  {{pass}}
-                                                           >
-                                                        </div> 
-                                                        </div>
-                                                            
-                                                        <div class="fila">
-                                                        <div class="cell">
-                                                        Cuentas de Ingresos:
-                                                        </div>   
-                                                        <div class="cell">
-                                                        <select name="sel_ingresos" data-placeholder="Eija la cuenta" style="width:450px;" multiple class="chosen-select">
-                                                            {{for cc in cc_empresa:}}
-                                                                <option value="{{=cc[3]}}" 
-                                                                {{if isinstance(request.vars.sel_ingresos, list):}}
-                                                                   {{for cc_ingreso in request.vars.sel_ingresos:}}
-                                                                        {{if cc_ingreso==str(cc[3]):}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{elif request.vars.sel_ingresos!=None:}}
-                                                                        {{if str(cc[3])==request.vars.sel_ingresos:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                {{elif cuentas_ingresos:}}
-                                                                    {{for cc_ingreso in cuentas_ingresos:}}
-                                                                        {{if cc_ingreso.id==cc[3]:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{pass}}
-                                                                >{{=cc[0]+' '+cc[1]}}        
-                                                                </option>    
-                                                            {{pass}}
-                                                        </select>
-                                                        </div>
-                                                        </div>    
-                                                            
-                                                       <div class="fila">
-                                                       <div class="cell">
-                                                           Etiqueta para costos:
-                                                       </div>
-                                                       <div class="cell">
-                                                          <input name="etiqueta_costos" type="text" style="width:450px;"
-                                                                  {{if request.vars.etiqueta_costos:}}
-                                                                      value="{{=request.vars.etiqueta_costos}}"
-                                                                  {{elif desc_costos:}}
-                                                                      value="{{=desc_costos[0].descripcion}}"
-                                                                  {{else:}}
-                                                                      value="{{=''}}"
-                                                                  {{pass}}
-                                                           >
-                                                        </div> 
-                                                        </div>
-                                                            
-                                                        <div class="fila">
-                                                        <div class="cell">
-                                                        Cuentas de Costos:
-                                                        </div>
-                                                         <div class="cell">    
-                                                        <select name="sel_costos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
-                                                          {{for cc in cc_empresa:}}
-                                                                <option value="{{=cc[3]}}" 
-                                                                {{if isinstance(request.vars.sel_costos, list):}}
-                                                                   {{for cc_costo in request.vars.sel_costos:}}
-                                                                        {{if cc_costo==str(cc[3]):}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{elif request.vars.sel_costos!=None:}}
-                                                                        {{if str(cc[3])==request.vars.sel_costos:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                {{elif cuentas_costos!=None:}}
-                                                                    {{for cc_costo in cuentas_costos:}}
-                                                                        {{if cc_costo.id==cc[3]:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{pass}}
-                                                                >{{=cc[0]+' '+cc[1]}}        
-                                                                </option>    
-                                                            {{pass}}
-                                                        </select>
-                                                        </div>
-                                                         </div>
-                                                            
-                                                       <div class="fila">
-                                                       <div class="cell">
-                                                           Etiqueta para gastos:
-                                                       </div>
-                                                       <div class="cell">
-                                                           <input name="etiqueta_gastos" type="text" style="width:450px;"
-                                                                  {{if request.vars.etiqueta_gastos:}}
-                                                                      value="{{=request.vars.etiqueta_gastos}}"
-                                                                  {{elif desc_gastos:}}
-                                                                      value="{{=desc_gastos[0].descripcion}}"
-                                                                  {{else:}}
-                                                                      value="{{=''}}"
-                                                                  {{pass}}
-                                                           >
-                                                        </div> 
-                                                        </div>
-                                                            
-                                                        <div class="fila">
-                                                        <div class="cell">
-                                                        Cuentas de Gastos:
-                                                        </div>
-                                                         <div class="cell">    
-                                                        <select name="sel_gastos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
-                                                          {{for cc in cc_empresa:}}
-                                                                <option value="{{=cc[3]}}"
-                                                                {{if isinstance(request.vars.sel_gastos, list):}}
-                                                                   {{for cc_gasto in request.vars.sel_gastos:}}
-                                                                        {{if cc_gasto==str(cc[3]):}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{elif request.vars.sel_gastos!=None:}}
-                                                                        {{if str(cc[3])==request.vars.sel_gastos:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                {{elif cuentas_gastos!=None:}}
-                                                                    {{for cc_gasto in cuentas_gastos:}}
-                                                                        {{if cc_gasto.id==cc[3]:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{pass}}
-                                                                >{{=cc[0]+' '+cc[1]}}        
-                                                                </option>    
-                                                            {{pass}}
-                                                        </select>
-                                                        </div>
-                                                         </div>
-                                                            
-                                                       <div class="fila">
-                                                       <div class="cell">
-                                                           Etiqueta para otros ingresos y costos:
-                                                       </div>
-                                                       <div class="cell">
-                                                           <input name="etiqueta_otros" type="text" style="width:450px;"
-                                                                  {{if request.vars.etiqueta_otros:}}
-                                                                      value="{{=request.vars.etiqueta_otros}}"
-                                                                  {{elif desc_otros:}}
-                                                                      value="{{=desc_otros[0].descripcion}}"
-                                                                  {{else:}}
-                                                                      value="{{=''}}"
-                                                                  {{pass}}
-                                                           >
-                                                        </div> 
-                                                        </div>
-                                                            
-                                                        <div class="fila">
-                                                        <div class="cell">
-                                                        Cuentas de otros ingresos y costos:
-                                                         </div>  
-                                                         <div class="cell">
-                                                        <select name="sel_otros"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
-                                                          {{for cc in cc_empresa:}}
-                                                                <option value="{{=cc[3]}}"
-                                                                {{if isinstance(request.vars.sel_otros, list):}}
-                                                                   {{for cc_otro in request.vars.sel_otros:}}
-                                                                        {{if cc_otro==str(cc[3]):}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{elif request.vars.sel_otros!=None:}}
-                                                                        {{if str(cc[3])==request.vars.sel_otros:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                {{elif cuentas_otros!=None:}}
-                                                                    {{for cc_otro in cuentas_otros:}}
-                                                                        {{if cc_otro.id==cc[3]:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{pass}}
-                                                                >{{=cc[0]+' '+cc[1]}}
-                                                                </option>
-                                                            {{pass}}
-                                                            </select>
-                                                        </div>   
-                                                        </div>   
-                                                       
-                                                            
-                                                       <div class="fila">
-                                                       <div class="cell">
-                                                           Etiqueta para impuestos:
-                                                       </div>
-                                                       <div class="cell">
-                                                           <input name="etiqueta_impuestos" type="text" style="width:450px;"
-                                                                  {{if request.vars.etiqueta_impuestos:}}
-                                                                      value="{{=request.vars.etiqueta_impuestos}}"
-                                                                  {{elif desc_impuestos:}}
-                                                                      value="{{=desc_impuestos[0].descripcion}}"
-                                                                  {{else:}}
-                                                                      value="{{=''}}"
-                                                                  {{pass}}
-                                                           >
-                                                        </div> 
-                                                       </div>
-                                                            
-                                                       <div class="fila">
-                                                        <div class="cell">
-                                                        Cuentas de impuestos:
-                                                         </div>  
-                                                         <div class="cell">
-                                                        <select name="sel_impuestos"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
-                                                           {{for cc in cc_empresa:}}
-                                                                <option value="{{=cc[3]}}" 
-                                                                {{if isinstance(request.vars.sel_impuestos, list):}}
-                                                                        {{for cc_impuesto in request.vars.sel_impuestos:}}
-                                                                        {{if cc_impuesto==str(cc[3]):}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{elif request.vars.sel_impuestos!=None:}}
-                                                                        {{if str(cc[3])==request.vars.sel_impuestos:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                {{elif cuentas_impuestos!=None:}}
-                                                                    {{for cc_impuesto in cuentas_impuestos:}}
-                                                                        {{if cc_impuesto.id==cc[3]:}}
-                                                                            selected="selected"
-                                                                        {{pass}}
-                                                                    {{pass}}
-                                                                {{pass}}
-                                                                >{{=cc[0]+' '+cc[1]}}        
-                                                                </option>    
-                                                            {{pass}}
-                                                            </select>
-                                                        </div>   
-                                                        </div> 
-                                                           <div class="fila">
-                                                            <div class="cell">
-                                                                
-                                                            </div>
-                                                            <div class="cell">
-                                                                <input type="submit" value="Enviar">
-                                                            </div>
-                                                           </div>
-                                                            
-                                                       </div>
-                                                       
-                                                        </form>
-                                                      
-                                                     
-
-                                                    </ul>
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <!-- end s1 tab pane -->
-                                                                                </div>
-                                                                                <!-- end content -->
-                                                                        </div>
-                                                                </div>
-                                                                <!-- end widget div -->
-                                                        </div>
-                                                        <!-- end widget -->
-                                                </article>
-                                        </div>
-                                        <!-- end row -->
-                                </section>
-                                <!-- end widget grid -->
+                                       {{if tipo_msg=='error': }}
+                                          ¡Advertencia!
+                                       {{elif tipo_msg=='exito':}}
+                                          ¡Éxito!
+                                       {{pass}}
+                                    </h4>
+                                    {{=msg}}
+                                 </div>
+                                 <div class="table">
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Nombre del reporte:
+                                       </div>
+                                       <div class="cell">
+                                          <input name="nombre_reporte" type="text" style="width:450px;"
+                                          {{if request.vars.nombre_reporte:}} value="{{=request.vars.nombre_reporte}}" {{elif nombre_reporte:}} value="{{=nombre_reporte[0].descripcion}}" {{else:}} value="{{=''}}" {{pass}}>
+                                       </div> 
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Etiqueta para ingresos:
+                                       </div>
+                                       <div class="cell">
+                                          <input name="etiqueta_ingresos" type="text" style="width:450px;" {{if request.vars.etiqueta_ingresos:}} value="{{=request.vars.etiqueta_ingresos}}" {{elif desc_ingresos:}} value="{{=desc_ingresos[0].descripcion}}" {{else:}} value="{{=''}}" {{pass}}>
+                                       </div>
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Cuentas de Ingresos:
+                                       </div>   
+                                       <div class="cell">
+                                          <select name="sel_ingresos" data-placeholder="Eija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                          {{for cc in cc_empresa:}}
+                                             <option value="{{=cc[3]}}" {{if isinstance(request.vars.sel_ingresos, list):}} {{for cc_ingreso in request.vars.sel_ingresos:}} {{if cc_ingreso==str(cc[3]):}} selected="selected" {{pass}} {{pass}} {{elif request.vars.sel_ingresos!=None:}} {{if str(cc[3])==request.vars.sel_ingresos:}} selected="selected" {{pass}} {{elif cuentas_ingresos:}} {{for cc_ingreso in cuentas_ingresos:}} {{if cc_ingreso.id==cc[3]:}} selected="selected" {{pass}} {{pass}} {{pass}}>
+                                                {{=cc[0]+' '+cc[1]}}        
+                                             </option>    
+                                          {{pass}}
+                                          </select>
+                                       </div>
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Etiqueta para costos:
+                                       </div>
+                                       <div class="cell">
+                                          <input name="etiqueta_costos" type="text" style="width:450px;"
+                                          {{if request.vars.etiqueta_costos:}}
+                                          value="{{=request.vars.etiqueta_costos}}"
+                                          {{elif desc_costos:}}
+                                          value="{{=desc_costos[0].descripcion}}"
+                                          {{else:}}
+                                          value="{{=''}}"
+                                          {{pass}}>
+                                       </div>
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Cuentas de Costos:
+                                       </div>
+                                       <div class="cell">    
+                                          <select name="sel_costos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                          {{for cc in cc_empresa:}}
+                                             <option value="{{=cc[3]}}" 
+                                                {{if isinstance(request.vars.sel_costos, list):}}
+                                                {{for cc_costo in request.vars.sel_costos:}}
+                                                {{if cc_costo==str(cc[3]):}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{elif request.vars.sel_costos!=None:}}
+                                                {{if str(cc[3])==request.vars.sel_costos:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{elif cuentas_costos!=None:}}
+                                                {{for cc_costo in cuentas_costos:}}
+                                                {{if cc_costo.id==cc[3]:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{pass}}
+                                                >{{=cc[0]+' '+cc[1]}}        
+                                             </option>    
+                                          {{pass}}
+                                          </select>
+                                       </div>
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Etiqueta para gastos:
+                                       </div>
+                                       <div class="cell">
+                                          <input name="etiqueta_gastos" type="text" style="width:450px;"
+                                          {{if request.vars.etiqueta_gastos:}}
+                                          value="{{=request.vars.etiqueta_gastos}}"
+                                          {{elif desc_gastos:}}
+                                          value="{{=desc_gastos[0].descripcion}}"
+                                          {{else:}}
+                                          value="{{=''}}"
+                                          {{pass}}
+                                          >
+                                       </div> 
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Cuentas de Gastos:
+                                       </div>
+                                       <div class="cell">    
+                                          <select name="sel_gastos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                             {{for cc in cc_empresa:}}
+                                             <option value="{{=cc[3]}}"
+                                                {{if isinstance(request.vars.sel_gastos, list):}}
+                                                {{for cc_gasto in request.vars.sel_gastos:}}
+                                                {{if cc_gasto==str(cc[3]):}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{elif request.vars.sel_gastos!=None:}}
+                                                {{if str(cc[3])==request.vars.sel_gastos:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{elif cuentas_gastos!=None:}}
+                                                {{for cc_gasto in cuentas_gastos:}}
+                                                {{if cc_gasto.id==cc[3]:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{pass}}
+                                                >{{=cc[0]+' '+cc[1]}}        
+                                             </option>    
+                                             {{pass}}
+                                          </select>
+                                       </div>
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Etiqueta para otros ingresos y costos:
+                                       </div>
+                                       <div class="cell">
+                                          <input name="etiqueta_otros" type="text" style="width:450px;"
+                                          {{if request.vars.etiqueta_otros:}}
+                                          value="{{=request.vars.etiqueta_otros}}"
+                                          {{elif desc_otros:}}
+                                          value="{{=desc_otros[0].descripcion}}"
+                                          {{else:}}
+                                          value="{{=''}}"
+                                          {{pass}}
+                                          >
+                                       </div> 
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Cuentas de otros ingresos y costos:
+                                       </div>  
+                                       <div class="cell">
+                                          <select name="sel_otros"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                             {{for cc in cc_empresa:}}
+                                             <option value="{{=cc[3]}}"
+                                                {{if isinstance(request.vars.sel_otros, list):}}
+                                                {{for cc_otro in request.vars.sel_otros:}}
+                                                {{if cc_otro==str(cc[3]):}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{elif request.vars.sel_otros!=None:}}
+                                                {{if str(cc[3])==request.vars.sel_otros:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{elif cuentas_otros!=None:}}
+                                                {{for cc_otro in cuentas_otros:}}
+                                                {{if cc_otro.id==cc[3]:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{pass}}
+                                                >{{=cc[0]+' '+cc[1]}}
+                                             </option>
+                                             {{pass}}
+                                          </select>
+                                       </div>   
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Etiqueta para impuestos:
+                                       </div>
+                                       <div class="cell">
+                                          <input name="etiqueta_impuestos" type="text" style="width:450px;"
+                                          {{if request.vars.etiqueta_impuestos:}}
+                                          value="{{=request.vars.etiqueta_impuestos}}"
+                                          {{elif desc_impuestos:}}
+                                          value="{{=desc_impuestos[0].descripcion}}"
+                                          {{else:}}
+                                          value="{{=''}}"
+                                          {{pass}}
+                                          >
+                                       </div> 
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Cuentas de impuestos:
+                                       </div>
+                                       <div class="cell">
+                                          <select name="sel_impuestos"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                             {{for cc in cc_empresa:}}
+                                             <option value="{{=cc[3]}}" 
+                                                {{if isinstance(request.vars.sel_impuestos, list):}}
+                                                {{for cc_impuesto in request.vars.sel_impuestos:}}
+                                                {{if cc_impuesto==str(cc[3]):}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{elif request.vars.sel_impuestos!=None:}}
+                                                {{if str(cc[3])==request.vars.sel_impuestos:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{elif cuentas_impuestos!=None:}}
+                                                {{for cc_impuesto in cuentas_impuestos:}}
+                                                {{if cc_impuesto.id==cc[3]:}}
+                                                selected="selected"
+                                                {{pass}}
+                                                {{pass}}
+                                                {{pass}}
+                                                >{{=cc[0]+' '+cc[1]}}        
+                                             </option>    
+                                             {{pass}}
+                                          </select>
+                                       </div>   
+                                    </div> 
+                                    <div class="fila">
+                                       <div class="cell">
+                                       </div>
+                                       <div class="cell">
+                                          <input type="submit" value="Enviar">
+                                       </div>
+                                    </div>
+                                 </div>
+                              </form>
+                           </ul>
+                        </div>
+                     </div>
+                     <!-- end s1 tab pane -->
+                  </div>
+                  <!-- end content -->
+               </div>
+            </div>
+            <!-- end widget div -->
+         </div>
+         <!-- end widget -->
+      </article>
+   </div>
+   <!-- end row -->
+</section>
+<!-- end widget grid -->
 
 <script src="{{=URL('static', 'chosen/chosen.jquery.js')}}" type="text/javascript"></script>
 

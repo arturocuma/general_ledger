@@ -3,7 +3,7 @@ import os
 import urllib2
 from gluon.storage import Storage
 import locale
-locale.setlocale( locale.LC_ALL, 'en_US.UTF-8' )
+locale.setlocale( locale.LC_ALL, 'es_MX.UTF-8' )
 
 #########################################################################
 ## This scaffolding model makes your app work on Google App Engine too

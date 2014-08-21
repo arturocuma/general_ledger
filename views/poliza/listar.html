@@ -52,6 +52,20 @@ $(document).ready(function(){
         var datos = {id: id, value:value};
 
         $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
+            console.log(id);
+            $(id).html(data);
+        });
+    });
+
+    $('.cambiar_tipo').change(function() {
+
+        var id = $(this).attr('id');
+        var value = $(this).val();
+        var datos = {id: id, value:value};
+
+        $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
+            id = id.replace('.', '');
+            id = '#' + id.replace('tipo', 'folio');
             $(id).html(data);
         });
     });
@@ -78,6 +92,7 @@ $(document).ready(function(){
         indicator: "Actualizando...",
     });
 
+    /*
     $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
 
         var dataArray = [];
@@ -95,6 +110,7 @@ $(document).ready(function(){
             });
         });
     });
+    */
 
 });
 </script>

@@ -89,9 +89,9 @@ def tabla_responsiva():
     filtro = ""
     tipo_cuentas=request.vars.tipo_cuentas
     if request.vars.fecha_ini:
-        filtro += " AND poliza.f_poliza >= '"+str(request.vars.fecha_ini) +"'"
+        filtro += " AND poliza.creada_en >= '"+str(request.vars.fecha_ini) +"'"
     if request.vars.fecha_fin:
-        filtro += " AND poliza.f_poliza < '"+str(request.vars.fecha_fin) +"'"
+        filtro += " AND poliza.creada_en < '"+str(request.vars.fecha_fin) +"'"
         
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
@@ -223,15 +223,15 @@ def libro_diario():
     if request.vars.tipo_poliza_id:
         filtro += " AND tp.id = "+str(request.vars.tipo_poliza_id)
     if request.vars.fecha_ini:
-        filtro += " AND p.f_poliza >= '"+str(request.vars.fecha_ini) +"'"
+        filtro += " AND p.creada_en >= '"+str(request.vars.fecha_ini) +"'"
     if request.vars.fecha_fin:
-        filtro += " AND p.f_poliza < '"+str(request.vars.fecha_fin) +"'"
+        filtro += " AND p.creada_en < '"+str(request.vars.fecha_fin) +"'"
     if request.vars.concepto_general:
         filtro += " AND p.concepto_general LIKE '%"+ str(request.vars.concepto_general) +"%'"
     if request.vars.num_poliza:
         filtro = " AND p.id = "+ str(request.vars.num_poliza)
 
-    query = "SELECT p.id , tp.nombre AS tipo_poliza, p.f_poliza, \
+    query = "SELECT p.id , tp.nombre AS tipo_poliza, p.creada_en, \
             p.concepto_general, cc.num_cc,cc.descripcion,a.id AS asiento_id, a.concepto_asiento, a.debe, a.haber, p.importe\
             FROM poliza p \
             LEFT JOIN asiento a ON (a.poliza_id = p.id) \
@@ -244,6 +244,7 @@ def libro_diario():
     tipo_poliza = db(db.tipo_poliza.id > 0).select(db.tipo_poliza.ALL)
 
     return dict(datos = query, tipo_poliza= tipo_poliza)
+
 
 def estado_resultados():
     tabla=''

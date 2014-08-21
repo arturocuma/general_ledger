@@ -12,12 +12,28 @@ def index(): return dict(message="hello from poliza.py")
 def listar():
 
     # modificaciones a campos de la tabla `asiento`
-    db.asiento.f_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='f_asiento', _id=str(row.id)+'.f_asiento')
-    db.asiento.cc_empresa_id.widget = SQLFORM.widgets.autocomplete(request, db.cc_empresa.descripcion, id_field=db.cc_empresa.id, limitby=(0,10), min_length=1)
-    db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
-    db.asiento.concepto_asiento.represent = lambda value, row: DIV(value if value!='' else '-', _class='concepto_asiento', _id=str(row.id)+'.concepto_asiento')
-    db.asiento.debe.represent = lambda value, row: DIV(value if value!='' else '-', _class='debe', _id=str(row.id)+'.debe')
-    db.asiento.haber.represent = lambda value, row: DIV(value if value!='' else '-', _class='haber', _id=str(row.id)+'.haber')
+
+    # modificar esto
+    db.asiento.cc_empresa_id.represent = lambda value, row:\
+            DIV(db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
+    # fin-modificar esto
+
+    db.asiento.concepto_asiento.represent = lambda value, row:\
+            DIV(value if value!='' else '-',
+                    _class='concepto_asiento',
+                    _id=str(row.id)+'.concepto_asiento'
+                    )
+
+    db.asiento.debe.represent = lambda value, row: \
+            DIV(locale.currency(value, grouping=True) if value!='' else '-',
+                    _class='debe',
+                    _id=str(row.id)+'.debe'
+                    )
+    db.asiento.haber.represent = lambda value, row: \
+            DIV(locale.currency(value, grouping=True) if value!='' else '-',
+                    _class='haber',
+                    _id=str(row.id)+'.haber'
+                    )
 
     # modificaciones a campos de la tabla `poliza`
     db.poliza.importe.writable = False
@@ -27,12 +43,14 @@ def listar():
                 _class='concepto_general',
                 _id=str(row.id)+'.concepto_general'
                 )
+
+    # Columna `folio`
+    db.poliza.folio.represent = lambda value, row:\
+            DIV(value, _class='folio', _id='{}folio'.format(row.id))
+
+    # Columna `tipo_poliza`
     db.poliza.tipo.represent = lambda value, row:\
-            DIV(
-                obtener_tipo_poliza(value) if value != None else '-',
-                _class='tipo_poliza',
-                _id=str(row.id)+'.tipo_poliza'
-                )
+            crear_selector_tipo(row.id)
 
     # Columna `estatus_poliza`
     db.poliza.estatus.represent = lambda value, row:\
@@ -51,7 +69,8 @@ def listar():
             #deletable=auth.has_permission('delete_poliza') or False,
             deletable=True,
             searchable=False,
-            editable=True,
+            editable=False,
+            details=False,
             create=False,
             user_signature=True,
             exportclasses=dict(
@@ -167,7 +186,13 @@ def actualiza_asiento():
     """
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
-    db(db.asiento.id == id).update(**{column:value, 'f_asiento':datetime.now()})
+
+    db(db.asiento.id == id).update(**{
+        column:value,
+        'actualizada_en':datetime.now(),
+        'actualizada_por':auth.user['id']
+        })
+
     return value
 
 
@@ -188,7 +213,8 @@ def actualiza_descripcion():
 
     db(db.asiento.id == id).update(**{
         column:resultado.id,
-        'f_asiento':datetime.now()
+        'actualizada_en': datetime.now(),
+        'actualizada_por': auth.user['id']
         })
 
     return "%s %s" % (resultado.num_cc, resultado.descripcion)
@@ -223,13 +249,13 @@ def agregar_poliza():
 
     ultimo = db(db.poliza.id > 0).select(
             db.poliza.id,
-            db.poliza.f_poliza,
+            db.poliza.creada_en,
             orderby =~ db.poliza.id
         ).first()
 
     # en caso de que no existan pólizas
     if ultimo:
-        ultimo = int(ultimo.f_poliza.strftime('%m'))
+        ultimo = int(ultimo.creada_en.strftime('%m'))
     else:
         ultimo = int(datetime.now().strftime('%m'))
     # fin-en caso de que no existan pólizas
@@ -237,15 +263,14 @@ def agregar_poliza():
     id = db.poliza.insert(
             folio = '',
             concepto_general = '',
-            tipo = '',
             importe = 0,
             )
 
     fila = db(db.poliza.id == id).select(
             db.poliza.tipo,
-            db.poliza.f_poliza,
+            db.poliza.creada_en,
             ).first()
-    ahora = int(fila.f_poliza.strftime('%m'))
+    ahora = int(fila.creada_en.strftime('%m'))
 
     consecutivo_actual = db(db.misc.id > 0).select(
             db.misc.consecutivo_polizas
@@ -264,9 +289,7 @@ def agregar_poliza():
                 )
         consecutivo += 1
 
-    # print 'consecutivo: {}', consecutivo
-
-    folio = armar_folio(consecutivo, fila.tipo, fila.f_poliza)
+    folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
     db(db.poliza.id == id).update(folio = folio)
 
     redirect(URL('poliza', 'listar'))
@@ -278,39 +301,50 @@ def actualiza_poliza():
     """
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
-    db(db.poliza.id == id).update(**{column:value, 'f_poliza':datetime.now()})
+    db(db.poliza.id == id).update(**{
+        column:value,
+        'actualizada_en':datetime.now(),
+        'actualizada_por':auth.user['id']
+        })
     return value
 
 
 def actualiza_tipo_poliza():
     """
-    Actualiza el campo `tipo` de la tabla `poliza`
+    Actualiza los campos:
+    - `tipo`
+    - `actualizada_en`
+    - `actualizada por`
+    de la tabla `poliza`
     """
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
 
-    resultado = db(db.tipo_poliza.nombre == value).select(
+    db(db.poliza.id == id).update(**{column:value})
+
+    resultado = db(db.tipo_poliza.id == value).select(
             db.tipo_poliza.id,
             ).first()
 
     db(db.poliza.id == id).update(**{
         'tipo':resultado.id,
-        'f_poliza':datetime.now()
+        'actualizada_en':datetime.now(),
+        'actualizada_por':auth.user['id']
         })
 
     # reducir el código aquí
     fila = db(db.poliza.id == id).select(
             db.poliza.folio,
             db.poliza.tipo,
-            db.poliza.f_poliza,
+            db.poliza.creada_en,
             ).first()
 
     consecutivo = int(fila.folio[2:8])
-    folio = armar_folio(consecutivo, fila.tipo, fila.f_poliza)
+    folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
     db(db.poliza.id == id).update(folio = folio)
     # fin-reducir el código aquí
 
-    return value
+    return folio
 
 
 def carga_tipo_poliza():

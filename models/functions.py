@@ -113,6 +113,31 @@ def crear_selector_status(id):
     return select
 
 
+def crear_selector_tipo(id):
+    """
+    Retorna el estatus de la póliza a partir de un id
+    """
+    opciones_tipos = [OPTION(tipos.nombre, _value=tipos.id) for\
+            tipos in db().select(
+                db.tipo_poliza.ALL,
+                cache=(cache.ram,3600)
+                )]
+
+    tipo = db(db.poliza.id == id).select(
+            db.poliza.tipo
+            ).first().tipo
+
+    select = SELECT(
+            _name = 'tipo{}'.format(id),
+            _id = '{}.tipo'.format(id),
+            _class = 'cambiar_tipo',
+            value = tipo,
+            *opciones_tipos
+            )
+
+    return select
+
+
 def eliminar(ids):
     """
     Recibe una lista de ids y los elimina
