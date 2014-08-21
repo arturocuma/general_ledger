@@ -84,10 +84,9 @@
 													<h3><strong>Paso 1   </strong> - Catálogo de Cuentas del SAT</h3>
 													<div>
                                                        <p>
-                                                      Le presentamos las cuentas del catálogo del SAT:        
+                                                      Este es un modelo estandar del catálogo de cuentas del SAT, si deseas usarlo en la siguiente sección puedes elegirlo.
                                                       </p>
-                                                       {{=cc_empresa}}
-    
+                                                       {{=cc_empresa}}    
                                                     </div>
 												</div>
 				
@@ -107,7 +106,7 @@
 															<label class="col-md-2 control-label">¿Desea utilizar el catálogo de cuentas del SAT? </label>
 															<div class="col-md-10">
 																<div class="input-group">
-                                                                    <select class="form-control" name="cc_preconf" >
+                                                                    <select class="" name="cc_preconf" id='cc_sat'>
                                                                          <option value='1'>
                                                                             SI
                                                                         </option>
@@ -115,18 +114,16 @@
                                                                             NO
                                                                         </option>
                                                                     </select>
-																	<span class="input-group-addon"><i class="fa "></i></span>
 																</div>
 																<span class="help-block"></span>
 															</div>
 														</div>
                                                        
-                                                        <div class="form-group ">
-															<label class="col-md-2 control-label">O puede cargar un catálogo de cuentas personalizado </label>
+                                                        <div class="form-group " id="cc_csv" style="display:none;">
+															<label class="col-md-2 control-label">Cargar un catálogo de cuentas personalizado </label>
 															<div class="col-md-10">
 																<div class="input-group">
-                                                                    <input class="form-control" name="csvfile" id="csvfile" type="file">
-																	<span class="input-group-addon"></span>
+                                                                    <input class="btn" name="csvfile" id="csvfile" type="file">
 																</div>
 															</div>
 														</div>
@@ -147,12 +144,12 @@
     </div>
 
 												<div class="step-pane" id="step3">
-													<h3><strong>Paso 3 </strong> - Terminado!</h3>
+													<h3><strong>Paso 3 </strong> - ¡Terminado!</h3>
 													<br>
 													<br>
-													<h1 class="text-center text-success"><i class="fa fa-check"></i> Felicidades!
+													<h1 class="text-center text-success"><i class="fa fa-check"></i> ¡Felicidades!
 													<br>
-													<small>De click en el botón terminar para finalizar el wizard</small></h1>
+													<small>De click en el botón Terminar para finalizar el wizard</small></h1>
 													<br>
 													<br>
 													<br>
@@ -193,6 +190,15 @@
 		
 		$(document).ready(function() {
 			
+			$('#cc_sat').change(function(){
+				if( $(this).val() == '1' ){
+					$('#cc_csv').hide();
+				}
+				else{
+					$('#cc_csv').show();	
+				}
+			});
+
             $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Expandir esta rama');
             var children = $('.tree li.parent_li > span').parent('li.parent_li').find(' > ul > li');
             
