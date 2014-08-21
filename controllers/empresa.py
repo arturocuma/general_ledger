@@ -94,7 +94,7 @@ def respaldar():
     pass
 
 
-def opciones():
+def configuracion():
     """
     Opciones de configuración de cada empresa:
     - eliminar

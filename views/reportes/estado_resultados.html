@@ -1,90 +1,62 @@
 {{extend 'layout.html'}}
-
-
-
-
-                                <!-- widget grid -->
-                                <section id="widget-grid" class="">
-                                        <!-- row -->
-                                        <div class="row">
-                                                <article class="col-sm-12">
-                                                        <!-- new widget -->
-                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-                                                                <!-- widget options:
-                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                                                                data-widget-colorbutton="false"
-                                                                data-widget-editbutton="false"
-                                                                data-widget-togglebutton="false"
-                                                                data-widget-deletebutton="false"
-                                                                data-widget-fullscreenbutton="false"
-                                                                data-widget-custombutton="false"
-                                                                data-widget-collapsed="true"
-                                                                data-widget-sortable="false"
-                                                                -->
-                                                                <header>
-                                                                        <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
-                                                                        <h2>Estado de Resultados</h2>
-                                                                        <ul class="nav nav-tabs pull-right in" id="myTab">
-                                                                                <li class="active">
-                                                                                        <a data-toggle="tab" href="#s1"><i class="fa fa-list-ol"></i> <span class="hidden-mobile hidden-tablet">Reportes</span></a>
-                                                                                </li>
-                                                                        </ul>
-                                                                </header>
-                                                                <!-- widget div-->
-                                                                <div class="no-padding">
-                                                                        <!-- widget edit box -->
-                                                                        <div class="jarviswidget-editbox">
-                                                                                test
-                                                                        </div>
-                                                                        <!-- end widget edit box -->
-                                                                        <div class="widget-body">
-                                                                                <!-- content -->
-                                                                                <div id="myTabContent" class="tab-content">
-                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
-                                                <div class="padding-10">
-                                                    <ul id="expList">
- 
-    <!-- widget div-->
-        <div>
-			<!-- widget edit box -->
-			<div class="jarviswidget-editbox">
-			<!-- This area used as dropdown edit box -->
-            </div>
-            <!-- end widget edit box -->
-				
-			<!-- widget content -->
-			<div class="widget-body no-padding">
-                <div class="widget-body-toolbar">
-				
+<div class="row">
+    <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+        <legend>
+            <h1>
+                <p>
+                    <i class="fa-fw fa  fa-usd"></i>
+                    Estado de resultados
+                </p>
+            </h1>
+        </legend>
+    </article>
+</div>
+<!-- widget grid -->
+<section id="widget-grid" class="">
+	<!-- row -->
+	<div class="row">
+		<article class="col-sm-12">
+			<!-- new widget -->
+			<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+					<h2>Estado de Resultados</h2>
+				</header>
+				<!-- widget div-->
+				<div class="no-padding">				
+					<div class="widget-body">
+						<!-- content -->
+						<div id="myTabContent" class="tab-content">
+							<div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+								<div class="padding-10">
+									<ul id="expList">
+										<!-- widget div-->
+										<div>
+											<!-- widget content -->
+											<div class="widget-body no-padding">
+												<div class="widget-body-toolbar">
+												</div>
+												<div id="div_cuentas">
+													{{=tabla}}
+												</div>
+											</div>
+										</div>
+									</ul>
+								</div>
+							</div>
+							<!-- end s1 tab pane -->
+						</div>
+						<!-- end content -->
+					</div>
 				</div>
-                <div id="div_cuentas">
-                        {{=tabla}}
-                </div>
-                
-            </div>
-        </div>
-                                                        
-                                                        
-                                                        
-                                                        
-                                                     
-
-                                                 </ul>
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <!-- end s1 tab pane -->
-                                                                                </div>
-                                                                                <!-- end content -->
-                                                                        </div>
-                                                                </div>
-                                                                <!-- end widget div -->
-                                                        </div>
-                                                        <!-- end widget -->
-                                                </article>
-                                        </div>
-                                        <!-- end row -->
-                                </section>
-                                <!-- end widget grid -->
+				<!-- end widget div -->
+			</div>
+			<!-- end widget -->
+		</article>
+	</div>
+<!-- end row -->
+</section>
+<!-- end widget grid -->
 
 <!-- PAGE RELATED PLUGIN(S) -->
 <script src="{{=URL('static', 'smartadmin/js/plugin/datatables/jquery.dataTables-cust.min.js')}}"></script>

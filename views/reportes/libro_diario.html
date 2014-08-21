@@ -70,78 +70,82 @@
 										<span class="widget-icon"> <i class="fa fa-file-text-o"></i> </span>
 										<h2>Pólizas con sus asientos</h2>
 									</header>
-       	  							<div class="table-responsive">
-			    						<table class="table table-condensed" id="mi-tabla">
-			      							<thead>
-												<tr class="poliza titulo">
-												  <th>Op</th>
-												  <th>Tipo</th>
-												  <th>No. póliza</th>
-												  <th>Fecha</th>
-												  <th>Concepto póliza</th>
-												  <th></th>
-												  <th style="text-align: left;">Total póliza</th>
-												</tr>
-			      							</thead>
-			      							<tbody>
-											{{id = 0
-											for d in datos:
-												if id != d['id']:
-													id = d['id']}}
-												<tr class="poliza detalle" data-padre="{{=d['id']}}" data-abierto="false">
-												  <td><i class="fa fa-chevron-down"></i></td>
-												  <td>{{=d['tipo_poliza']}}</td>
-												  <td>{{=d['id']}}</td>
-												  <td>{{=d['creada_en']}}</td>
-												  <td>{{=d['concepto_general']}}</td>
-												  <td style="text-align: right">Importe:</td>
-												  <td style="text-align: right">{{=calcula_importe(d['id'])}}</td>
-												</tr>
-													{{if d['asiento_id'] != None:}}
-													<tr class="asiento titulo" data-hijo="{{=d['id']}}">
-													  <th></th>
-													  <th>No. cuenta</th>
-													  <th>Depto</th>
-													  <th>Descripción cuenta</th>
-													  <th>Concepto asiento</th>
-													  <th>Debe</th>
-													  <th>Haber</th>
-													</tr>
-													<tr class="asiento detalle"  data-hijo="{{=d['id']}}">
-													  <td></td>
-													  <td>{{=d['num_cc']}}</td>
-													  <td>--</td>
-													  <td>{{=d['descripcion']}}</td>
-													  <td>{{=d['concepto_asiento']}}</td>
-													  <td>{{=d['debe']}}</td>
-													  <td>{{=d['haber']}}</td>
-													</tr>
-													{{pass}}
-												{{else:}}
-												<tr class=" asiento detalle"  data-hijo="{{=d['id']}}">
-												  <td></td>
-												  <td>{{=d['num_cc']}}</td>
-												  <td>--</td>
-												  <td>{{=d['descripcion']}}</td>
-												  <td>{{=d['concepto_asiento']}}</td>
-												  <td>{{=d['debe']}}</td>
-												  <td>{{=d['haber']}}</td>
-												</tr>
-												{{pass
-											pass}}
-			      							</tbody>
-			    						</table>
-  									</div>
+									<div role="content">
+										<div class="widget-body no-padding">
+       	  									<div class="table-responsive">
+			    								<table class="table table-condensed">
+					      							<thead>
+														<tr class="poliza titulo">
+														  <th>Op</th>
+														  <th>Tipo</th>
+														  <th>No. póliza</th>
+														  <th>Fecha</th>
+														  <th>Concepto póliza</th>
+														  <th></th>
+														  <th style="text-align: left;">Total póliza</th>
+														</tr>
+					      							</thead>
+					      							<tbody>
+													{{id = 0
+													for d in datos:
+														if id != d['id']:
+															id = d['id']}}
+														<tr class="poliza detalle" data-padre="{{=d['id']}}" data-abierto="false">
+														  <td><i class="fa fa-chevron-down"></i></td>
+														  <td>{{=d['tipo_poliza']}}</td>
+														  <td>{{=d['id']}}</td>
+														  <td>{{=d['creada_en']}}</td>
+														  <td>{{=d['concepto_general']}}</td>
+														  <td style="text-align: right">Importe:</td>
+														  <td style="text-align: right">{{=calcula_importe(d['id'])}}</td>
+														</tr>
+															{{if d['asiento_id'] != None:}}
+															<tr class="asiento titulo" data-hijo="{{=d['id']}}">
+															  <th></th>
+															  <th>No. cuenta</th>
+															  <th>Depto</th>
+															  <th>Descripción cuenta</th>
+															  <th>Concepto asiento</th>
+															  <th>Debe</th>
+															  <th>Haber</th>
+															</tr>
+															<tr class="asiento detalle"  data-hijo="{{=d['id']}}">
+															  <td></td>
+															  <td>{{=d['num_cc']}}</td>
+															  <td>--</td>
+															  <td>{{=d['descripcion']}}</td>
+															  <td>{{=d['concepto_asiento']}}</td>
+															  <td>{{=d['debe']}}</td>
+															  <td>{{=d['haber']}}</td>
+															</tr>
+															{{pass}}
+														{{else:}}
+														<tr class=" asiento detalle"  data-hijo="{{=d['id']}}">
+														  <td></td>
+														  <td>{{=d['num_cc']}}</td>
+														  <td>--</td>
+														  <td>{{=d['descripcion']}}</td>
+														  <td>{{=d['concepto_asiento']}}</td>
+														  <td>{{=d['debe']}}</td>
+														  <td>{{=d['haber']}}</td>
+														</tr>
+														{{pass
+													pass}}
+					      							</tbody>
+					    						</table>
+		  									</div>
+		  								</div>
+		  							</div>
   								</div>
   							</article>
   						</div>
       				</div>
           			<div class="tab-pane fade" id="s2"> 
             			<div class="padding-10">
-              				<div class="panel panel-info">
-	    						<div class="panel-heading" id="abrir-campos-filtro" title="Mostrar/ocultar los filtros" style="cursor: pointer;">
+              				<div class="">
+	    						<!--<div class="panel-heading" id="abrir-campos-filtro" title="Mostrar/ocultar los filtros" style="cursor: pointer;">
 	      							<h3 class="panel-title" style="font-size: 14px;">Filtros de búsqueda</h3>
-	    						</div>
+	    						</div>-->
 	    						<div class="panel-body" id="campos-filtro">
 	      							<form class="smart-form" method="POST" id="filtros" name="filtros">
 									<!--<article class="col-sm-12 col-md-12 col-lg-4">-->

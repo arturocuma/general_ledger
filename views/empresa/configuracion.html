@@ -1,0 +1,138 @@
+{{extend 'layout.html'}}
+{{if session.instancias:}}
+    {{nom = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
+    <div class="row">
+        <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+            <legend>
+                <h1>
+                    <p>
+                        <i class="fa-fw fa fa-cog "></i>
+                        Configuración de empresa {{=nom.razon_social}}
+                    </p>
+                    <small>Configuración, ajustes y opciones.</small>
+                </h1>
+            </legend>
+        </article>
+    </div>
+    <!-- row -->       
+    <div class="row">
+        <div class="col-md-4">
+            <div class="alert alert-info">
+                <h2 style=" color: #305d8c;"><i class='fa fa-copy'></i> Crear respaldo</h2>
+                <p>Haz un respaldo de tu empresa.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-success">
+                <a href="javascript:void();" data-toggle="modal" data-target="#modal-compartir" style="cursor:pointer; text-decoration:none;">
+                    <h2 style="color: #356635;"><i class='fa fa-hand-o-right'></i> Compartir</h2>
+                </a>
+                <p>Comparte tu empresa con otros usuarios</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="alert alert-danger">
+                <a id="{{=session.instancias}}" data-nombre='{{=nom.razon_social}}' class="eliminar-empresa" style="cursor:pointer; text-decoration:none;">
+                    <h2 style="color:#FFF;"> <i class='fa fa-times'></i> Eliminar</h2>
+                </a>
+                <p>Elimina esta empresa de tu lista.</p>
+            </div>
+        </div>
+    </div><!--fin row-->
+{{pass}}
+
+
+<!-- Modal -->
+<div class="modal fade" id="modal-compartir" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            {{=form.custom.begin}}
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel"><i class='fa fa-hand-o-right'></i> Compartir empresa</h4>
+            </div>
+            <div class="modal-body">                
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <p>
+                                <label>Escribe el correo del usuario con quien quieres compartir tu empresa</label>
+                            </p>
+                            {{=form.custom.widget.invitado}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">
+                    Cancelar
+                </button>
+                    {{=form.custom.submit}}
+            </div>
+            {{=form.custom.end}}
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+<script>
+
+    /* Enviar email de invitación */
+    $('.invitar').click(function(e) {
+        e.preventDefault();
+        window.location.href = '#modal_invitar';
+        $("#form_invitar").load("{{=URL('empresa', 'invitar')}}");
+    });
+
+    /* Compartir empresa */
+    $('.compartir-empresa').click(function(e) {
+        e.preventDefault();
+
+        empresa_id = $(this).attr('id');
+        usuario_id = 3;
+
+        $.ajax({
+            type: "post",
+            url: "{{=URL('empresa', 'compartir')}}",
+            data: {empresa_id: empresa_id, usuario_id:usuario_id},
+            success: function (response) {
+                console.log('good');
+                location.reload();
+            },
+            error: function (response) {
+                console.log('bad');
+            },
+        });
+    });
+
+
+    $('.eliminar-empresa').click(function(e) {
+
+        id = $(this).attr('id');
+        nombre = $(this).data('nombre');
+
+        $.SmartMessageBox({
+            title : "Eliminar empresa " + nombre,
+            content : "¿Estas seguro de eliminar esta empresa?",
+            buttons : "[Cancelar][Eliminar]",
+            }, function(ButtonPress, Value) {
+            if (ButtonPress == "Eliminar") {
+                $.ajax({
+                    type: "post",
+                    url: "{{=URL('empresa', 'eliminar')}}",
+                    data: {id: id},
+                    success: function (response) {
+                        window.location.href = "{{=URL('default', 'index')}}";
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    },
+                });
+                return 0;
+            }
+        });
+
+    });
+
+</script>
