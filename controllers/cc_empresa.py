@@ -29,7 +29,7 @@ def cc_wizard():
 
 
 ##@auth.requires_permission('cc_grid')
-def cc_grid2():
+def balanza():
     tipo="grid"
     cc_empresa = ul_list2()
     return dict(cc_empresa=cc_empresa)
@@ -78,16 +78,38 @@ def ul_list2():
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
-        debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
-        haber=cantidad[0][0] if cantidad[0][0]!=None else 0.0    
-        id_row = cat[0] #.replace('.', '')
+        debe=cantidad[0][0] or 0.0
+        haber=cantidad[0][1] or 0.0
+        id_row = cat[0]
         color=XML(color_nivel(cat[2]))
         padding=XML(str(cat[2]*20))
         if tipo_cuentas=='con_saldo':
             if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
-                cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(debe)+'</td><td>'+XML(haber)+'</td></tr>'
+                cadena += """<tr id='{}' class='{}' style=color:'{}'>\
+                <td><i class='fa fa-plus-circle'></i></td>\
+                <td style="padding-left: {}px;">{}</td>\
+                <td>{}</td>\
+                <td>{}</td>\
+                <td>{}</td>\
+                </tr>""".format(XML(id_row), clase_tr, color,
+                        padding, XML(cat[0]), 
+                        XML(cat[1]), 
+                        XML(debe), 
+                        XML(haber)
+                        )
         else:
-            cadena+='<tr id="'+XML(id_row)+'" class="'+clase_tr+'" style="color:'+color+'"><td><i class="fa fa-plus-circle"></i></td><td style="padding-left: '+padding+'px;">'+XML(cat[0])+'</td><td>'+XML(cat[1])+'</td><td>'+XML(debe)+'</td><td>'+XML(haber)+'</td></tr>'
+            cadena += """<tr id='{}' class='{}' style=color:'{}'>\
+            <td><i class='fa fa-plus-circle'></i></td>\
+            <td style="padding-left: {}px;">{}</td>\
+            <td>{}</td>\
+            <td>{}</td>\
+            <td>{}</td>\
+            </tr>""".format(XML(id_row), clase_tr, color,
+                    padding, XML(cat[0]), 
+                    XML(cat[1]), 
+                    XML(debe), 
+                    XML(haber)
+                    )
 
     cadena+='</tbody></table></div>'
     cadena=XML(cadena)

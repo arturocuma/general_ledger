@@ -69,7 +69,8 @@ class EmpresaDB(object):
         Carga una sola instancia
         """
         import locale
-        locale.setlocale( locale.LC_ALL, 'es_ES.UTF-8' )
+        from gluon.sql import Table
+        locale.setlocale( locale.LC_ALL, 'es_MX.UTF-8' )
 
         hashear = razon_social + email
         nombre_hasheado = hashlib.sha1(hashear).hexdigest()
@@ -81,6 +82,26 @@ class EmpresaDB(object):
                 check_reserved = ['all'],
                 migrate = vez_primera
                 )
+
+        # WARNING: auth.user.id es del modelo maestro
+        historico = Table(None, 'tmp',
+            Field('creada_en', 'datetime',
+                default=request.now,
+                label='Fecha'
+                ),
+            Field('creada_por', 'string',
+                default=auth.user.id,
+                readable=False
+                ),
+            Field('actualizada_en', 'datetime',
+                default=request.now,
+                readable=False
+                ),
+            Field('actualizada_por', 'string',
+                default=auth.user.id,
+                readable=False
+                )
+        )
 
         db.define_table('pais',
                 Field('nombre', 'string'),
@@ -223,9 +244,9 @@ class EmpresaDB(object):
 
         db.define_table('poliza',
             Field('folio', 'string'),
-            Field('f_poliza', 'datetime', default=request.now, label='Fecha de Póliza'),
+            historico,
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
-            Field('tipo', 'reference tipo_poliza'),
+            Field('tipo', 'reference tipo_poliza', default=3),
             Field('estatus', 'reference estatus_poliza', default=1),
             Field('importe', 'double',
                 default = 0.0,
@@ -235,7 +256,7 @@ class EmpresaDB(object):
 
         db.define_table('asiento',
             Field('poliza_id', 'reference poliza', label='#Póliza'),
-            Field('f_asiento', 'datetime', default=request.now, label='Fecha de Asiento'),
+            historico,
             Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
@@ -334,8 +355,46 @@ class Web2Postgress():
         cur.close()
         con.close()
 
+
+    def respaldar_db(self, nombre, email):
+        """
+        #ToDo: crear exepciones
+        """
+        """
+        con = connect(
+                dbname = 'postgres',
+                user = 'web2py',
+                host = 'localhost',
+                password = 'w3b2py'
+                )
+
+        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
+        cur = con.cursor()
+
+        nombre_hasheado = hashlib.sha1(nombre + email).hexdigest()
+        cur.execute('drop database "_{}_{}"'.format(email, nombre_hasheado))
+
+        cur.close()
+        con.close()
+
+
+        try:
+            con = psycopg2.connect(database='local', user='local', password='local',port='1970')
+            cur = con.cursor()
+            cur.execute('SELECT x FROM t')
+            f = open('test.sql', 'w')
+            for row in cur:
+              f.write("insert into t values (" + str(row) + ");")
+        except psycopg2.DatabaseError, e:
+            print 'Error %s' % e
+            sys.exit(1)
+        finally:
+            if con:
+                con.close()
+        """
+
+
     def cerrar_sesiones():
         pass
-
 
 empresas = EmpresaDB(db_maestro)

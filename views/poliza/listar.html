@@ -52,6 +52,20 @@ $(document).ready(function(){
         var datos = {id: id, value:value};
 
         $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
+            console.log(id);
+            $(id).html(data);
+        });
+    });
+
+    $('.cambiar_tipo').change(function() {
+
+        var id = $(this).attr('id');
+        var value = $(this).val();
+        var datos = {id: id, value:value};
+
+        $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
+            id = id.replace('.', '');
+            id = '#' + id.replace('tipo', 'folio');
             $(id).html(data);
         });
     });
@@ -78,6 +92,7 @@ $(document).ready(function(){
         indicator: "Actualizando...",
     });
 
+    /*
     $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
 
         var dataArray = [];
@@ -95,6 +110,7 @@ $(document).ready(function(){
             });
         });
     });
+    */
 
 });
 </script>
@@ -115,14 +131,14 @@ $(document).ready(function(){
     }
 
 </style>
-
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <legend>
             <h1>
                 <p>
-                <i class="fa-fw fa fa-file-text-o"></i>
-                Pólizas contables</p>
+                    <i class="fa-fw fa fa-file-text-o"></i>
+                    Pólizas contables
+                </p>
                 <small>Listado de pólizas contables</small>
             </h1>
         </legend>
@@ -147,13 +163,8 @@ $(document).ready(function(){
                                                                 data-widget-sortable="false"
                                                                 -->
                                                                 <header>
-                                                                        <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+                                                                        <span class="widget-icon"> <i class="fa fa-list txt-color-darken"></i> </span>
                                                                         <h2>Listado de Pólizas Contables</h2>
-                                                                        <ul class="nav nav-tabs pull-right in" id="myTab">
-                                                                                <li class="active">
-                                                                                        <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
-                                                                                </li>
-                                                                        </ul>
                                                                 </header>
                                                                 <!-- widget div-->
                                                                 <div class="no-padding">

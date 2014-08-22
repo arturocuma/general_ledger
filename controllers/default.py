@@ -237,18 +237,18 @@ def empresa_wizard():
 
     form = SQLFORM.factory(*campos)
 
-    if form.process().accepted:
-       
+    #if form.process().accepted:
+    if request.vars:
         # generar hash :/ crear función para esto
-        nombre = form.vars.razon_social
+
+        nombre = request.vars.razon_social
         email = auth.user['email']
 
-        #form.vars.hash_instancia = hashlib.sha1(nombre + email).hexdigest()
-
-        empresa_id = db_maestro.empresa.insert(**db_maestro.empresa._filter_fields(form.vars))
+        empresa_id = db_maestro.empresa.insert(
+                **db_maestro.empresa._filter_fields(request.vars)
+                )
         vars = {'empresa_id': empresa_id}
 
-        session.flash = 'Se han configurado correctamente los datos de la empresa'
         db_maestro.mi_empresa.insert(user_id=auth.user['id'], empresa_id=empresa_id)
 
         instancia = Web2Postgress()
@@ -257,12 +257,11 @@ def empresa_wizard():
         empresas.cargar_modelo_de_instancia(email, nombre, vez_primera=True)
 
         redirect(URL('cc_empresa', 'cc_wizard', vars=vars))
-        #redirect(URL('default', 'index', vars=vars))
 
     elif form.errors:
-        response.flash = 'Errores en el formulario'
+        print form.errors
     else:
-        response.flash = 'Formulario incompleto'
+        pass
 
     return dict(form=form)
 
@@ -461,10 +460,10 @@ def cookieDelete():
 
 
 def login():
-    #from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-    #auth = Auth(db_maestro)
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
 
-    auth.settings.login_form=GoogleAccount()
+    #auth.settings.login_form=GoogleAccount()
     form = auth.login()
 
     return dict(form=form)
@@ -477,7 +476,7 @@ def index():
     from gluon.storage import Storage
     from uuid import uuid4
     from gluon.storage import Storage
-
+    login =''
     empresa_id = request.args(0)
     if empresa_id:
         session.instancias = empresa_id
@@ -544,5 +543,10 @@ def index():
         # the user is not logged
         mias = ''
         compartidas = ''
+        from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+        auth2 = Auth(db_maestro)
 
-    return dict(mias=mias, compartidas=compartidas)
+        #auth.settings.login_form=GoogleAccount()
+        login = auth2.login()
+
+    return dict(mias=mias, compartidas=compartidas, login=login)

@@ -401,7 +401,7 @@ header,h1,h2,h3,h4{
 
 				<!-- Note: The activity badge color changes when clicked and resets the number to 0
 				Suggestion: You may want to set a flag when this happens to tick off all checked messages / notifications -->
-				<span id="activity" class="activity-dropdown"> <i class="fa fa-user"></i> <b class="badge"> 10 </b> </span>
+				<span id="activity" class="activity-dropdown"> <i class="fa fa-user"></i> <b class="badge"> 0 </b> </span>
 
 				<!-- AJAX-DROPDOWN : control this dropdown height, look and feel from the LESS variable file -->
 				<div class="ajax-dropdown">
@@ -410,13 +410,13 @@ header,h1,h2,h3,h4{
 					<div class="btn-group btn-group-justified" data-toggle="buttons">
 						<label class="btn btn-default">
 							<input type="radio" name="activity" id="ajax/notify/mail.html">
-							Mensajes (4) </label>
+							Mensajes (0) </label>
 						<label class="btn btn-default">
 							<input type="radio" name="activity" id="ajax/notify/notifications.html">
-							Notificaciones (4) </label>
+							Notificaciones (0) </label>
 						<label class="btn btn-default">
 							<input type="radio" name="activity" id="ajax/notify/tasks.html">
-							Tareas (2) </label>
+							Tareas (0) </label>
 					</div>
 
 					<!-- notification content -->
@@ -445,14 +445,53 @@ header,h1,h2,h3,h4{
 				</div>
 				<!-- END AJAX-DROPDOWN -->
 			</div>
-			<div id="project-context" class="open">
+			<div id="project-context" class="">
 				{{if session.instancias:}}
 				<span class="label">Empresa:</span>
-				<span id="project-selector">
+				<span id="project-selector" class="popover-trigger-element dropdown-toggle" data-toggle="dropdown" rel="tooltip" data-placement="bottom" data-original-title="Click para ver/cambiar de empresa">
 					{{nom = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
 					Empresa {{=nom.razon_social}}
+					<i class="fa fa-angle-down"></i>
 				</span>
+				<ul class="dropdown-menu">
+				{{if session.auth:
+					mias = db_maestro(
+					                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+					                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+					                (db_maestro.mi_empresa.tipo == 1)
+						           ).select(
+						                   db_maestro.empresa.razon_social,
+						                   db_maestro.empresa.id
+						                   )
+		            compartidas = db_maestro(
+							                (db_maestro.mi_empresa.user_id == auth.user['id']) &\
+							                (db_maestro.mi_empresa.empresa_id == db_maestro.empresa.id) &\
+							                (db_maestro.mi_empresa.tipo == 2)
+							            	).select(
+							                    db_maestro.empresa.razon_social,
+							                    db_maestro.empresa.id
+							                 	)
+
+				}}
+				 	{{if mias:}}
+				 		<li class="divider"></li>
+				 		<li style="font-weight:bold;">Mis empresas</li>
+				 		<li class="divider"></li>
+				 		{{for m in mias:}}
+				 			<li><a href="{{=URL('default', 'empresa', args=m.id)}}">{{=m.razon_social}}</a></li>				 			
+				 		{{pass}}
+				 	{{pass}}
+				 	{{if compartidas:}}
+				 		<li class="divider"></li>
+				 		<li style="font-weight:bold;">Compartidas conmigo</li>
+				 		<li class="divider"></li>
+				 		{{for c in compartidas:}}
+				 			<li><a href="{{=URL('default', 'empresa', args=c.id)}}">{{=c.razon_social}}</a></li>				 			
+				 		{{pass}}
+				 	{{pass}}				 		
 				{{pass}}
+				</ul>
+				{{pass}}				
 			</div>
 
 
@@ -535,35 +574,33 @@ header,h1,h2,h3,h4{
 
 				<ul>
 					<li class="">
-						<a href="{{=URL('default','index.html')}}" title="Dashboard">
+						<a href="{{=URL('default','index')}}">
 							<i class="fa fa-lg fa-fw fa-home"></i>
-							<span class="menu-item-parent">Dashboard</span>
+							<span class="menu-item-parent">Home</span>
 						</a>
-						<ul>
-							<li>
-								<a href="{{=URL('default','empresa')}}">
-									<i class="fa fa-lg fa-fw  fa-building"></i>
-									Empresa
-								</a>
-							</li>
-						</ul>
 					</li>
 					<li>
-						<a href="#">
+						<a href="javascript:void();">
 							<i class="fa fa-lg fa-fw  fa-file-text-o "></i>
 							<span class="menu-item-parent">Pólizas</span>
 						</a>
 						<ul>
 							<li>
 								<a href="{{=URL('poliza','listar')}}">
-									<i class="fa fa-lg fa-fw  fa-list-ol "></i>
-									Listar
+									<i class="fa fa-lg fa-fw  fa-plus-square"></i>
+									Agregar pólizas
 								</a>
 							</li>
+                            <li>
+                                <a href="{{=URL('configuracion','saldo_inicial')}}"> 
+                                	<i class="fa fa-lg fa-fw  fa-upload"></i>
+                                	Importar pólizas 
+                                </a>
+                            </li>
 						</ul>
 					</li>
 					<li>
-						<a href="#"><i class="fa fa-lg fa-fw fa-clipboard  "></i> <span class="menu-item-parent">Reportes</span></a>
+						<a href="javascript:void();"><i class="fa fa-lg fa-fw fa-clipboard  "></i> <span class="menu-item-parent">Reportes</span></a>
 						<ul>
 							<li>
 								<a href="{{=URL('reportes','libro_diario')}}">
@@ -574,7 +611,7 @@ header,h1,h2,h3,h4{
 									<i class="fa fa-lg fa-fw fa-usd"></i>
 									Estado de resultados
 								</a>
-                                <a href="{{=URL('cc_empresa','cc_grid2')}}">
+                                <a href="{{=URL('cc_empresa','balanza')}}">
 									<i class="fa fa-filter"></i>
 									Balanza
 								</a>
@@ -586,31 +623,41 @@ header,h1,h2,h3,h4{
 						</ul>
 					</li>
 					<li>
-						<a href="#"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent"> Configuraciones</span></a>
+						<a href="javascript:void();"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent"> Configuraciones</span></a>
 						<ul>
                             <li>
-                                <a href="#"><i class="fa fa-fw fa-folder-open"></i> Catalogos</a>
+                                <a href="javascript:void();"><i class="fa fa-fw fa-folder-open"></i> Catalogos</a>
                                 <ul>
-
                                     <li>
-                                        <a href="{{=URL('cc_empresa','cc_grid')}}"><i class="fa fa-fw "></i> Cuentas Contables </a>
+                                        <a href="{{=URL('cc_empresa','cc_grid')}}"> Cuentas Contables </a>
                                     </li>
                                     <li>
-                                        <a href="{{=URL('configuracion','saldo_inicial')}}"><i class="fa fa-fw "></i> Saldo inicial </a>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Sucursales </a>
+                                    </li>
+                                    <li>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Paises </a>
+                                    </li>
+                                    <li>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Estados </a>
+                                    </li>
+                                    <li>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Municipios </a>
+                                    </li>
+                                    <li>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Localidades </a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a href="#"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> Reportes</a>
+                                <a href="javascript:void();"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> Reportes</a>
                                 <ul>
-
                                     <li>
                                         <a href="{{=URL('configuracion','estado_resultados')}}"><i class="fa fa-fw "></i> Estado de Resultados </a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-								<a href="#">
+								<a href="javascript:void();">
 									<i class="fa fa-fw fa-user"></i> Usuarios
 								</a>
 								<ul>
@@ -629,12 +676,7 @@ header,h1,h2,h3,h4{
 								</ul>
 							</li>
 							<li>
-                                <a href="#"><i class="fa fa-fw  fa-building "></i> Empresa</a>
-                                <ul>
-                                    <li>
-                                        <a href="{{=URL('empresa','opciones')}}"><i class="fa fa-fw "></i> Configuración </a>
-                                    </li>
-                                </ul>
+                                <a href="{{=URL('empresa','configuracion')}}"><i class="fa fa-fw  fa-building "></i> Empresa </a>
                             </li>
 						</ul>
 					</li>
@@ -769,7 +811,15 @@ header,h1,h2,h3,h4{
 
 		<!-- Full Calendar -->
 		<script src="{{=URL('static/smartadmin','js/plugin/fullcalendar/jquery.fullcalendar.min.js')}}"></script>
-
+		<!-- PAGE RELATED PLUGIN(S) -->
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/jquery.dataTables-cust.min.js')}}"></script>
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/ColReorder.min.js')}}"></script>
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/FixedColumns.min.js')}}"></script>
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/ColVis.min.js')}}"></script>
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/ZeroClipboard.min.js')}}"></script>
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/media/js/TableTools.min.js')}}"></script>
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/DT_bootstrap.js')}}"></script>
+		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/jquery.dataTables-cust.min.js')}}"></script>
 
 		<!-- Your GOOGLE ANALYTICS CODE Below -->
 		<script type="text/javascript">
@@ -787,7 +837,6 @@ header,h1,h2,h3,h4{
 			})();
 
 		</script>
-
 	</body>
 
 </html>
