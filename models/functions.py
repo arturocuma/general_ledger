@@ -88,6 +88,15 @@ def obtener_tipo_poliza(tipo_poliza_id):
     return resultado.nombre
 
 
+def selector_fecha(id):
+    fecha = INPUT(
+            _name = 'fecha',
+            _class='fecha_poliza',
+            _id='{}fecha'.format(id),
+            )
+    return fecha
+
+
 def crear_selector_status(id):
     """
     Retorna el estatus de la póliza a partir de un id

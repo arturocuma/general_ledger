@@ -93,6 +93,37 @@ $(document).ready(function(){
     });
 
     /*
+    $('.fecha_poliza').click(function() {
+        var id = $(this).attr('id');
+        id = '#' + id.replace('.', '');
+        console.log(id);
+        $(id).datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+    });
+    */
+
+    $('.fecha_poliza').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
+        tooltip: "Click para editar, ENTER para salvar.",
+        indicator: "Actualizando...",
+    }).click(function() { 
+
+        var id = $(this).attr('id');
+        id = '#' + id.replace('.', '');
+
+        $(id).datepicker({
+            dateFormat: 'yy-mm-dd'
+        });
+
+        console.log('------------');
+        console.log($(this));
+        a = $(this).prop('value');
+        console.log(a);
+        console.log('------------');
+
+    });
+
+    /*
     $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
 
         var dataArray = [];

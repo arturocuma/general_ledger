@@ -15,7 +15,8 @@ def listar():
 
     # modificar esto
     db.asiento.cc_empresa_id.represent = lambda value, row:\
-            DIV(db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
+            DIV(row.num_cc + ' ' + row.descripcion if value else '-',\
+            _class='cc_empresa_id', _id='{}.cc_empresa_id'.format(row.id))
     # fin-modificar esto
 
     db.asiento.concepto_asiento.represent = lambda value, row:\
@@ -24,12 +25,12 @@ def listar():
                     _id=str(row.id)+'.concepto_asiento'
                     )
 
-    db.asiento.debe.represent = lambda value, row: \
+    db.asiento.debe.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
                     _class='debe',
                     _id=str(row.id)+'.debe'
                     )
-    db.asiento.haber.represent = lambda value, row: \
+    db.asiento.haber.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
                     _class='haber',
                     _id=str(row.id)+'.haber'
@@ -39,10 +40,22 @@ def listar():
     db.poliza.importe.writable = False
     db.poliza.concepto_general.represent = lambda value, row:\
             DIV(
-                value if value != '' else '-',
+                value or '-',
                 _class='concepto_general',
                 _id=str(row.id)+'.concepto_general'
                 )
+
+    # Columna `fecha`
+    db.poliza.fecha.represent = lambda value, row:\
+            selector_fecha(row.id)
+    
+    """
+    db.poliza.fecha.represent = lambda value, row:\
+            DIV(value or '-',
+                _class='fecha_poliza',
+                _id='{}fecha'.format(row.id)
+                )
+    """
 
     # Columna `folio`
     db.poliza.folio.represent = lambda value, row:\
@@ -309,11 +322,16 @@ def actualiza_poliza():
     """
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
+
+    if column == 'fecha':
+        print 'algoso'
+
     db(db.poliza.id == id).update(**{
         column:value,
         'actualizada_en':datetime.now(),
         'actualizada_por':auth.user['id']
         })
+
     return value
 
 
