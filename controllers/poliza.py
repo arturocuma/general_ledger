@@ -186,6 +186,14 @@ def actualiza_asiento():
     """
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
+    value_ = value
+
+    if column == 'debe' or column == 'haber':
+        if '$' in value:
+            value = value.replace('$', '') if value.replace('$', '') else 0
+            value_ = locale.currency(float(value), grouping=True)
+        else:
+            value_ = locale.currency(float(value), grouping=True)
 
     db(db.asiento.id == id).update(**{
         column:value,
@@ -193,7 +201,7 @@ def actualiza_asiento():
         'actualizada_por':auth.user['id']
         })
 
-    return value
+    return value_
 
 
 def actualiza_descripcion():

@@ -229,17 +229,18 @@ class EmpresaDB(object):
             Field('cc_vista_id', 'reference cc_vista'),
             Field('lft','integer', default=0),
             Field('rgt','integer', default=0),
-            format='%(num_cc)s %(descripcion)s'
+            format='%(num_cc)s %(descripcion)s',
+            migrate=True
             )
 
         db.define_table('tipo_poliza',
             Field('nombre', 'string'),
-            format='%(nombre)s'
+            format='%(nombre)s',
         )
 
         db.define_table('estatus_poliza',
             Field('nombre', 'string'),
-            format='%(nombre)s'
+            format='%(nombre)s',
         )
 
         db.define_table('poliza',
@@ -250,7 +251,10 @@ class EmpresaDB(object):
             Field('estatus', 'reference estatus_poliza', default=1),
             Field('importe', 'double',
                 default = 0.0,
-                represent = lambda value, row: calcula_importe(row.id) if row else 0.0)
+                represent = lambda value, row: calcula_importe(row.id) if row else 0.0),
+            Field('folio_externo', 'string', label='Folio Externo'),
+            Field('fecha_usuario', 'date', label='Fecha de Póliza'),
+            migrate=True
         )
         db.poliza.id.label='#Póliza'
 
@@ -260,7 +264,8 @@ class EmpresaDB(object):
             Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
-            Field('haber', 'double', default=0.0)
+            Field('haber', 'double', default=0.0),
+            migrate=True
         )
         db.asiento.id.label='#Asiento'
 

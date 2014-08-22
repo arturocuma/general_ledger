@@ -1,0 +1,122 @@
+{{extend 'layout.html'}}
+
+<link href="{{=URL('static', 'chosen/chosen.css')}}" rel="stylesheet">
+<link href="{{=URL('static', 'css/tabs.css')}}" rel="stylesheet">
+
+
+<style>
+
+
+    
+</style>
+
+
+
+                                <!-- widget grid -->
+                                <section id="widget-grid" class="">
+                                        <!-- row -->
+                                        <div class="row">
+                                                <article class="col-sm-12">
+                                                        <!-- new widget -->
+                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+                                                                <!-- widget options:
+                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+                                                                data-widget-colorbutton="false"
+                                                                data-widget-editbutton="false"
+                                                                data-widget-togglebutton="false"
+                                                                data-widget-deletebutton="false"
+                                                                data-widget-fullscreenbutton="false"
+                                                                data-widget-custombutton="false"
+                                                                data-widget-collapsed="true"
+                                                                data-widget-sortable="false"
+                                                                -->
+                                                                <header>
+                                                                        <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+                                                                    <h2>Configuración de Cambio de Catálogo</h2>
+                                                                        <ul class="nav nav-tabs pull-right in" id="myTab">
+                                                                                <li class="active">
+                                                                                        <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Configuración</span></a>
+                                                                                </li>
+                                                                        </ul>
+                                                                </header>
+                                                                <!-- widget div-->
+                                                                <div class="no-padding">
+                                                                        <!-- widget edit box -->
+                                                                        <div class="jarviswidget-editbox">
+                                                                                test
+                                                                        </div>
+                                                                        <!-- end widget edit box -->
+                                                                        <div class="widget-body">
+                                                                                <!-- content -->
+                                                                                <div id="myTabContent" class="tab-content">
+                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+           <div class="padding-10">
+                <ul id="expList">
+                           <form action="{{URL('configuracion','cambiar_catalogo')}}" method="post" enctype="multipart/form-data">  
+                              
+                                                            
+                            <div id="div_error" class="alert alert-block alert-warning" style="display:None">
+                                   <a class="close" data-dismiss="alert" href="#">×</a>
+                                    <h4 class="alert-heading">
+                                {{if tipo_msg=='error': }}
+                                    Advertencia!
+                                {{elif tipo_msg=='exito':}}
+                                    Éxito!
+                                {{pass}}
+                                   </h4>
+                                {{=msg}}
+                            </div>
+
+                                     <div class="table">
+                                                       <div class="fila">
+                                                       <div class="cell">
+                                                           Elija el archivo csv de catálogo:
+                                                       </div>
+                                                       <div class="cell">
+                                                           <input name="csv_saldo_inicial" type="file" style="width:450px;">
+                                                        </div> 
+                                                        </div>
+                                                         
+                                                           <div class="fila">
+                                                            <div class="cell">
+                                                                
+                                                            </div>
+                                                            <div class="cell">
+                                                                <input type="submit" value="Enviar">
+                                                            </div>
+                                                           </div>
+                                                            
+                             </div>
+                                                       
+                   </form>
+                                                      
+                                                     
+
+                                                    </ul>
+                                                                                                </div>
+                                                                                        </div>
+                                                                                        <!-- end s1 tab pane -->
+                                                                                </div>
+                                                                                <!-- end content -->
+                                                                        </div>
+                                                                </div>
+                                                                <!-- end widget div -->
+                                                        </div>
+                                                        <!-- end widget -->
+                                                </article>
+                                        </div>
+                                        <!-- end row -->
+                                </section>
+                                <!-- end widget grid -->
+
+<script src="{{=URL('static', 'chosen/chosen.jquery.js')}}" type="text/javascript"></script>
+
+  <script type="text/javascript">
+     {{if tipo_msg=='error':}}
+          $('#div_error').removeClass("alert-success").addClass("alert-warning")
+          $('#div_error').delay(1000).fadeIn(2000);
+      {{elif tipo_msg=='exito':}}
+           $('#div_error').removeClass("alert-warning").addClass("alert-success")
+          $('#div_error').delay(1000).fadeIn(2000); 
+      {{pass}}
+  </script>

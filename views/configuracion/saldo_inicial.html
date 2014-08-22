@@ -44,7 +44,7 @@
             </header>
             <div role='content'>
                <div class="widget-body">
-                  <form class="form-horizontal" method="POST" action="{{=URL('configuracion','saldo_inicial')}}">
+                   <form class="form-horizontal" method="POST" action="{{=URL('configuracion','saldo_inicial')}}" enctype="multipart/form-data">
                      <div class="row">
                         <div class="col-md-12 col-sm-12">
                            <legend>Archivo CSV</legend>
@@ -81,20 +81,29 @@
                         <table  class="table table-bordered table-striped">
                            <thead>
                               <tr>
+                                 <th>Folio externo</th>
+                                 <th>Fecha</th>
+                                 <th>Concepto de Póliza</th>
                                  <th>No. Cuenta</th>
-                                 <th>Concepto</th>
+                                 <th>Concepto de Asiento</th>
                                  <th>Debe</th>
                                  <th>Haber</th>
                               </tr>
                            </thead>
                            <tbody>
                               <tr>
+                                 <td>P001</td>
+                                 <td>mm-dd-aaaa</td>
+                                 <td>Póliza de saldo inicial</td>
                                  <td>1.1.1.1</td>
                                  <td>Saldo inicial de caja</td>
                                  <td>100.0</td>
                                  <td>100.0</td>
                               </tr>
                               <tr>
+                                 <td>P001</td>
+                                 <td>mm-dd-aaaa</td>
+                                 <td>Póliza de saldo inicial</td>
                                  <td>1.2.1</td>
                                  <td>Saldo inicial de la cuenta 1.2.1</td>
                                  <td>10.0</td>
