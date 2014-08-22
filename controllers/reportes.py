@@ -183,8 +183,8 @@ def tabla_balanza():
 	'		<tr>'\
 	'			<th style="width:10px;">Op</th>'\
 	'			<th>No. cuenta</th>'\
-	'			<th>Saldo Inicial</th>'\
     '			<th>Descripción</th>'\
+	'			<th>Saldo Inicial</th>'\
 	'			<th>Debe</th>'\
 	'			<th>Haber</th>'\
     '			<th>Saldo Final</th>'\
