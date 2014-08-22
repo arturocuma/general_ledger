@@ -342,3 +342,14 @@ def cuentas_especificas():
     cc_empresa=catalogo_cuentas()
     tabla=''
     return dict(tabla=tabla, cc_empresa=cc_empresa)
+
+def libro_mayor():
+
+    query_asientos = "SELECT a.cc_empresa_id, cc.num_cc, SUM(a.debe) as debe, SUM(a.haber) as haber\
+                        FROM asiento a, cc_empresa cc\
+                        WHERE a.cc_empresa_id = cc.id\
+                        GROUP BY a.cc_empresa_id, cc.num_cc "
+
+    asientos = db.executesql(query_asientos,as_dict=True)
+
+    return dict(asientos = asientos)
