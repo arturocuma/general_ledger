@@ -261,7 +261,7 @@ def empresa_wizard():
     elif form.errors:
         print form.errors
     else:
-        print 'else D:'
+        pass
 
     return dict(form=form)
 
