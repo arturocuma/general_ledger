@@ -64,7 +64,7 @@ class EmpresaDB(object):
         self.dbs = dbs
 
 
-    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = True):
+    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = False):
         """
         Carga una sola instancia
         """
