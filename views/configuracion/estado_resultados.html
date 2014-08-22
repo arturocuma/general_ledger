@@ -89,26 +89,26 @@ table > tbody > tr:hover{
                                        </div>
                                        <div class="cell">
                                           <input name="nombre_reporte" type="text" style="width:450px;"
-                                          {{if request.vars.nombre_reporte:}} value="{{=request.vars.nombre_reporte}}" {{elif nombre_reporte:}} value="{{=nombre_reporte[0].descripcion}}" {{else:}} value="{{=''}}" {{pass}}>
+                                          >
                                        </div> 
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para ingresos:
+                                          Etiqueta para la primer sección:
                                        </div>
                                        <div class="cell">
-                                          <input name="etiqueta_ingresos" type="text" style="width:450px;" {{if request.vars.etiqueta_ingresos:}} value="{{=request.vars.etiqueta_ingresos}}" {{elif desc_ingresos:}} value="{{=desc_ingresos[0].descripcion}}" {{else:}} value="{{=''}}" {{pass}}>
+                                          <input name="etiqueta_1" type="text" style="width:450px;">
                                        </div>
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de Ingresos:
+                                          Cuentas de la primer sección:
                                        </div>   
                                        <div class="cell">
-                                          <select name="sel_ingresos" data-placeholder="Eija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                          <select name="cuentas_1" data-placeholder="Eija la cuenta" style="width:450px;" multiple class="chosen-select">
                                           {{for cc in cc_empresa:}}
-                                             <option value="{{=cc[3]}}" {{if isinstance(request.vars.sel_ingresos, list):}} {{for cc_ingreso in request.vars.sel_ingresos:}} {{if cc_ingreso==str(cc[3]):}} selected="selected" {{pass}} {{pass}} {{elif request.vars.sel_ingresos!=None:}} {{if str(cc[3])==request.vars.sel_ingresos:}} selected="selected" {{pass}} {{elif cuentas_ingresos:}} {{for cc_ingreso in cuentas_ingresos:}} {{if cc_ingreso.id==cc[3]:}} selected="selected" {{pass}} {{pass}} {{pass}}>
-                                                {{=cc[0]+' '+cc[1]}}        
+                                             <option value="{{=cc[3]}}">
+                                                {{=cc[0]+' '+cc[1]}}
                                              </option>    
                                           {{pass}}
                                           </select>
@@ -116,44 +116,21 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para costos:
+                                          Etiqueta para la segunda sección:
                                        </div>
                                        <div class="cell">
-                                          <input name="etiqueta_costos" type="text" style="width:450px;"
-                                          {{if request.vars.etiqueta_costos:}}
-                                          value="{{=request.vars.etiqueta_costos}}"
-                                          {{elif desc_costos:}}
-                                          value="{{=desc_costos[0].descripcion}}"
-                                          {{else:}}
-                                          value="{{=''}}"
-                                          {{pass}}>
+                                          <input name="etiqueta_2" type="text" style="width:450px;"
+                                          >
                                        </div>
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de Costos:
+                                          Cuentas de la segunda sección:
                                        </div>
                                        <div class="cell">    
-                                          <select name="sel_costos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                          <select name="cuentas_2" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
                                           {{for cc in cc_empresa:}}
                                              <option value="{{=cc[3]}}" 
-                                                {{if isinstance(request.vars.sel_costos, list):}}
-                                                {{for cc_costo in request.vars.sel_costos:}}
-                                                {{if cc_costo==str(cc[3]):}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{elif request.vars.sel_costos!=None:}}
-                                                {{if str(cc[3])==request.vars.sel_costos:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{elif cuentas_costos!=None:}}
-                                                {{for cc_costo in cuentas_costos:}}
-                                                {{if cc_costo.id==cc[3]:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{pass}}
                                                 >{{=cc[0]+' '+cc[1]}}        
                                              </option>    
                                           {{pass}}
@@ -162,45 +139,21 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para gastos:
+                                          Etiqueta para la tercer sección:
                                        </div>
                                        <div class="cell">
-                                          <input name="etiqueta_gastos" type="text" style="width:450px;"
-                                          {{if request.vars.etiqueta_gastos:}}
-                                          value="{{=request.vars.etiqueta_gastos}}"
-                                          {{elif desc_gastos:}}
-                                          value="{{=desc_gastos[0].descripcion}}"
-                                          {{else:}}
-                                          value="{{=''}}"
-                                          {{pass}}
+                                          <input name="etiqueta_3" type="text" style="width:450px;"
                                           >
                                        </div> 
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de Gastos:
+                                          Cuentas de la tercer sección:
                                        </div>
                                        <div class="cell">    
-                                          <select name="sel_gastos" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
+                                          <select name="cuentas_3" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
                                              {{for cc in cc_empresa:}}
                                              <option value="{{=cc[3]}}"
-                                                {{if isinstance(request.vars.sel_gastos, list):}}
-                                                {{for cc_gasto in request.vars.sel_gastos:}}
-                                                {{if cc_gasto==str(cc[3]):}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{elif request.vars.sel_gastos!=None:}}
-                                                {{if str(cc[3])==request.vars.sel_gastos:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{elif cuentas_gastos!=None:}}
-                                                {{for cc_gasto in cuentas_gastos:}}
-                                                {{if cc_gasto.id==cc[3]:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{pass}}
                                                 >{{=cc[0]+' '+cc[1]}}        
                                              </option>    
                                              {{pass}}
@@ -209,45 +162,21 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para otros ingresos y costos:
+                                          Etiqueta para la cuarta sección:
                                        </div>
                                        <div class="cell">
-                                          <input name="etiqueta_otros" type="text" style="width:450px;"
-                                          {{if request.vars.etiqueta_otros:}}
-                                          value="{{=request.vars.etiqueta_otros}}"
-                                          {{elif desc_otros:}}
-                                          value="{{=desc_otros[0].descripcion}}"
-                                          {{else:}}
-                                          value="{{=''}}"
-                                          {{pass}}
+                                          <input name="etiqueta_4" type="text" style="width:450px;"
                                           >
                                        </div> 
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de otros ingresos y costos:
+                                          Cuentas de la cuarta sección:
                                        </div>  
                                        <div class="cell">
-                                          <select name="sel_otros"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                          <select name="cuentas_4"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
                                              {{for cc in cc_empresa:}}
                                              <option value="{{=cc[3]}}"
-                                                {{if isinstance(request.vars.sel_otros, list):}}
-                                                {{for cc_otro in request.vars.sel_otros:}}
-                                                {{if cc_otro==str(cc[3]):}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{elif request.vars.sel_otros!=None:}}
-                                                {{if str(cc[3])==request.vars.sel_otros:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{elif cuentas_otros!=None:}}
-                                                {{for cc_otro in cuentas_otros:}}
-                                                {{if cc_otro.id==cc[3]:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{pass}}
                                                 >{{=cc[0]+' '+cc[1]}}
                                              </option>
                                              {{pass}}
@@ -256,51 +185,50 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para impuestos:
+                                          Etiqueta para la quinta sección:
                                        </div>
                                        <div class="cell">
-                                          <input name="etiqueta_impuestos" type="text" style="width:450px;"
-                                          {{if request.vars.etiqueta_impuestos:}}
-                                          value="{{=request.vars.etiqueta_impuestos}}"
-                                          {{elif desc_impuestos:}}
-                                          value="{{=desc_impuestos[0].descripcion}}"
-                                          {{else:}}
-                                          value="{{=''}}"
-                                          {{pass}}
+                                          <input name="etiqueta_5" type="text" style="width:450px;"
                                           >
                                        </div> 
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de impuestos:
+                                          Cuentas de la quinta sección:
                                        </div>
                                        <div class="cell">
-                                          <select name="sel_impuestos"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                          <select name="cuentas_5"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
                                              {{for cc in cc_empresa:}}
                                              <option value="{{=cc[3]}}" 
-                                                {{if isinstance(request.vars.sel_impuestos, list):}}
-                                                {{for cc_impuesto in request.vars.sel_impuestos:}}
-                                                {{if cc_impuesto==str(cc[3]):}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{elif request.vars.sel_impuestos!=None:}}
-                                                {{if str(cc[3])==request.vars.sel_impuestos:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{elif cuentas_impuestos!=None:}}
-                                                {{for cc_impuesto in cuentas_impuestos:}}
-                                                {{if cc_impuesto.id==cc[3]:}}
-                                                selected="selected"
-                                                {{pass}}
-                                                {{pass}}
-                                                {{pass}}
                                                 >{{=cc[0]+' '+cc[1]}}        
                                              </option>    
                                              {{pass}}
                                           </select>
                                        </div>   
                                     </div> 
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Etiqueta para la sexta sección:
+                                       </div>
+                                       <div class="cell">
+                                          <input name="etiqueta_6" type="text" style="width:450px;"
+                                          >
+                                       </div> 
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Cuentas de la sexta sección:
+                                       </div>
+                                       <div class="cell">
+                                          <select name="cuentas_6"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                             {{for cc in cc_empresa:}}
+                                             <option value="{{=cc[3]}}" 
+                                                >{{=cc[0]+' '+cc[1]}}        
+                                             </option>    
+                                             {{pass}}
+                                          </select>
+                                       </div>   
+                                    </div>
                                     <div class="fila">
                                        <div class="cell">
                                        </div>

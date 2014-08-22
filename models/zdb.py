@@ -230,7 +230,6 @@ class EmpresaDB(object):
             Field('lft','integer', default=0),
             Field('rgt','integer', default=0),
             format='%(num_cc)s %(descripcion)s',
-            migrate=True
             )
 
         db.define_table('tipo_poliza',
@@ -254,7 +253,6 @@ class EmpresaDB(object):
                 represent = lambda value, row: calcula_importe(row.id) if row else 0.0),
             Field('folio_externo', 'string', label='Folio Externo'),
             Field('fecha_usuario', 'date', label='Fecha de Póliza'),
-            migrate=True
         )
         db.poliza.id.label='#Póliza'
 
@@ -265,7 +263,6 @@ class EmpresaDB(object):
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
             Field('haber', 'double', default=0.0),
-            migrate=True
         )
         db.asiento.id.label='#Asiento'
 
