@@ -326,24 +326,30 @@ def cat_cuentas_personal(empresa_id,archivo):
         cc_personal.append(fila)
     return cc_personal
 
+def cat_cuentas_personal(empresa_id,archivo):
+    cc_personal=[]
+    file = archivo
+    reader = csv.reader(file)
+    db(db.cc_empresa).delete()
+    db.executesql('alter sequence cc_empresa_id_seq restart with 1')
+    campos=['lft','rgt', 'descripcion']
+    for row in reader:
+        valores=[]
+        valores.append(int(row[0]))
+        valores.append(int(row[1]))
+        valores.append(row[2])
+        dictionary = dict(zip(campos, valores))
+        db[db.cc_empresa].insert(**dictionary)
+    return
+
 def wiz_cc():
     #db_ = db_maestro
-    empresa_id = request.vars.empresa_id
-    db_ = empresas.dbs[int(empresa_id)]
-    msg=""
-    try:
+        empresa_id = request.vars.empresa_id
+        db_ = empresas.dbs[int(empresa_id)]
+        msg=""
+    #try:
         tabla = db_['cc_empresa']
         cc_preconf = request.vars.cc_preconf
-        #cc_preconf = '1'
-        if type(request.vars.csvfile) != str:
-        #f request.vars.csvfile!=None:
-            file = request.vars.csvfile.file
-            cc_sat = cat_cuentas_personal(empresa_id, file)
-
-        else:
-            cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
-    
-    
         db_(db_.cc_vista).delete()
         db_.executesql('alter sequence cc_vista_id_seq restart with 1')
         db_.cc_vista.insert(nombre = 'ACUMULATIVA')
@@ -371,30 +377,38 @@ def wiz_cc():
         db_.estatus_poliza.insert(nombre = 'EN  REVISIÓN')
         db_.estatus_poliza.insert(nombre = 'REVISADA')
         db_.estatus_poliza.insert(nombre = 'APLICADA')
+        #cc_preconf = '1'
+        if type(request.vars.csvfile) != str:
+        #f request.vars.csvfile!=None:
+            file = request.vars.csvfile.file
+            cc_sat = cat_cuentas_personal(empresa_id, file)
+
+        else:
+            cc_sat = cat_cuentas_sat(empresa_id, cc_preconf)
         
-        for cuenta in cc_sat:
-    
-            num_cc = cuenta[1]
-            len_num_cc = len(num_cc)
-    
-            if len_num_cc > 1:
-                num_cc_i = num_cc[::-1]
-                ultimo_punto = num_cc_i.find(".")
-                num_cc = num_cc[:-(ultimo_punto+1)]
-                padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
-            else:
-                padre_id = None
-    
-            add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
-                    str(cuenta[3]), cuenta[4], cuenta[5])
+            for cuenta in cc_sat:
         
-    except:
-        msg="Hubo un error al leer el archivo"
-        db_.rollback()
-    else:
-        db_.commit()
+                num_cc = cuenta[1]
+                len_num_cc = len(num_cc)
+        
+                if len_num_cc > 1:
+                    num_cc_i = num_cc[::-1]
+                    ultimo_punto = num_cc_i.find(".")
+                    num_cc = num_cc[:-(ultimo_punto+1)]
+                    padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
+                else:
+                    padre_id = None
+        
+                add_node(padre_id, str(cuenta[1]), str(cuenta[2]),
+                        str(cuenta[3]), cuenta[4], cuenta[5])
+        
+    #except:
+    #    msg="Hubo un error al leer el archivo"
+    #    db_.rollback()
+    #else:
+    #    db_.commit()
         redirect(URL('default','index',args=[empresa_id]))
-    return XML(msg)
+        return XML(msg)
 
 
 def crear_cc(form):
@@ -489,3 +503,32 @@ def color_nivel(nivel):
     else:
         color = '#28DDFF'
     return color
+
+def hijos_nivel():
+    num_cc=str(request.vars.num_cc)
+    nivel=request.vars.nivel
+    if num_cc!='':
+        cuenta= " AND node.num_cc = "+num_cc
+    else:
+        cuenta= " "
+    query="SELECT node.num_cc, node.descripcion, (COUNT(parent.id) - (sub_tree.depthh + 1)) AS depth,"\
+                               " node.id, node.cc_vista_id FROM cc_empresa AS node,"\
+                               " cc_empresa AS parent,"\
+                               " cc_empresa AS sub_parent,"\
+                               " ("\
+                               " SELECT node.id, node.num_cc, node.descripcion, (COUNT(parent.id) - 1) AS depthh"\
+                               " FROM cc_empresa AS node,"\
+                               " cc_empresa AS parent"\
+                               " WHERE (node.lft BETWEEN parent.lft AND parent.rgt)"\
+                               " "+cuenta+""\
+                               " GROUP BY node.id"\
+                               " ORDER BY node.lft"\
+                               " )AS sub_tree"\
+                               " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
+                               " AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt"\
+                               " AND sub_parent.id = sub_tree.id"\
+                               " GROUP BY node.id"\
+                               " HAVING depth = "+nivel+""\
+                               " ORDER BY node.lft;"
+    hijos = db.executesql(query)
+    return hijos

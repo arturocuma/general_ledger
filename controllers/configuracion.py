@@ -150,6 +150,37 @@ def estado_resultados():
     
     return dict(cc_empresa=cc_empresa, nombre_reporte=nombre_reporte, desc_ingresos=desc_ingresos, desc_costos=desc_costos, desc_gastos=desc_gastos, desc_otros=desc_otros, desc_impuestos=desc_impuestos, cuentas_ingresos=cuentas_ingresos, cuentas_costos=cuentas_costos, cuentas_gastos=cuentas_gastos, cuentas_otros=cuentas_otros, cuentas_impuestos=cuentas_impuestos, msg=XML(msg), tipo_msg=XML(tipo_msg))
 
+def cambiar_catalogo():
+    db(db.cc_empresa).delete()
+    db.executesql('delete from sqlite_sequence where name="cc_empresa";')
+    if request.vars.csv_catalogo != None:
+        try:
+            msg= 'Error al insertar la póliza'
+            campos=['lft','rgt', 'clave_usuario','descripcion', 'nivel']
+            file = request.vars.csv_catalogo.file
+            reader = csv.reader(file)
+            for row in reader:
+                    
+                    valores=[]
+                    valores.append(int(row[0]))
+                    valores.append(int(row[1]))
+                    valores.append(row[2])
+                    valores.append(row[3])
+                    valores.append(int(row[4]))
+                    dictionary = dict(zip(campos, valores))
+                    db[db.asiento].insert(**dictionary)
+        except:
+            db.rollback()
+            tipo_msg='error'
+        else:
+            db.commit()
+            tipo_msg='exito'
+            msg= 'Catálogo actualizado'
+    else:
+        tipo_msg='error'
+        msg= 'Elija un archivo para subir'
+    return dict(tipo_msg=tipo_msg,msg=msg)
+
 def saldo_inicial():
     saldo = 0
     tipo_msg=''

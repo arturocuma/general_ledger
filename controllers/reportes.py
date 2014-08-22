@@ -26,13 +26,15 @@ def c():
 
 def cc_grid2():
     num_cc='1.1'
-    nivel='2'
+    nivel='1'
     cc_empresa = hijos_nivel(num_cc, nivel)
+    '''
     tabla='<table>'
     for cc in cc_empresa:
         tabla+='<tr><td>'+cc[0]+' '+cc[1]+'</td></tr>'
     tabla+='</table>'
-    return dict(cc_empresa=XML(tabla))
+    '''
+    return dict(cc_empresa=XML(cc_empresa))
 
 def cuentas_con_saldo():
     cc_empresa = tabla_responsiva()
@@ -40,7 +42,7 @@ def cuentas_con_saldo():
 
 def hijos_nivel(num_cc,nivel):
     if num_cc!='':
-        cuenta= " AND node.num_cc = "+num_cc
+        cuenta= " AND node.num_cc = '"+num_cc+"'"
     else:
         cuenta= " "
     query="SELECT node.num_cc, node.descripcion, (COUNT(parent.id) - (sub_tree.depthh + 1)) AS depth,"\
@@ -59,12 +61,48 @@ def hijos_nivel(num_cc,nivel):
                                " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
                                " AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt"\
                                " AND sub_parent.id = sub_tree.id"\
-                               " GROUP BY node.id"\
-                               " HAVING depth = "+nivel+""\
+                               " GROUP BY node.id,sub_tree.depthh"\
+                               " HAVING (COUNT(parent.id) - (sub_tree.depthh + 1))  = "+nivel+""\
                                " ORDER BY node.lft;"
     hijos = db.executesql(query)
-    return hijos
+    return query
 
+#def subordinados(conn, root, niveles):
+def subordinados():
+    """
+    se le añade un `having depth <= 1` a la consulta `sub_arbol`
+    """
+
+    #c = conn.cursor()
+    root='1'
+    niveles=1
+    query = "select nodo.descripcion,\
+            (count(padre.descripcion) - (sub_arbol.profundidad + 1))\
+            as depth\
+            from cc_empresa as nodo,\
+            cc_empresa as padre,\
+            cc_empresa as sub_padre,\
+            (\
+                select nodo.descripcion,\
+                (count(padre.descripcion)-1) as profundidad\
+                from cc_empresa as nodo,\
+                cc_empresa as padre\
+                where nodo.lft between padre.lft and padre.rgt\
+                and nodo.descripcion = '%s'\
+                group by nodo.descripcion,nodo.lft\
+                order by nodo.lft\
+            ) as sub_arbol\
+            where nodo.lft between padre.lft and padre.rgt\
+                and nodo.lft between sub_padre.lft and sub_padre.rgt\
+                and sub_padre.descripcion = sub_arbol.descripcion\
+            group by nodo.descripcion,nodo.lft\
+            having depth = %i\
+            order by nodo.lft\
+            " % (root, niveles)
+    #for row in c.execute(query):
+    #    print row
+    return query
+        
 def color_nivel(nivel):
     color = '#000'
     if nivel == 0:
