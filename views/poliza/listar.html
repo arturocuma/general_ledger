@@ -2,6 +2,25 @@
 
 <script>
 
+$(function() {
+    $("input[id$=-fecha]").each(function(){
+
+        $(this).datepicker({ onSelect: function(fecha) { 
+
+            var id = $(this).attr('id');
+            id = id.replace('-', '.');
+
+            datos = {'value': fecha, 'id': id}
+
+            $.post("{{=URL('actualiza_poliza')}}", datos).success(
+                function(data){ 
+                    $(id).html(data); 
+                });
+            }
+        });
+    });
+});
+
 /* cuadrar las cuentas */
 function cuadrarPoliza() {
 
@@ -52,7 +71,6 @@ $(document).ready(function(){
         var datos = {id: id, value:value};
 
         $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
-            console.log(id);
             $(id).html(data);
         });
     });
@@ -92,36 +110,6 @@ $(document).ready(function(){
         indicator: "Actualizando...",
     });
 
-    /*
-    $('.fecha_poliza').click(function() {
-        var id = $(this).attr('id');
-        id = '#' + id.replace('.', '');
-        console.log(id);
-        $(id).datepicker({
-            dateFormat: 'yy-mm-dd'
-        });
-    });
-    */
-
-    $('.fecha_poliza').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
-    }).click(function() { 
-
-        var id = $(this).attr('id');
-        id = '#' + id.replace('.', '');
-
-        $(id).datepicker({
-            dateFormat: 'yy-mm-dd'
-        });
-
-        console.log('------------');
-        console.log($(this));
-        a = $(this).prop('value');
-        console.log(a);
-        console.log('------------');
-
-    });
 
     /*
     $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
@@ -162,6 +150,7 @@ $(document).ready(function(){
     }
 
 </style>
+
 <div class="row">
     <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
         <legend>

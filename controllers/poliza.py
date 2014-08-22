@@ -320,6 +320,9 @@ def actualiza_poliza():
     """
     Actualiza un campo de la tabla `poliza`
     """
+
+    print request.post_vars.id
+
     id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
 

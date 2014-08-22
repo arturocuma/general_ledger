@@ -89,11 +89,18 @@ def obtener_tipo_poliza(tipo_poliza_id):
 
 
 def selector_fecha(id):
+
+    fecha_poliza = db(db.poliza.id == id).select(
+            db.poliza.fecha
+            ).first().fecha
+
     fecha = INPUT(
             _name = 'fecha',
             _class='fecha_poliza',
-            _id='{}fecha'.format(id),
+            _id='{}-fecha'.format(id),
+            value = fecha_poliza
             )
+
     return fecha
 
 
@@ -104,7 +111,7 @@ def crear_selector_status(id):
     opciones_estatus = [OPTION(estatus.nombre, _value=estatus.id) for\
             estatus in db().select(
                 db.estatus_poliza.ALL,
-                cache=(cache.ram,3600)
+                cache=(cache.ram, 3600)
                 )]
 
     estatus = db(db.poliza.id == id).select(
