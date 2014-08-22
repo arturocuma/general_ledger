@@ -37,6 +37,10 @@ def cc_grid2():
     return dict(cc_empresa=XML(cc_empresa))
 
 
+def balanza():
+    cc_empresa = tabla_balanza()
+    return dict(cc_empresa=cc_empresa)
+
 def hijos_nivel(num_cc,nivel):
     if num_cc!='':
         cuenta= " AND node.num_cc = '"+num_cc+"'"
@@ -120,6 +124,146 @@ def color_nivel(nivel):
         color = '#28DDFF'
     return color
 
+def importe_cuenta_balanza(num_cc, cc_naturaleza_id, fecha):
+    #fecha_actual=time.strftime("%Y-%m-%d 23:59:59")
+    #mes_actual=time.strftime("%Y-%m-01 00:00:00")
+    #if acumulado==True:
+    filtro=" AND poliza.fecha_usuario < '"+str(fecha)+"'"
+    #elif acumulado==False:
+    #cadena=" AND f_asiento between '"+fecha_inicial+"' and '"+fecha_final+"'"
+    '''
+    cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 "FROM asiento, cc_empresa "\
+                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 "AND cc_empresa.num_cc like '"+str(num_cc)+"%'"\
+                                 +cadena)
+    '''
+    cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 " FROM poliza, asiento, cc_empresa "\
+                                 " WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 " AND poliza.id = asiento.poliza_id "\
+                                 " AND poliza.estatus= 3 "\
+                                 " AND cc_empresa.num_cc like '"+num_cc+"%'"\
+                                 +filtro)
+    debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+    haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
+    if cc_naturaleza_id==2: #Deudora
+        importe=haber-debe
+    else:
+        importe=debe-haber
+    return importe
+
+def tabla_balanza():
+    filtro = ""
+    fecha_final=time.strftime("%Y-%m-%d 23:59:59")
+    fecha_inicial=time.strftime("%Y-%m-01 00:00:00")
+    tipo_cuentas=request.vars.tipo_cuentas
+    if request.vars.fecha_ini:
+        fecha_inicial=request.vars.fecha_ini
+        filtro += " AND poliza.fecha_usuario >= '"+str(request.vars.fecha_ini) +"'"
+    else:
+        filtro += " AND poliza.fecha_usuario >= '"+str(fecha_inicial) +"'"
+    if request.vars.fecha_fin:
+        fecha_final=request.vars.fecha_fin
+        filtro += " AND poliza.fecha_usuario < '"+str(request.vars.fecha_fin) +"'"
+    else:
+        filtro += " AND poliza.fecha_usuario < '"+str(fecha_final) +"'"
+        
+    categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+                   "node.id, node.cc_vista_id, node.cc_naturaleza_id "\
+                   " FROM cc_empresa AS node , cc_empresa AS parent "\
+                   " WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   " GROUP BY node.id "\
+                   " ORDER BY node.lft;")
+
+
+    cadena='<div class="table-responsive">'\
+	'<table class="table">'\
+	'	<thead>'\
+	'		<tr>'\
+	'			<th style="width:10px;">Op</th>'\
+	'			<th>No. cuenta</th>'\
+    '			<th>Descripción</th>'\
+	'			<th>Saldo Inicial</th>'\
+	'			<th>Debe</th>'\
+	'			<th>Haber</th>'\
+    '			<th>Saldo Final</th>'\
+	'		</tr>'\
+	'	</thead>'\
+	'	<tbody>'
+
+    for cat in categories:
+        num_cc=cat[0]
+        descripcion=cat[1]
+        cc_naturaleza_id=cat[5]
+        id_padre= ancestor(num_cc)
+        if id_padre:
+            padre=id_padre.num_cc
+        else:
+            padre=''
+
+        padre = padre.replace('.', '')
+        clase_tr= 'hijo-'+XML(str(padre))+' padre'
+        #clase_tr= "child-row "+str(id_padre)+" parent"
+        cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 " FROM poliza, asiento, cc_empresa "\
+                                 " WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 " AND poliza.id = asiento.poliza_id "\
+                                 " AND poliza.estatus= 3 "\
+                                 " AND cc_empresa.num_cc like '"+num_cc+"%'"\
+                                 +filtro)
+
+        importe_inicial=importe_cuenta_balanza(num_cc,cc_naturaleza_id, fecha_inicial)
+        importe_final=importe_cuenta_balanza(num_cc,cc_naturaleza_id, fecha_final)
+        debe=cantidad[0][0] or 0.0
+        haber=cantidad[0][1] or 0.0
+
+        id_row = num_cc
+        color=XML(color_nivel(cat[2]))
+        padding=XML(str(cat[2]*20))
+        
+        
+        if tipo_cuentas=='con_saldo':
+            
+            if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
+                
+                cadena += """<tr id='{}' class='{}' style=color:'{}'>\
+                <td><i class='fa fa-plus-circle'></i></td>\
+                <td style="padding-left: {}px;">{}</td>\
+                <td>{}</td>\
+                <td>{}</td>\
+                <td>{}</td>\
+                <td>{}</td>\
+                <td>{}</td>\
+                </tr>""".format(XML(num_cc), clase_tr, color,
+                        padding, XML(num_cc),
+                        XML(descripcion),
+                        XML(importe_inicial),
+                        XML(debe), 
+                        XML(haber),
+                        XML(importe_final)
+                        )
+        else:
+            cadena += """<tr id='{}' class='{}' style=color:'{}'>\
+            <td><i class='fa fa-plus-circle'></i></td>\
+            <td style="padding-left: {}px;">{}</td>\
+            <td>{}</td>\
+            <td>{}</td>\
+            <td>{}</td>\
+            <td>{}</td>\
+            <td>{}</td>\
+            </tr>""".format(XML(id_row), clase_tr, color,
+                    padding, XML(num_cc), 
+                    XML(descripcion),
+                    XML(importe_inicial),
+                    XML(debe),
+                    XML(haber),
+                    XML(importe_final),
+                    )
+            
+    cadena+='</tbody></table></div>'
+
+    return XML(cadena)
 
 def balance_general():
     return dict(balance=tabla_balance())
