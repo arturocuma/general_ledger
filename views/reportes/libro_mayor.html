@@ -1,0 +1,85 @@
+{{extend 'layout.html'}}
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<legend>
+			<h1>
+				<i class="fa-fw fa fa-building"></i>
+				Libro Mayor
+			</h1>
+		</legend>
+	</div>
+</div>
+<!-- widget grid -->
+<section id="widget-grid" class="">
+	<!-- row -->
+	<div class="row">
+		<!-- NEW WIDGET START -->
+		<article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+			<!-- Widget ID (each widget will need unique ID)-->
+			<div class="jarviswidget" id="wid-id-3" data-widget-colorbutton="false" data-widget-editbutton="false" data-widget-togglebutton="false" data-widget-deletebutton="false" >
+				<header>
+					<h2>Libro Mayor</h2>
+				</header>
+				<!-- widget div-->
+				<div>
+					<!-- widget edit box -->
+					<div class="jarviswidget-editbox">
+						<!-- This area used as dropdown edit box -->
+					</div>
+					<!-- end widget edit box -->
+					<!-- widget content -->
+					<div class="widget-body no-padding">
+						<div class="table-responsive">							
+							<table class="table table-bordered table-striped">
+								<thead>
+									<tr>
+										<th>Cuenta</th>
+										<th colspan="3">Descripción</th>
+										<th></th>
+										<th style="text-align:center;">Saldo Inicial</th>
+										<th colspan="2" style="text-align:center;">Acumulado</th>
+									</tr>
+									<tr>
+										<th colspan="2" style="text-align:center;">Periodo</th>
+										<th  style="text-align:center;">Cargos</th>
+										<th  style="text-align:center;">Abonos</th>
+										<th  style="text-align:center;">Saldo</th>
+										<th  style="text-align:center;">Cargos</th>
+										<th  style="text-align:center;">Abonos</th>
+									</tr>
+								</thead>
+								<tbody>
+									{{for d in datos:}}
+										<tr>
+											<td>{{=d[0].num_cc}}</td>
+											<td colspan="3">{{=d[0].descripcion}}</td>
+											<td></td>
+											<td></td>
+											<td style="text-align:right;">0</td>
+										</tr>
+										<tr>
+											<td colspan="2" style="text-align:center;">{{=d[1]['mes']}}</td>
+											<td style="text-align:right;">{{=d[1]['debe']}}</td>
+											<td style="text-align:right;">{{=d[1]['haber']}}</td>
+											<td style="text-align:right;">0</td>
+											<td style="text-align:right;">0</td>
+											<td style="text-align:right;">0</td>
+										</tr>
+									{{pass}}
+								</tbody>
+							</table>						
+						</div>
+					</div>
+					<!-- end widget content -->
+				</div>
+				<!-- end widget div -->
+			</div>
+		</article>
+	</div>
+</section>
+<!-- end widget -->
+{{
+for d in datos:
+=d[0]}}<br>{{
+=d[1]}}<br><br>{{
+pass}}
