@@ -245,7 +245,6 @@ class EmpresaDB(object):
 
         db.define_table('poliza',
             Field('folio', 'string'),
-            Field('fecha', 'date', label='Fecha'),
             historico,
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
             Field('tipo', 'reference tipo_poliza', default=3),
@@ -255,7 +254,7 @@ class EmpresaDB(object):
                 represent = lambda value, row: calcula_importe(row.id) or 0.0
                 ),
             Field('folio_externo', 'string', label='Folio Externo'),
-            #Field('fecha_usuario', 'date', label='Fecha de Póliza'),
+            Field('fecha_usuario', 'date', label='Fecha de Póliza'),
             migrate=True
         )
         db.poliza.id.label='#Póliza'

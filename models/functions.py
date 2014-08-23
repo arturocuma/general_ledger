@@ -67,7 +67,11 @@ def calcula_importe(poliza_id):
         hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
 
         if comparar_flotantes(deb, hab):
-            flag = DIV('{}'.format(locale.currency(deb, grouping=True )), _class='verde')
+            flag = DIV(
+                    '{}'.format(locale.currency(deb, grouping=True)), 
+                    _class='verde',
+                    _style='text-align:right'
+                    )
         else:
             flag = DIV('{} <> {}'.format(locale.currency(deb, grouping=True ), locale.currency(hab, grouping=True )), _class='rojo')
 
@@ -91,13 +95,13 @@ def obtener_tipo_poliza(tipo_poliza_id):
 def selector_fecha(id):
 
     fecha_poliza = db(db.poliza.id == id).select(
-            db.poliza.fecha
-            ).first().fecha
+            db.poliza.fecha_usuario
+            ).first().fecha_usuario
 
     fecha = INPUT(
             _name = 'fecha',
             _class='fecha_poliza',
-            _id='{}-fecha'.format(id),
+            _id='{}-fecha_usuario'.format(id),
             value = fecha_poliza
             )
 

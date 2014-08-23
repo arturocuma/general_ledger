@@ -3,18 +3,19 @@
 <script>
 
 $(function() {
-    $("input[id$=-fecha]").each(function(){
+    $("input[id$=-fecha_usuario]").each(function(){
 
-        $(this).datepicker({ onSelect: function(fecha) { 
+        $(this).datepicker({ 
+            dateFormat: 'yy-mm-dd',
+            onSelect: function(fecha) { 
+                var id = $(this).attr('id');
+                id = id.replace('-', '.');
 
-            var id = $(this).attr('id');
-            id = id.replace('-', '.');
+                datos = {'value': fecha, 'id': id}
 
-            datos = {'value': fecha, 'id': id}
-
-            $.post("{{=URL('actualiza_poliza')}}", datos).success(
-                function(data){ 
-                    $(id).html(data); 
+                $.post("{{=URL('actualiza_poliza')}}", datos).success(
+                    function(data){ 
+                        $(id).html(data); 
                 });
             }
         });
@@ -143,10 +144,12 @@ $(document).ready(function(){
 
     .rojo {
         color: red;
+        _style='text-align:right'),
     }
 
     .verde {
         color: green;
+        _style='text-align:right'),
     }
 
 </style>
