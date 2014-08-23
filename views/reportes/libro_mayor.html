@@ -34,9 +34,9 @@
 								<thead>
 									<tr>
 										<th>Cuenta</th>
-										<th colspan="2">Descripción</th>
+										<th colspan="3">Descripción</th>
 										<th></th>
-										<th>Saldo Inicial</th>
+										<th style="text-align:center;">Saldo Inicial</th>
 										<th colspan="2" style="text-align:center;">Acumulado</th>
 									</tr>
 									<tr>
@@ -52,15 +52,13 @@
 									{{for d in datos:}}
 										<tr>
 											<td>{{=d[0].num_cc}}</td>
-											<td>{{=d[0].descripcion}}</td>
+											<td colspan="3">{{=d[0].descripcion}}</td>
 											<td></td>
 											<td></td>
 											<td style="text-align:right;">0</td>
-											<td></td>
-											<td></td>
 										</tr>
 										<tr>
-											<td colspan="2" style="text-align:center;">--</td>
+											<td colspan="2" style="text-align:center;">{{=d[1]['mes']}}</td>
 											<td style="text-align:right;">{{=d[1]['debe']}}</td>
 											<td style="text-align:right;">{{=d[1]['haber']}}</td>
 											<td style="text-align:right;">0</td>

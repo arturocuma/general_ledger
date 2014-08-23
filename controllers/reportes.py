@@ -346,20 +346,50 @@ def cuentas_especificas():
 def libro_mayor():
     datos=[]
     row = []
-    query_asientos = "SELECT a.cc_empresa_id, cc.num_cc, SUM(a.debe) as debe, SUM(a.haber) as haber\
-                        FROM asiento a, cc_empresa cc\
+    query_asientos = "SELECT a.cc_empresa_id, cc.num_cc, date_part('month',p.fecha_usuario) AS mes, SUM(a.debe) as debe, SUM(a.haber) as haber\
+                        FROM asiento a, poliza p, cc_empresa cc\
                         WHERE a.cc_empresa_id = cc.id\
-                        GROUP BY a.cc_empresa_id, cc.num_cc "
+                        AND a.poliza_id = p.id\
+                        GROUP BY a.cc_empresa_id, cc.num_cc, date_part('month',p.fecha_usuario)"
 
     asientos = db.executesql(query_asientos,as_dict=True)
 
     for a in asientos:
+        a['mes']= mes(a['mes'])
+
+    for a in asientos:
         datos.append([cc_mayor(a['num_cc']),a])
         
-
     return dict(asientos = asientos,datos=datos)
 
 def cc_mayor(num_cc):
     tabla = db['cc_empresa']
     node = db(tabla.num_cc == num_cc).select().first()
     return db( (tabla.lft < node.lft) & (tabla.rgt > node.rgt) ).select(tabla.ALL, orderby=tabla.lft).last()
+
+def mes(mes):
+    if mes == 1:
+        mes = 'ENE'
+    elif mes == 2:
+        mes = 'FEB'
+    elif mes == 3:
+        mes = 'MAR'
+    elif mes == 4:
+        mes = 'ABR'
+    elif mes == 5:
+        mes = 'MAY'
+    elif mes == 6:
+        mes = 'JUN'
+    elif mes == 7:
+        mes = 'JUL'
+    elif mes == 8:
+        mes = 'AGO'
+    elif mes == 9:
+        mes = 'SEP'
+    elif mes == 10:
+        mes = 'OCT'
+    elif mes == 11:
+        mes = 'NOV'
+    elif mes == 12:
+        mes = 'DIC'
+    return mes
