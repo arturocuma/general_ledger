@@ -64,7 +64,7 @@ class EmpresaDB(object):
         self.dbs = dbs
 
 
-    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = True):
+    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = False):
         """
         Carga una sola instancia
         """
@@ -359,43 +359,16 @@ class Web2Postgress():
         con.close()
 
 
-    def respaldar_db(self, nombre, email):
+    def crear_respaldo(self, nombre, email):
         """
         #ToDo: crear exepciones
         """
-        """
-        con = connect(
-                dbname = 'postgres',
-                user = 'web2py',
-                host = 'localhost',
-                password = 'w3b2py'
-                )
+        import os
 
-        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = con.cursor()
-
-        nombre_hasheado = hashlib.sha1(nombre + email).hexdigest()
-        cur.execute('drop database "_{}_{}"'.format(email, nombre_hasheado))
-
-        cur.close()
-        con.close()
-
-
-        try:
-            con = psycopg2.connect(database='local', user='local', password='local',port='1970')
-            cur = con.cursor()
-            cur.execute('SELECT x FROM t')
-            f = open('test.sql', 'w')
-            for row in cur:
-              f.write("insert into t values (" + str(row) + ");")
-        except psycopg2.DatabaseError, e:
-            print 'Error %s' % e
-            sys.exit(1)
-        finally:
-            if con:
-                con.close()
-        """
-
+        dbname = hashlib.sha1(nombre + email).hexdigest()
+        user = 'web2py'
+        host = 'localhost'
+        password = 'w3b2py'
 
     def cerrar_sesiones():
         pass
