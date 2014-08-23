@@ -90,7 +90,7 @@ def importe_cuenta_balanza(num_cc, cc_naturaleza_id, fecha):
     #fecha_actual=time.strftime("%Y-%m-%d 23:59:59")
     #mes_actual=time.strftime("%Y-%m-01 00:00:00")
     #if acumulado==True:
-    filtro=" AND poliza.fecha_usuario < '"+str(fecha)+"'"
+    filtro=" AND poliza.fecha_usuario <= '"+str(fecha)+"'"
     #elif acumulado==False:
     #cadena=" AND f_asiento between '"+fecha_inicial+"' and '"+fecha_final+"'"
     '''
@@ -127,9 +127,9 @@ def tabla_balanza():
         filtro += " AND poliza.fecha_usuario >= '"+str(fecha_inicial) +"'"
     if request.vars.fecha_fin:
         fecha_final=request.vars.fecha_fin
-        filtro += " AND poliza.fecha_usuario < '"+str(request.vars.fecha_fin) +"'"
+        filtro += " AND poliza.fecha_usuario <= '"+str(request.vars.fecha_fin) +"'"
     else:
-        filtro += " AND poliza.fecha_usuario < '"+str(fecha_final) +"'"
+        filtro += " AND poliza.fecha_usuario <= '"+str(fecha_final) +"'"
         
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id, node.cc_naturaleza_id "\
@@ -157,6 +157,7 @@ def tabla_balanza():
     for cat in categories:
         num_cc=cat[0]
         descripcion=cat[1]
+        nivel = cat[2]
         cc_naturaleza_id=cat[5]
         id_padre= ancestor(num_cc)
         if id_padre:
@@ -183,8 +184,11 @@ def tabla_balanza():
         id_row = num_cc
         color=XML(color_nivel(cat[2]))
         padding=XML(str(cat[2]*20))
-        
-        
+
+        display = ''
+        if nivel >= 1:
+            display = 'none'
+
         if tipo_cuentas=='con_saldo':
             
             if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
@@ -206,7 +210,7 @@ def tabla_balanza():
                         XML(importe_final)
                         )
         else:
-            cadena += """<tr id='{}' class='{}' style=color:'{}'>\
+            cadena += """<tr id='{}' class='{}' style="color:{}; display:{};">\
             <td><i class='fa fa-plus-circle'></i></td>\
             <td style="padding-left: {}px;">{}</td>\
             <td>{}</td>\
@@ -214,7 +218,7 @@ def tabla_balanza():
             <td>{}</td>\
             <td>{}</td>\
             <td>{}</td>\
-            </tr>""".format(XML(id_row), clase_tr, color,
+            </tr>""".format(XML(id_row), clase_tr, color, display,
                     padding, XML(num_cc), 
                     XML(descripcion),
                     XML(importe_inicial),
@@ -307,7 +311,7 @@ def libro_diario():
     if request.vars.fecha_ini:
         filtro += " AND p.creada_en >= '"+str(request.vars.fecha_ini) +"'"
     if request.vars.fecha_fin:
-        filtro += " AND p.creada_en < '"+str(request.vars.fecha_fin) +"'"
+        filtro += " AND p.creada_en <= '"+str(request.vars.fecha_fin) +"'"
     if request.vars.concepto_general:
         filtro += " AND p.concepto_general LIKE '%"+ str(request.vars.concepto_general) +"%'"
     if request.vars.num_poliza:
@@ -422,7 +426,7 @@ def importe_cuenta_er(cuenta, acumulado):
     fecha_actual=time.strftime("%Y-%m-%d 23:59:59")
     mes_actual=time.strftime("%Y-%m-01 00:00:00")
     if acumulado==True:
-        cadena=" AND f_asiento < '"+mes_actual+"'"
+        cadena=" AND f_asiento <= '"+mes_actual+"'"
     elif acumulado==False:
         cadena=" AND f_asiento between '"+mes_actual+"' and '"+fecha_actual+"'"
     cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\

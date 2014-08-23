@@ -64,7 +64,7 @@ class EmpresaDB(object):
         self.dbs = dbs
 
 
-    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = True):
+    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = False):
         """
         Carga una sola instancia
         """
@@ -254,8 +254,7 @@ class EmpresaDB(object):
                 represent = lambda value, row: calcula_importe(row.id) or 0.0
                 ),
             Field('folio_externo', 'string', label='Folio Externo'),
-            Field('fecha_usuario', 'date', label='Fecha de Póliza'),
-            migrate=False
+            Field('fecha_usuario', 'date', label='Fecha de Póliza')
         )
         db.poliza.id.label='#Póliza'
 
@@ -265,8 +264,7 @@ class EmpresaDB(object):
             Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
-            Field('haber', 'double', default=0.0),
-            migrate=False
+            Field('haber', 'double', default=0.0)
         )
         db.asiento.id.label='#Asiento'
 
