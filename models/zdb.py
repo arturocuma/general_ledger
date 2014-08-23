@@ -64,7 +64,7 @@ class EmpresaDB(object):
         self.dbs = dbs
 
 
-    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = True):
+    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = False):
         """
         Carga una sola instancia
         """
@@ -254,6 +254,7 @@ class EmpresaDB(object):
                 ),
             Field('folio_externo', 'string', label='Folio Externo'),
             Field('fecha_usuario', 'date', label='Fecha de Póliza'),
+            
         )
         db.poliza.id.label='#Póliza'
 
@@ -264,6 +265,7 @@ class EmpresaDB(object):
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
             Field('haber', 'double', default=0.0),
+            
         )
         db.asiento.id.label='#Asiento'
 
