@@ -11,11 +11,12 @@ def index(): return dict(message="hello from poliza.py")
 
 def listar():
 
-    # modificaciones a campos de la tabla `asiento`
-
-    # modificar esto
-    
-    db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
+    db.asiento.cc_empresa_id.represent = lambda value, row: \
+            DIV(
+                db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-',
+                _class='cc_empresa_id',
+                _id=str(row.id)+'.cc_empresa_id'
+                )
     
     db.asiento.concepto_asiento.represent = lambda value, row:\
             DIV(value if value!='' else '-',
@@ -51,15 +52,11 @@ def listar():
 
     # Columna `fecha`
     db.poliza.folio_externo.represent = lambda value, row: value or '-'
-    
-    """
-    db.poliza.fecha.represent = lambda value, row:\
-            DIV(value or '-',
-                _class='fecha_poliza',
-                _id='{}fecha'.format(row.id)
-                )
-    """
 
+    # Columna `periodo`
+    db.poliza.periodo.represent = lambda value, row:\
+            db.periodo(value).clave if value else '-'
+    
     # Columna `folio`
     db.poliza.folio.represent = lambda value, row:\
             DIV(value, _class='folio', _id='{}folio'.format(row.id))

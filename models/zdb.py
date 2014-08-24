@@ -64,7 +64,7 @@ class EmpresaDB(object):
         self.dbs = dbs
 
 
-    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = False):
+    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera=True):
         """
         Carga una sola instancia
         """
@@ -75,12 +75,17 @@ class EmpresaDB(object):
         hashear = razon_social + email
         nombre_hasheado = hashlib.sha1(hashear).hexdigest()
 
+        path = os.path.join(request.folder, 'databases/{}/'.format(nombre_hasheado))
+        if not os.path.isdir(path):
+            os.mkdir(path)
+
         db = DAL(
                 'postgres://web2py:w3b2py@localhost/_{}_{}'.format(
                     email, nombre_hasheado
                     ), 
                 check_reserved = ['all'],
-                migrate = vez_primera
+                migrate = vez_primera,
+                folder = path
                 )
 
         # WARNING: auth.user.id es del modelo maestro
@@ -242,8 +247,29 @@ class EmpresaDB(object):
             format='%(nombre)s',
         )
 
+        db.define_table('anio',
+            Field('numero', 'string'),
+            format='%(numero)s'
+        )
+
+        db.define_table('mes',
+            Field('nombre', 'string'),
+            format='%(nombre)s'
+        )
+
+        db.define_table('periodo',
+            Field('clave', 'string', writable=False),
+            Field('inicio', 'date', requires=IS_DATE()),
+            Field('fin', 'date', requires=IS_DATE()),
+            Field('estatus', 'boolean', default=False),
+            Field('anio', 'reference anio'),
+            Field('mes', 'reference mes'),
+            Field('consecutivo', 'string', readable=False, writable=False),
+        )
+
         db.define_table('poliza',
             Field('folio', 'string'),
+            Field('fecha_usuario', 'date', label='Fecha de Póliza'),
             historico,
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
             Field('tipo', 'reference tipo_poliza', default=3),
@@ -253,8 +279,7 @@ class EmpresaDB(object):
                 represent = lambda value, row: calcula_importe(row.id) or 0.0
                 ),
             Field('folio_externo', 'string', label='Folio Externo'),
-            Field('fecha_usuario', 'date', label='Fecha de Póliza'),
-            
+            Field('periodo', 'reference periodo'),
         )
         db.poliza.id.label='#Póliza'
 
@@ -265,7 +290,6 @@ class EmpresaDB(object):
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
             Field('haber', 'double', default=0.0),
-            
         )
         db.asiento.id.label='#Asiento'
 
@@ -293,18 +317,6 @@ class EmpresaDB(object):
             Field('consecutivo_polizas', 'integer'),
         )
 
-        '''
-        db.define_table('balanza',
-            Field('mes', 'reference mes'),
-            Field('anio', 'reference anio'),
-            Field('saldo_inicial', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('cargo', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('abono', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
-            Field('cierre', 'boolean', default=False)
-        )
-        '''    
         return db
 
 
@@ -363,14 +375,21 @@ class Web2Postgress():
 
     def crear_respaldo(self, nombre, email):
         """
+        Se crean respaldos
         #ToDo: crear exepciones
         """
         import os
+        import time
 
-        dbname = hashlib.sha1(nombre + email).hexdigest()
-        user = 'web2py'
+        nombre_db = hashlib.sha1(nombre + email).hexdigest()
+        usuario = 'web2py'
         host = 'localhost'
-        password = 'w3b2py'
+        contrasenia = 'w3b2py'
+        fecha = time.strftime('%Y-%m-%d')
+
+        comando = 'pg_dump -U web2py contabilidad -f {}'.format(nombre_db)
+
+        os.popen('')
 
     def cerrar_sesiones():
         pass

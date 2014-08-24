@@ -14,9 +14,8 @@ $(function() {
                 datos = {'value': fecha, 'id': id}
 
                 $.post("{{=URL('actualiza_poliza')}}", datos).success(
-                    function(data){ 
-                        $(id).html(data); 
-                });
+                    function(data){ $(id).html(data); }
+                );
             }
         });
     });
