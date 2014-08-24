@@ -20,7 +20,7 @@ table > tbody > tr:hover{
             <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
                 <header>
                     <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
-                    <h2>Catalogo Cuentas Contables</h2>
+                    <h2>Balanza del periodo: {{=fecha_inicial}} al {{=fecha_final}}</h2>
                     <ul class="nav nav-tabs pull-right in" id="myTab">
                         <li class="active">
                             <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
@@ -102,57 +102,6 @@ table > tbody > tr:hover{
 <!-- end widget grid -->
 <script>
     $(function() {
-        /*      
-        $('#tipo_cuentas').on('change', function (e) {
-
-            tipo_cuentas=$(this).val();
-            if (tipo_cuentas!=''){
-                $( "#div_cat_cuentas" ).load( '{{=URL("tabla_responsiva")}}', { tipo_cuentas: tipo_cuentas }, function(){
-                        $('tr')
-                        .filter(function() {
-                            return this.id.match(/\d./);
-                        }).hide();
-
-                        $('tr.padre')
-            .css("cursor","pointer")
-            .attr("title","Click para abrir/cerrar")
-            .click(function(){
-
-                var id = $(this).attr('id');
-                var exp = new RegExp("^"+id+".");
-                var exp2 = new RegExp("^"+id+".[0-9]+$");//mostrar
-                var btn = $(this).find('i');
-                if ($(btn).hasClass('fa-minus-circle')){
-                    $(btn).removeClass( "fa-minus-circle" ).addClass( "fa-plus-circle" );
-                    if( $('tr').filter(function() {    return this.id.match(exp);    }).is(':visible') ){
-                        $('tr').filter(function() {
-                            return this.id.match(exp);
-                        }).hide(function(){
-                            var btn_i = $(this).find('i');
-                            $(btn_i).removeClass( "fa-minus-circle" ).addClass( "fa-plus-circle" );
-                        });
-                    }
-                }else{
-                    $(btn).removeClass( "fa-plus-circle" ).addClass( "fa-minus-circle" );
-                    if( $('tr').filter(function() {    return this.id.match(exp2);    }).is(':hidden') ){
-                        $('tr').filter(function() {
-                            return this.id.match(exp2);
-                        }).show();
-                    }
-                }
-
-            });
-                    });
-            }
-        });
-        */   
-        $(document).ready(function(){
-            $('tr')
-            .filter(function() {
-                return this.id.match(/\d./);
-            }).hide();
-
-        });
 
     $('tr.padre')
             .css("cursor","pointer")

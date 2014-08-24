@@ -1,6 +1,7 @@
 # coding: utf8
 # try something like
 import time
+from datetime import datetime
 
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
@@ -26,24 +27,25 @@ def c():
 
 def cc_grid2():
     num_cc='1.1'
-    nivel='1'
+    nivel='2'
     cc_empresa = hijos_nivel(num_cc, nivel)
-    '''
     tabla='<table>'
     for cc in cc_empresa:
         tabla+='<tr><td>'+cc[0]+' '+cc[1]+'</td></tr>'
     tabla+='</table>'
-    '''
-    return dict(cc_empresa=XML(cc_empresa))
+    return dict(cc_empresa=XML(tabla))
 
 
 def balanza():
-    cc_empresa = tabla_balanza()
-    return dict(cc_empresa=cc_empresa)
+    balanza = tabla_balanza()
+    cc_empresa = balanza['cadena']
+    fecha_inicial = balanza['fecha_inicial']
+    fecha_final = balanza['fecha_final']
+    return dict(cc_empresa=cc_empresa, fecha_inicial = fecha_inicial, fecha_final = fecha_final)
 
 def hijos_nivel(num_cc,nivel):
     if num_cc!='':
-        cuenta= " AND node.num_cc = '"+num_cc+"'"
+        cuenta= " AND node.num_cc = "+num_cc
     else:
         cuenta= " "
     query="SELECT node.num_cc, node.descripcion, (COUNT(parent.id) - (sub_tree.depthh + 1)) AS depth,"\
@@ -62,48 +64,12 @@ def hijos_nivel(num_cc,nivel):
                                " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
                                " AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt"\
                                " AND sub_parent.id = sub_tree.id"\
-                               " GROUP BY node.id,sub_tree.depthh"\
-                               " HAVING (COUNT(parent.id) - (sub_tree.depthh + 1))  = "+nivel+""\
+                               " GROUP BY node.id"\
+                               " HAVING depth = "+nivel+""\
                                " ORDER BY node.lft;"
     hijos = db.executesql(query)
-    return query
+    return hijos
 
-#def subordinados(conn, root, niveles):
-def subordinados():
-    """
-    se le añade un `having depth <= 1` a la consulta `sub_arbol`
-    """
-
-    #c = conn.cursor()
-    root='1'
-    niveles=1
-    query = "select nodo.descripcion,\
-            (count(padre.descripcion) - (sub_arbol.profundidad + 1))\
-            as depth\
-            from cc_empresa as nodo,\
-            cc_empresa as padre,\
-            cc_empresa as sub_padre,\
-            (\
-                select nodo.descripcion,\
-                (count(padre.descripcion)-1) as profundidad\
-                from cc_empresa as nodo,\
-                cc_empresa as padre\
-                where nodo.lft between padre.lft and padre.rgt\
-                and nodo.descripcion = '%s'\
-                group by nodo.descripcion,nodo.lft\
-                order by nodo.lft\
-            ) as sub_arbol\
-            where nodo.lft between padre.lft and padre.rgt\
-                and nodo.lft between sub_padre.lft and sub_padre.rgt\
-                and sub_padre.descripcion = sub_arbol.descripcion\
-            group by nodo.descripcion,nodo.lft\
-            having depth = %i\
-            order by nodo.lft\
-            " % (root, niveles)
-    #for row in c.execute(query):
-    #    print row
-    return query
-        
 def color_nivel(nivel):
     color = '#000'
     if nivel == 0:
@@ -125,19 +91,7 @@ def color_nivel(nivel):
     return color
 
 def importe_cuenta_balanza(num_cc, cc_naturaleza_id, fecha):
-    #fecha_actual=time.strftime("%Y-%m-%d 23:59:59")
-    #mes_actual=time.strftime("%Y-%m-01 00:00:00")
-    #if acumulado==True:
     filtro=" AND poliza.fecha_usuario <= '"+str(fecha)+"'"
-    #elif acumulado==False:
-    #cadena=" AND f_asiento between '"+fecha_inicial+"' and '"+fecha_final+"'"
-    '''
-    cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
-                                 "FROM asiento, cc_empresa "\
-                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
-                                 "AND cc_empresa.num_cc like '"+str(num_cc)+"%'"\
-                                 +cadena)
-    '''
     cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  " FROM poliza, asiento, cc_empresa "\
                                  " WHERE asiento.cc_empresa_id = cc_empresa.id "\
@@ -148,15 +102,16 @@ def importe_cuenta_balanza(num_cc, cc_naturaleza_id, fecha):
     debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
     haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
     if cc_naturaleza_id==2: #Deudora
-        importe=haber-debe
-    else:
         importe=debe-haber
+    else:
+        importe=haber-debe
     return importe
 
 def tabla_balanza():
     filtro = ""
-    fecha_final=time.strftime("%Y-%m-%d 23:59:59")
-    fecha_inicial=time.strftime("%Y-%m-01 00:00:00")
+    fecha_final=time.strftime("%Y-%m-%d")
+    fecha_inicial=time.strftime("%Y-%m-01")
+    
     tipo_cuentas=request.vars.tipo_cuentas
     if request.vars.fecha_ini:
         fecha_inicial=request.vars.fecha_ini
@@ -168,15 +123,20 @@ def tabla_balanza():
         filtro += " AND poliza.fecha_usuario <= '"+str(request.vars.fecha_fin) +"'"
     else:
         filtro += " AND poliza.fecha_usuario <= '"+str(fecha_final) +"'"
-        
+    
+    import datetime as dt
+    fecha_inicio = datetime.strptime(fecha_inicial, "%Y-%m-%d")
+    dia_anterior_o = fecha_inicio + dt.timedelta(days=-1)
+    dia_anterior = dia_anterior_o.strftime('%Y-%m-%d')
+    dia_anterior_label = dia_anterior_o.strftime('%d-%m-%Y')
     categories = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id, node.cc_naturaleza_id "\
                    " FROM cc_empresa AS node , cc_empresa AS parent "\
                    " WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
                    " GROUP BY node.id "\
                    " ORDER BY node.lft;")
-
-
+    
+    saldo_fecha="Saldo inicial al \n "+str(dia_anterior)
     cadena='<div class="table-responsive">'\
 	'<table class="table">'\
 	'	<thead>'\
@@ -184,10 +144,10 @@ def tabla_balanza():
 	'			<th style="width:10px;">Op</th>'\
 	'			<th>No. cuenta</th>'\
     '			<th>Descripción</th>'\
-	'			<th>Saldo Inicial</th>'\
-	'			<th>Debe</th>'\
-	'			<th>Haber</th>'\
-    '			<th>Saldo Final</th>'\
+	'			<th style="text-align: right;">'+saldo_fecha+'</th>'\
+	'			<th style="text-align: right;">Debe</th>'\
+	'			<th style="text-align: right;">Haber</th>'\
+    '			<th style="text-align: right;">Saldo Final</th>'\
 	'		</tr>'\
 	'	</thead>'\
 	'	<tbody>'
@@ -195,6 +155,7 @@ def tabla_balanza():
     for cat in categories:
         num_cc=cat[0]
         descripcion=cat[1]
+        nivel = cat[2]
         cc_naturaleza_id=cat[5]
         id_padre= ancestor(num_cc)
         if id_padre:
@@ -212,8 +173,7 @@ def tabla_balanza():
                                  " AND poliza.estatus= 3 "\
                                  " AND cc_empresa.num_cc like '"+num_cc+"%'"\
                                  +filtro)
-
-        importe_inicial=importe_cuenta_balanza(num_cc,cc_naturaleza_id, fecha_inicial)
+        importe_inicial=importe_cuenta_balanza(num_cc,cc_naturaleza_id, dia_anterior)
         importe_final=importe_cuenta_balanza(num_cc,cc_naturaleza_id, fecha_final)
         debe=cantidad[0][0] or 0.0
         haber=cantidad[0][1] or 0.0
@@ -221,20 +181,21 @@ def tabla_balanza():
         id_row = num_cc
         color=XML(color_nivel(cat[2]))
         padding=XML(str(cat[2]*20))
-        
-        
+
+        display = ''
+        if nivel >= 1:
+            display = 'none'
+
         if tipo_cuentas=='con_saldo':
-            
             if (cantidad[0][0])!=None or (cantidad[0][1]!=None):
-                
                 cadena += """<tr id='{}' class='{}' style=color:'{}'>\
                 <td><i class='fa fa-plus-circle'></i></td>\
                 <td style="padding-left: {}px;">{}</td>\
                 <td>{}</td>\
-                <td>{}</td>\
-                <td>{}</td>\
-                <td>{}</td>\
-                <td>{}</td>\
+                <td style="text-align: right;">{}</td>\
+                <td style="text-align: right;">{}</td>\
+                <td style="text-align: right;">{}</td>\
+                <td style="text-align: right;">{}</td>\
                 </tr>""".format(XML(num_cc), clase_tr, color,
                         padding, XML(num_cc),
                         XML(descripcion),
@@ -244,15 +205,15 @@ def tabla_balanza():
                         XML(importe_final)
                         )
         else:
-            cadena += """<tr id='{}' class='{}' style=color:'{}'>\
+            cadena += """<tr id='{}' class='{}' style="color:{}; display:{};">\
             <td><i class='fa fa-plus-circle'></i></td>\
             <td style="padding-left: {}px;">{}</td>\
             <td>{}</td>\
-            <td>{}</td>\
-            <td>{}</td>\
-            <td>{}</td>\
-            <td>{}</td>\
-            </tr>""".format(XML(id_row), clase_tr, color,
+            <td style="text-align: right;">{}</td>\
+            <td style="text-align: right;">{}</td>\
+            <td style="text-align: right;">{}</td>\
+            <td style="text-align: right;">{}</td>\
+            </tr>""".format(XML(id_row), clase_tr, color, display,
                     padding, XML(num_cc), 
                     XML(descripcion),
                     XML(importe_inicial),
@@ -263,7 +224,7 @@ def tabla_balanza():
             
     cadena+='</tbody></table></div>'
 
-    return XML(cadena)
+    return dict(cadena=XML(cadena), fecha_inicial=fecha_inicial, fecha_final=fecha_final)
 
 def balance_general():
     return dict(balance=tabla_balance())
@@ -471,9 +432,9 @@ def importe_cuenta_er(cuenta, acumulado):
     debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
     haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
     if cuenta.cc_naturaleza_id==2: #Deudora
-        importe=haber-debe
-    else:
         importe=debe-haber
+    else:
+        importe=haber-debe
     return importe
 
 def total_cuentas_er(cuentas):
@@ -524,3 +485,54 @@ def cuentas_especificas():
     cc_empresa=catalogo_cuentas()
     tabla=''
     return dict(tabla=tabla, cc_empresa=cc_empresa)
+
+def libro_mayor():
+    datos=[]
+    row = []
+    query_asientos = "SELECT a.cc_empresa_id, cc.num_cc, date_part('month',p.fecha_usuario) AS mes, SUM(a.debe) as debe, SUM(a.haber) as haber\
+                        FROM asiento a, poliza p, cc_empresa cc\
+                        WHERE a.cc_empresa_id = cc.id\
+                        AND a.poliza_id = p.id\
+                        GROUP BY a.cc_empresa_id, cc.num_cc, date_part('month',p.fecha_usuario)"
+
+    asientos = db.executesql(query_asientos,as_dict=True)
+
+    for a in asientos:
+        a['mes']= mes(a['mes'])
+
+    for a in asientos:
+        datos.append([cc_mayor(a['num_cc']),a])
+        
+    return dict(asientos = asientos,datos=datos)
+
+def cc_mayor(num_cc):
+    tabla = db['cc_empresa']
+    node = db(tabla.num_cc == num_cc).select().first()
+    return db( (tabla.lft < node.lft) & (tabla.rgt > node.rgt) ).select(tabla.ALL, orderby=tabla.lft).last()
+
+def mes(mes):
+    if mes == 1:
+        mes = 'ENE'
+    elif mes == 2:
+        mes = 'FEB'
+    elif mes == 3:
+        mes = 'MAR'
+    elif mes == 4:
+        mes = 'ABR'
+    elif mes == 5:
+        mes = 'MAY'
+    elif mes == 6:
+        mes = 'JUN'
+    elif mes == 7:
+        mes = 'JUL'
+    elif mes == 8:
+        mes = 'AGO'
+    elif mes == 9:
+        mes = 'SEP'
+    elif mes == 10:
+        mes = 'OCT'
+    elif mes == 11:
+        mes = 'NOV'
+    elif mes == 12:
+        mes = 'DIC'
+    return mes

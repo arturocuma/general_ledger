@@ -235,6 +235,7 @@ class EmpresaDB(object):
             Field('lft','integer', default=0),
             Field('rgt','integer', default=0),
             format='%(num_cc)s %(descripcion)s',
+            migrate=False
             )
 
         db.define_table('tipo_poliza',
@@ -269,7 +270,6 @@ class EmpresaDB(object):
 
         db.define_table('poliza',
             Field('folio', 'string'),
-            Field('fecha_usuario', 'date', label='Fecha de Póliza'),
             historico,
             Field('concepto_general', 'string', label='Concepto de la Póliza'),
             Field('tipo', 'reference tipo_poliza', default=3),
@@ -280,6 +280,7 @@ class EmpresaDB(object):
                 ),
             Field('folio_externo', 'string', label='Folio Externo'),
             Field('periodo', 'reference periodo'),
+            Field('fecha_usuario', 'date', label='Fecha de Póliza')
         )
         db.poliza.id.label='#Póliza'
 
@@ -289,7 +290,7 @@ class EmpresaDB(object):
             Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
             Field('concepto_asiento', 'string'),
             Field('debe', 'double', default=0.0),
-            Field('haber', 'double', default=0.0),
+            Field('haber', 'double', default=0.0)
         )
         db.asiento.id.label='#Asiento'
 
