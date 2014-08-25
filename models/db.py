@@ -14,10 +14,18 @@ locale.setlocale( locale.LC_ALL, 'es_MX.UTF-8' )
 ## be redirected to HTTPS, uncomment the line below:
 # request.requires_https()
 
+path = os.path.join(request.folder, 'databases/master/')
+if not os.path.isdir(path):
+    os.mkdir(path)
+
 if not request.env.web2py_runtime_gae:
     ## if NOT running on Google App Engine use SQLite or other DB
-    db_maestro = DAL('postgres://web2py:w3b2py@localhost/contabilidad', migrate=False)
-    #db_maestro = DAL('postgres://web2py:w3b2py@develop.datawork.mx:5432/contabilidad', migrate=False)
+    db_maestro = DAL(
+            'postgres://web2py:w3b2py@localhost/contabilidad', 
+            migrate=False,
+            fake_migrate=True,
+            folder=path 
+            )
 else:
     ## connect to Google BigTable (optional 'google:datastore://namespace')
     db_maestro = DAL('google:datastore+ndb')
