@@ -3,6 +3,7 @@
         redirect(URL('default', 'login'))
 
 from datetime import datetime, date
+import calendar
 from json import dumps
 
 empresa_id = session.instancias
@@ -70,23 +71,20 @@ def iniciar():
     - Recibe como parámetro año y mes de un periodo
     """
 
-    anio = date.today().strftime('%Y')
-    mes = date.today().strftime('%B').upper()
+    hoy = date.today()
 
-    #inicio = date.strptime('{}{}'.format(anio, mes), '%Y%B')
-    #final = date.strptime('{}{}'.format(anio, mes), '%Y%B')
+    anio = obtener_id_anio(hoy.strftime('%Y'))
+    mes = obtener_id_mes(hoy.strftime('%B').upper())
 
-    #inicio = date.date()
-    #final = date.date()
+    inicio = date(hoy.year, hoy.month, 1)
+    ultimo_dia = calendar.monthrange(hoy.year, hoy.month)[1]
+    fin = date(hoy.year, hoy.month, ultimo_dia)
 
-    print anio, mes, inicio, final
-
-    """
     db.periodo.insert(
             inicio = inicio,
             fin = fin,
             anio = anio,
             mes = mes,
-            status = True
+            estatus = True,
+            consecutivo = 0
             )
-    """
