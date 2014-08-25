@@ -78,10 +78,17 @@
         </article>
     </div>
     <div class="row">
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <article class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
             {{=login}}
             <div class="note">
                 <a href="{{=URL('default','user/retrieve_password')}}">¿Olvidó la contraseña?</a>
+            </div>
+            <div class="alert alert-block alert-success">
+                <p class="text-align-left">
+                    <a href="{{=URL('default/user','register')}}" class="btn">
+                        <strong><i class="fa "></i> Registrarse</strong>
+                    </a>
+                </p>
             </div>
         </article>
     </div>
