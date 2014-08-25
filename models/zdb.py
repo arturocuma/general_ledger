@@ -64,7 +64,7 @@ class EmpresaDB(object):
         self.dbs = dbs
 
 
-    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera = False):
+    def cargar_modelo_de_instancia(self, email, razon_social, vez_primera=True):
         """
         Carga una sola instancia
         """
@@ -75,12 +75,17 @@ class EmpresaDB(object):
         hashear = razon_social + email
         nombre_hasheado = hashlib.sha1(hashear).hexdigest()
 
+        path = os.path.join(request.folder, 'databases/{}/'.format(nombre_hasheado))
+        if not os.path.isdir(path):
+            os.mkdir(path)
+
         db = DAL(
                 'postgres://web2py:w3b2py@localhost/_{}_{}'.format(
                     email, nombre_hasheado
                     ), 
                 check_reserved = ['all'],
-                migrate = vez_primera
+                migrate = vez_primera,
+                folder = path
                 )
 
         # WARNING: auth.user.id es del modelo maestro
@@ -242,6 +247,26 @@ class EmpresaDB(object):
             format='%(nombre)s',
         )
 
+        db.define_table('anio',
+            Field('numero', 'string'),
+            format='%(numero)s'
+        )
+
+        db.define_table('mes',
+            Field('nombre', 'string'),
+            format='%(nombre)s'
+        )
+
+        db.define_table('periodo',
+            Field('clave', 'string', writable=False),
+            Field('inicio', 'date', requires=IS_DATE()),
+            Field('fin', 'date', requires=IS_DATE()),
+            Field('estatus', 'boolean', default=False),
+            Field('anio', 'reference anio'),
+            Field('mes', 'reference mes'),
+            Field('consecutivo', 'string', readable=False, writable=False),
+        )
+
         db.define_table('poliza',
             Field('folio', 'string'),
             historico,
@@ -253,6 +278,7 @@ class EmpresaDB(object):
                 represent = lambda value, row: calcula_importe(row.id) or 0.0
                 ),
             Field('folio_externo', 'string', label='Folio Externo'),
+            Field('periodo', 'reference periodo'),
             Field('fecha_usuario', 'date', label='Fecha de Póliza')
         )
         db.poliza.id.label='#Póliza'
@@ -290,6 +316,7 @@ class EmpresaDB(object):
         db.define_table('misc',
             Field('consecutivo_polizas', 'integer'),
         )
+
         return db
 
 
@@ -346,43 +373,23 @@ class Web2Postgress():
         con.close()
 
 
-    def respaldar_db(self, nombre, email):
+    def crear_respaldo(self, nombre, email):
         """
+        Se crean respaldos
         #ToDo: crear exepciones
         """
-        """
-        con = connect(
-                dbname = 'postgres',
-                user = 'web2py',
-                host = 'localhost',
-                password = 'w3b2py'
-                )
+        import os
+        import time
 
-        con.set_isolation_level(ISOLATION_LEVEL_AUTOCOMMIT)
-        cur = con.cursor()
+        nombre_db = hashlib.sha1(nombre + email).hexdigest()
+        usuario = 'web2py'
+        host = 'localhost'
+        contrasenia = 'w3b2py'
+        fecha = time.strftime('%Y-%m-%d')
 
-        nombre_hasheado = hashlib.sha1(nombre + email).hexdigest()
-        cur.execute('drop database "_{}_{}"'.format(email, nombre_hasheado))
+        comando = 'pg_dump -U web2py contabilidad -f {}'.format(nombre_db)
 
-        cur.close()
-        con.close()
-
-
-        try:
-            con = psycopg2.connect(database='local', user='local', password='local',port='1970')
-            cur = con.cursor()
-            cur.execute('SELECT x FROM t')
-            f = open('test.sql', 'w')
-            for row in cur:
-              f.write("insert into t values (" + str(row) + ");")
-        except psycopg2.DatabaseError, e:
-            print 'Error %s' % e
-            sys.exit(1)
-        finally:
-            if con:
-                con.close()
-        """
-
+        os.popen('')
 
     def cerrar_sesiones():
         pass
