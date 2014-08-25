@@ -2,7 +2,7 @@
 (auth.user or request.args(0) == 'login') or\
         redirect(URL('default', 'login'))
 
-from datetime import datetime
+from datetime import datetime, date
 from json import dumps
 
 empresa_id = session.instancias
@@ -43,7 +43,6 @@ def listar():
             )
 
     diccionario = periodos.as_dict()
-    print diccionario
 
     return dumps(diccionario, sort_keys=True)
 
@@ -71,13 +70,23 @@ def iniciar():
     - Recibe como parámetro año y mes de un periodo
     """
 
-    anio = 2014
-    mes = 'December'
+    anio = date.today().strftime('%Y')
+    mes = date.today().strftime('%B').upper()
 
+    #inicio = date.strptime('{}{}'.format(anio, mes), '%Y%B')
+    #final = date.strptime('{}{}'.format(anio, mes), '%Y%B')
+
+    #inicio = date.date()
+    #final = date.date()
+
+    print anio, mes, inicio, final
+
+    """
     db.periodo.insert(
             inicio = inicio,
             fin = fin,
             anio = anio,
             mes = mes,
-            status = status,
-            ) 
+            status = True
+            )
+    """

@@ -26,18 +26,17 @@ def listar():
 
     db.asiento.debe.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
-                    _class='debe',
-                    _style='text-align:right',
-                    _id=str(row.id)+'.debe'
+                    _class='debe derecha',
+                    _id='{}.debe'.format(row.id)
                     )
     db.asiento.haber.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
-                    _class='haber',
-                    _style='text-align:right',
-                    _id=str(row.id)+'.haber'
+                    _class='haber derecha',
+                    _id='{}.haber'.format(row.id)
                     )
 
     # modificaciones a campos de la tabla `poliza`
+    db.poliza.id.readable = False
     db.poliza.importe.writable = False
     db.poliza.concepto_general.represent = lambda value, row:\
             DIV(
@@ -170,12 +169,12 @@ def cuadrar_poliza():
 
         if comparar_flotantes(deb, hab):
             row.append(TD('Póliza Cuadrada', _class='verde'))
-            row.append(TD(locale.currency(deb, grouping=True ), _class='verde'))
-            row.append(TD(locale.currency(hab, grouping=True ), _class='verde'))
+            row.append(TD(DIV(locale.currency(deb, grouping=True ), _class='verde derecha')))
+            row.append(TD(DIV(locale.currency(hab, grouping=True ), _class='verde derecha')))
         else:
             row.append(TD('Póliza No Cuadrada', _class='rojo'))
-            row.append(TD(locale.currency(deb, grouping=True ), _class='rojo'))
-            row.append(TD(locale.currency(hab, grouping=True ), _class='rojo'))
+            row.append(TD(DIV(locale.currency(deb, grouping=True ), _class='rojo derecha')))
+            row.append(TD(DIV(locale.currency(hab, grouping=True ), _class='rojo derecha')))
 
         row.append(TD(''))
 

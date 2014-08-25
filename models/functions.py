@@ -63,20 +63,23 @@ def calcula_importe(poliza_id):
             )
 
     if asientos:
-        deb = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.debe for asi in asientos])
-        hab = reduce(lambda x,y: (x if x else 0) + (y if y else 0), [asi.haber for asi in asientos])
+        deb = reduce(lambda x,y: (x or 0) + (y or 0), [asi.debe for asi in asientos])
+        hab = reduce(lambda x,y: (x or 0) + (y or 0), [asi.haber for asi in asientos])
 
         if comparar_flotantes(deb, hab):
             flag = DIV(
                     '{}'.format(locale.currency(deb, grouping=True)), 
-                    _class='verde',
-                    _style='text-align:right'
+                    _class='verde derecha',
                     )
         else:
-            flag = DIV('{} <> {}'.format(locale.currency(deb, grouping=True ), locale.currency(hab, grouping=True )), _class='rojo')
+            flag = DIV(
+                    '{} <> {}'.format(locale.currency(deb, grouping=True),
+                    locale.currency(hab, grouping=True)),
+                    _class='rojo derecha'
+                    )
 
     else:
-        flag = DIV('Póliza sin asientos', _class='rojo')
+        flag = DIV('Póliza sin asientos', _class='rojo derecha')
 
     return flag
 
@@ -164,3 +167,13 @@ def eliminar(ids):
     """
 
     [db_maestro(db_maestro[id.split('.')[1]].id == id.split('.')[0]).delete() for id in ids]
+
+
+def add_months(sourcedate, months):
+    import calendar
+    import datetime
+    month = sourcedate.month - 1 + months
+    year = sourcedate.year + month / 12
+    month = month % 12 + 1
+    day = min(sourcedate.day,calendar.monthrange(year,month)[1])
+    return datetime.date(year,month,day)
