@@ -169,11 +169,14 @@ def eliminar(ids):
     [db_maestro(db_maestro[id.split('.')[1]].id == id.split('.')[0]).delete() for id in ids]
 
 
-def add_months(sourcedate, months):
-    import calendar
-    import datetime
-    month = sourcedate.month - 1 + months
-    year = sourcedate.year + month / 12
-    month = month % 12 + 1
-    day = min(sourcedate.day,calendar.monthrange(year,month)[1])
-    return datetime.date(year,month,day)
+def obtener_id_anio(anio):
+    registro = db(db.anio.numero == anio).select(db.anio.id).first()
+    if registro:
+        return registro.id
+    else:
+        return db.anio.insert(numero = anio)
+
+
+def obtener_id_mes(mes):
+    registro = db(db.mes.nombre == mes).select(db.mes.id).first()
+    return registro.id

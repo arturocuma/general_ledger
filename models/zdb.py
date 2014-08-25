@@ -235,7 +235,6 @@ class EmpresaDB(object):
             Field('lft','integer', default=0),
             Field('rgt','integer', default=0),
             format='%(num_cc)s %(descripcion)s',
-            migrate=False
             )
 
         db.define_table('tipo_poliza',
@@ -249,7 +248,7 @@ class EmpresaDB(object):
         )
 
         db.define_table('anio',
-            Field('numero', 'string'),
+            Field('numero', 'integer'),
             format='%(numero)s'
         )
 
@@ -313,10 +312,6 @@ class EmpresaDB(object):
             Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta'),
             format='%(cc_empresa_id)s'
             )
-
-        db.define_table('misc',
-            Field('consecutivo_polizas', 'integer'),
-        )
 
         return db
 
