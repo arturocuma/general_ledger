@@ -22,6 +22,8 @@ def eliminar():
     - cierra sesión de la instancia abierta
     - elimina una instancia de base de datos D:
     """
+    import os
+    import shutil
 
     id = request.vars.id
 
@@ -40,6 +42,12 @@ def eliminar():
     # eliminar instancia de base de datos
     email = auth.user['email']
     instancia.eliminar_db(nombre, email)
+
+    # eliminar del folder databases
+    hashear = nombre + email
+    nombre_hasheado = hashlib.sha1(hashear).hexdigest()
+    path = os.path.join(request.folder, 'databases/{}/'.format(nombre_hasheado))
+    shutil.rmtree(path)
 
     session.instancias = 0
 
