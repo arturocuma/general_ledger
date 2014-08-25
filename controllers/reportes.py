@@ -329,28 +329,28 @@ def libro_diario():
 
 def estado_resultados():
     tabla=''
-    nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.descripcion).first()
+    nombre_reporte= db(db.reporte.nombre=='estado_resultados').select(db.reporte.ALL).first()
     if nombre_reporte:
-        desc_ingresos= db(db.seccion_reporte.nombre=='ingresos').select(db.seccion_reporte.descripcion).first()
-        desc_costos= db(db.seccion_reporte.nombre=='costos').select(db.seccion_reporte.descripcion).first()
-        desc_gastos= db(db.seccion_reporte.nombre=='gastos').select(db.seccion_reporte.descripcion).first()
-        desc_otros= db(db.seccion_reporte.nombre=='otros').select(db.seccion_reporte.descripcion).first()
-        desc_impuestos= db(db.seccion_reporte.nombre=='impuestos').select(db.seccion_reporte.descripcion).first()
-        cuentas_ingresos=db( (db.seccion_reporte.nombre=='ingresos')
-                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
-                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
-        cuentas_costos=db( (db.seccion_reporte.nombre=='costos')
-                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
-                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
-        cuentas_gastos=db( (db.seccion_reporte.nombre=='gastos')
-                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
-                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
-        cuentas_otros=db( (db.seccion_reporte.nombre=='otros')
-                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
-                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
-        cuentas_impuestos=db( (db.seccion_reporte.nombre=='impuestos')
-                            & (db.cuentas_seccion_reporte.seccion_reporte_id==db.seccion_reporte.id )
-                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL, groupby=db.cc_empresa.id)
+        desc_ingresos= db((db.seccion_reporte.nombre=='seccion_1') &
+                          (db.seccion_reporte.reporte_id==nombre_reporte.id)).select(db.seccion_reporte.ALL).first()
+        desc_costos= db((db.seccion_reporte.nombre=='seccion_2') &
+                          (db.seccion_reporte.reporte_id==nombre_reporte.id)).select(db.seccion_reporte.ALL).first()
+        desc_gastos= db((db.seccion_reporte.nombre=='seccion_3') &
+                          (db.seccion_reporte.reporte_id==nombre_reporte.id)).select(db.seccion_reporte.ALL).first()
+        desc_otros= db((db.seccion_reporte.nombre=='seccion_4') &
+                          (db.seccion_reporte.reporte_id==nombre_reporte.id)).select(db.seccion_reporte.ALL).first()
+        desc_impuestos= db((db.seccion_reporte.nombre=='seccion_5') &
+                          (db.seccion_reporte.reporte_id==nombre_reporte.id)).select(db.seccion_reporte.ALL).first()
+        cuentas_ingresos=db((db.cuentas_seccion_reporte.seccion_reporte_id==desc_ingresos.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL)
+        cuentas_costos=db( (db.cuentas_seccion_reporte.seccion_reporte_id==desc_costos.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL)
+        cuentas_gastos=db(  (db.cuentas_seccion_reporte.seccion_reporte_id==desc_gastos.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL)
+        cuentas_otros=db( (db.cuentas_seccion_reporte.seccion_reporte_id==desc_otros.id )
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL)
+        cuentas_impuestos=db( (db.cuentas_seccion_reporte.seccion_reporte_id==desc_impuestos.id)
+                            & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL)
         
         #Obtenemos los datos de las cuentas
         total_ingresos=total_cuentas_er(cuentas_ingresos)
@@ -400,7 +400,7 @@ def estado_resultados():
         tabla+='</table>'
 
     else:
-        tabla+='<table><th><tr><td>Configure el reporte en la sección de Configuración</td></tr></th></table>'
+        tabla+='<table><th><tr><td>Configure el reporte en la sección de Configuración / Reportes / Estado de Resultados</td></tr></th></table>'
     return dict(tabla=XML(tabla))
 
 def utilidad_er(utilidad, desc,total_ingresos):
@@ -421,11 +421,11 @@ def importe_cuenta_er(cuenta, acumulado):
     fecha_actual=time.strftime("%Y-%m-%d 23:59:59")
     mes_actual=time.strftime("%Y-%m-01 00:00:00")
     if acumulado==True:
-        cadena=" AND f_asiento <= '"+mes_actual+"'"
+        cadena=" AND poliza.fecha_usuario <= '"+mes_actual+"'"
     elif acumulado==False:
-        cadena=" AND f_asiento between '"+mes_actual+"' and '"+fecha_actual+"'"
+        cadena=" AND poliza.fecha_usuario between '"+mes_actual+"' and '"+fecha_actual+"'"
     cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
-                                 "FROM asiento, cc_empresa "\
+                                 "FROM asiento, poliza, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+str(cuenta.num_cc)+"%'"\
                                  +cadena)
@@ -536,3 +536,28 @@ def mes(mes):
     elif mes == 12:
         mes = 'DIC'
     return mes
+
+def reportes_creados():
+    if request.vars:
+        reporte_id = request.vars.reporte_id
+        reporte= db(db.reporte.id==reporte_id).select(db.reporte.ALL).first()
+        descripcion=reporte.descripcion
+        secciones= db(db.seccion_reporte.reporte_id==reporte_id).select(db.seccion_reporte.ALL)
+        
+        #Comienza la tabla
+        tabla='<table id="dt_basic" class="table table-striped table-bordered table-hover">'
+        #Encabezado
+        tabla+='<thead><tr><td>Cuentas</td><td>Este mes</td><td>% de las ventas</td><td>Acum. este mes</td><td>% de las ventas</td></tr></thead>'
+        #Etiqueta de ingresos
+        tabla+='<tbody>'
+        for seccion in secciones:
+            cuentas_seccion=db( (db.cuentas_seccion_reporte.seccion_reporte_id==seccion.id)
+                                & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL)
+            total_seccion=total_cuentas_er(cuentas_seccion)
+            seccion_fila=fila_seccion_er(cuentas_seccion,total_seccion)
+            tabla+=cabecera_seccion_er(seccion)
+            tabla+=seccion_fila['fila']
+            tabla+=utilidad_er(total_seccion,'Total de '+seccion.descripcion,total_seccion)
+        tabla+='</tbody>'
+        tabla+='</table>'
+    return dict(descripcion=descripcion, tabla=XML(tabla))

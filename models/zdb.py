@@ -230,7 +230,6 @@ class EmpresaDB(object):
             Field('lft','integer', default=0),
             Field('rgt','integer', default=0),
             format='%(num_cc)s %(descripcion)s',
-            migrate=False
             )
 
         db.define_table('tipo_poliza',
@@ -291,19 +290,6 @@ class EmpresaDB(object):
         db.define_table('misc',
             Field('consecutivo_polizas', 'integer'),
         )
-
-        '''
-        db.define_table('balanza',
-            Field('mes', 'reference mes'),
-            Field('anio', 'reference anio'),
-            Field('saldo_inicial', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('cargo', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('abono', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('saldo_final', 'double', represent = lambda value, row: DIV(locale.currency(value, grouping=True ), _style='text-align: right;')),
-            Field('cc_empresa_id', 'reference cc_empresa', label='Cuenta Contable'),
-            Field('cierre', 'boolean', default=False)
-        )
-        '''    
         return db
 
 

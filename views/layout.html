@@ -607,19 +607,48 @@ header,h1,h2,h3,h4{
 									<i class="fa fa-book"></i>
 									Libro diario
 								</a>
+                                
+                            </li>
+                            <li>
                                 <a href="{{=URL('reportes','estado_resultados')}}">
 									<i class="fa fa-lg fa-fw fa-usd"></i>
 									Estado de resultados
 								</a>
+                            </li>
+                            <li>
                                 <a href="{{=URL('reportes','balanza')}}">
 									<i class="fa fa-filter"></i>
 									Balanza
 								</a>
-								 <a href="{{=URL('reportes','balance_general')}}">
+                            </li>
+                            <li>
+								<a href="{{=URL('reportes','balance_general')}}">
 									<i class="fa fa-bar-chart-o"></i>
 									Balance general
 								</a>
-							</li>
+                            </li>
+                            <li>
+                                <a href="javascript:void();">
+									<i class="fa fa-fw fa-folder-open"></i>
+									Reportes Creados
+								</a>
+                                {{if session.instancias:}}
+                                {{db=empresas.dbs[int(session.instancias)]}}
+                                {{reportes=db(db.reporte).select(db.reporte.ALL)}}
+                                <ul>
+                                    {{for reporte in reportes:}}
+                                    {{if reporte.nombre!='estado_resultados':}}
+                                    <li>
+                                        <a href="{{=URL('reportes','reportes_creados',vars={'reporte_id':reporte.id})}}">
+                                            
+                                             {{=reporte.descripcion}}
+                                        </a>
+                                    </li>
+                                    {{pass}}
+                                    {{pass}}
+                               {{pass}}
+                                </ul>
+                            </li>
 						</ul>
 					</li>
 					<li>
@@ -653,6 +682,9 @@ header,h1,h2,h3,h4{
                                 <ul>
                                     <li>
                                         <a href="{{=URL('configuracion','estado_resultados')}}"><i class="fa fa-fw "></i> Estado de Resultados </a>
+                                    </li>
+                                    <li>
+                                        <a href="{{=URL('configuracion','wizard_reportes')}}"><i class="fa fa-fw "></i> Wizard de Reportes </a>
                                     </li>
                                 </ul>
                             </li>
