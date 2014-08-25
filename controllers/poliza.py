@@ -11,11 +11,12 @@ def index(): return dict(message="hello from poliza.py")
 
 def listar():
 
-    # modificaciones a campos de la tabla `asiento`
-
-    # modificar esto
-    
-    db.asiento.cc_empresa_id.represent = lambda value, row: DIV( db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-', _class='cc_empresa_id', _id=str(row.id)+'.cc_empresa_id')
+    db.asiento.cc_empresa_id.represent = lambda value, row: \
+            DIV(
+                db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-',
+                _class='cc_empresa_id',
+                _id=str(row.id)+'.cc_empresa_id'
+                )
     
     db.asiento.concepto_asiento.represent = lambda value, row:\
             DIV(value if value!='' else '-',
@@ -25,18 +26,17 @@ def listar():
 
     db.asiento.debe.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
-                    _class='debe',
-                    _style='text-align:right',
-                    _id=str(row.id)+'.debe'
+                    _class='debe derecha',
+                    _id='{}.debe'.format(row.id)
                     )
     db.asiento.haber.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
-                    _class='haber',
-                    _style='text-align:right',
-                    _id=str(row.id)+'.haber'
+                    _class='haber derecha',
+                    _id='{}.haber'.format(row.id)
                     )
 
     # modificaciones a campos de la tabla `poliza`
+    db.poliza.id.readable = False
     db.poliza.importe.writable = False
     db.poliza.concepto_general.represent = lambda value, row:\
             DIV(
@@ -51,15 +51,11 @@ def listar():
 
     # Columna `fecha`
     db.poliza.folio_externo.represent = lambda value, row: value or '-'
-    
-    """
-    db.poliza.fecha.represent = lambda value, row:\
-            DIV(value or '-',
-                _class='fecha_poliza',
-                _id='{}fecha'.format(row.id)
-                )
-    """
 
+    # Columna `periodo`
+    db.poliza.periodo.represent = lambda value, row:\
+            db.periodo(value).clave if value else '-'
+    
     # Columna `folio`
     db.poliza.folio.represent = lambda value, row:\
             DIV(value, _class='folio', _id='{}folio'.format(row.id))
@@ -173,12 +169,12 @@ def cuadrar_poliza():
 
         if comparar_flotantes(deb, hab):
             row.append(TD('Póliza Cuadrada', _class='verde'))
-            row.append(TD(locale.currency(deb, grouping=True ), _class='verde'))
-            row.append(TD(locale.currency(hab, grouping=True ), _class='verde'))
+            row.append(TD(DIV(locale.currency(deb, grouping=True ), _class='verde derecha')))
+            row.append(TD(DIV(locale.currency(hab, grouping=True ), _class='verde derecha')))
         else:
             row.append(TD('Póliza No Cuadrada', _class='rojo'))
-            row.append(TD(locale.currency(deb, grouping=True ), _class='rojo'))
-            row.append(TD(locale.currency(hab, grouping=True ), _class='rojo'))
+            row.append(TD(DIV(locale.currency(deb, grouping=True ), _class='rojo derecha')))
+            row.append(TD(DIV(locale.currency(hab, grouping=True ), _class='rojo derecha')))
 
         row.append(TD(''))
 

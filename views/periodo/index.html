@@ -1,0 +1,66 @@
+{{extend 'layout.html'}}
+
+{{=periodos}}
+
+<script>
+
+$(document).ready(function(){
+
+    $(function(){
+        $('div[id$=cerrar').each(function(){
+            console.log('cerrar');
+        });
+    });
+
+
+    $(function(){
+        $('.abrir').click(function(){
+            console.log('abrir');
+        });
+    });
+
+});
+
+$.getJSON('{{=URL("listar")}}', function(json){ 
+
+    var tabla = "";
+    $.each(json, function(ke, va) {
+
+        var fila = "";
+
+        id = va['id'];
+        
+        $.each(this, function(k , v) {
+
+            if (k != '_extra')
+                if (k != 'estatus')
+                    fila += "<td>"+v+"</td>";
+
+                /* construir link para abrir y cerrar póliza */
+                else if (v == 'T'){
+                    div = "<div class='cerrar' id='" + id + "cerrar'>Cerrar</div>";
+                    fila += "<td>" + div + "</td>";
+                    fila += "<td class='cerrar'><a href='cerrar?rabrir=" + id + "'>Cerrar</a></td>";
+                }
+                else {
+                    div = "<div class='abrir' id='" + id + "abrir'>Abrir</div>";
+                    fila += "<td>" + div + "</td>";
+                    fila += "<td class='abrir'><a href='abrir?abrir=" + id + "'>Abrir</a></td>";
+                }
+
+        });
+
+        tabla += "<tr>"+fila+"</tr>";                
+    });
+
+    $("#periodos").html(tabla);
+
+});
+
+</script>
+
+<style>
+    td { padding: 20px; }
+</style>
+
+<div id='periodos'></div>

@@ -14,9 +14,8 @@ $(function() {
                 datos = {'value': fecha, 'id': id}
 
                 $.post("{{=URL('actualiza_poliza')}}", datos).success(
-                    function(data){ 
-                        $(id).html(data); 
-                });
+                    function(data){ $(id).html(data); }
+                );
             }
         });
     });
@@ -142,14 +141,17 @@ $(document).ready(function(){
         font-weight: bold;
     }
 
+    .derecha {
+        text-align:right;
+        margin-right: 10%;
+    }
+
     .rojo {
         color: red;
-        text-align:right;
     }
 
     .verde {
         color: green;
-        text-align:right;
     }
 
 </style>
