@@ -5,9 +5,9 @@
          <h1>
             <p>
                <i class="fa-fw fa fa-dollar"></i>
-               Importar pólizas
+              Importar Pólizas
             </p>
-            <small>Carga masiva de pólizas desde archivo csv</small>
+            <small>Carga de polizas desde un archivo CSV</small>
          </h1>
       </legend>
    </div>
@@ -25,7 +25,7 @@
 {{elif tipo_msg=='info':}}
 <div class="alert alert-block alert-info">
    <h4 class="alert-heading">
-      Listo para la carga de saldos
+      Listo para la carga de pólizas
    </h4>
 {{pass}}
    <p>
@@ -44,7 +44,7 @@
             </header>
             <div role='content'>
                <div class="widget-body">
-                   <form class="form-horizontal" method="POST" action="{{=URL('configuracion','saldo_inicial')}}" enctype="multipart/form-data">
+                   <form class="form-horizontal" method="POST" action="{{=URL('poliza','importar_polizas')}}" enctype="multipart/form-data">
                      <div class="row">
                         <div class="col-md-12 col-sm-12">
                            <legend>Archivo CSV</legend>
@@ -53,7 +53,7 @@
                      </div>
                      <div class="row">
                         <div class="col-md-6">                           
-                           <button class="btn btn-default" onclick={{=URL('configuracion','saldo_inicial')}}> Cancelar </button>
+                           <button class="btn btn-default" onclick={{=URL('poliza','importar_polizas')}}> Cancelar </button>
                            <input class="btn btn-primary" type="submit" value="Cargar">
                         </div>
                      </div>
@@ -82,7 +82,7 @@
                            <thead>
                               <tr>
                                  <th>Folio externo</th>
-                                 <th>Tipo de poliza</th>
+                                 <th>Tipo de póliza</th> 
                                  <th>Fecha</th>
                                  <th>Concepto de Póliza</th>
                                  <th>No. Cuenta</th>
@@ -94,7 +94,7 @@
                            <tbody>
                               <tr>
                                  <td>P001</td>
-                                 <td>1</td> 
+                                 <td>1</td>
                                  <td>mm-dd-aaaa</td>
                                  <td>Póliza por concepto "a"</td>
                                  <td>1.1.1.1</td>
