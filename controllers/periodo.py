@@ -61,7 +61,7 @@ def listar():
             db.periodo.id.with_alias('id'),
             db.anio.numero.with_alias('numero'),
             db.mes.nombre.with_alias('nombre'),
-            db.periodo.estatus.with_alias('estatus')
+            db.periodo.estatus_periodo_id.with_alias('estatus')
             )
 
     diccionario = periodos.as_dict()
