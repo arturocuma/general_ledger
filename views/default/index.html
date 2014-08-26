@@ -67,37 +67,7 @@
         {{pass}}
     {{pass}}
 {{else:}}
-    <div class="row">
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            <legend>
-                <h1>
-                    <i class="fa-fw fa  fa-user"></i>
-                    Inicio de sesión
-                </h1>
-            </legend>
-        </article>
-    </div>
-    <div class="row">
-        <article class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-            {{=login}}
-            <div class="note">
-                <a href="{{=URL('default','user/retrieve_password')}}">¿Olvidó la contraseña?</a>
-            </div>
-        </article>
-    </div>
-    <div class="row">
-        <article class="col-xs-12 col-sm-12 col-md-4 col-lg-4">
-            <div class="alert alert-info alert-block">
-                <h4 class="alert-heading">Inicia sesión con Google</h4>
-                <p class="text-align-left">
-                    <br>
-                    <a href="{{=URL('default/user','login')}}" class="btn">
-                        <strong><i class="fa fa-google-plus"></i> Google</strong>
-                    </a>
-                </p>
-            </div>
-        </article>
-    </div>
+    {{redirect(URL('default','login'))}}
 {{pass}}
 <style>
     .jumbotron{

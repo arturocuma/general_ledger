@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 vars={'_next':request.env.request_uri}
-(auth.user or request.args(0) == 'login') or\
-redirect(URL('default', 'login', vars=vars))
-
+(auth.user or request.args(0) == 'login') or redirect(URL('default', 'login', vars=vars))
 #########################################################################
 ## En este controlador se administra la sección de roles y permisos
 ## - index is the default action of any application
@@ -41,11 +39,7 @@ def index():
     """
     Por default muestra `usuarios`
     """
-
-    db.auth_user.empleado_id.readable = False
-    db.auth_user.id.readable = False
-
-    usuarios = SQLFORM.smartgrid(
+    """usuarios = SQLFORM.smartgrid(
             db.auth_user,
             linked_tables=[''],
             exportclasses=dict(
@@ -54,18 +48,18 @@ def index():
                 tsv_with_hidden_cols=False,
                 tsv=False,
                 xml=False
-                )
-            )
-
-    return dict(usuarios=usuarios)
+                ) {nom = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
+            )"""
+    empresa_id = session.instancias
+    razon_social = db_maestro(db_maestro.empresa.id == empresa_id ).select(db_maestro.empresa.razon_social).first()
+    usuarios = db((db.mi_empresa.empresa_id == empresa_id) & (db.auth_user.id == db.mi_empresa.user_id)).select()
+    return dict(usuarios=usuarios, razon_social = razon_social)
 
 #@auth.requires(auth.has_membership('ADMIN'))
 def grupos():
     """
     Muestra los `grupos` de usuarios
     """
-    db.auth_user.empleado_id.readable = False
-    db.auth_user.empleado_id.writable = False
 
     db.auth_permission.name.widget = SQLFORM.widgets.autocomplete(
             request,

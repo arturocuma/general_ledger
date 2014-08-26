@@ -1,6 +1,23 @@
 {{extend 'layout.html'}}
-
-<h2>{{=T( request.args(0).replace('_',' ').capitalize() )}}</h2>
+{{if session.auth and request.args(0)=='profile':}}
+  {{pic = 'http://pbs.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png'}}
+  <!--<img src="{{=session.picture if session.picture else pic}}" alt='Yo' class="online" />-->
+<div class="row">
+    <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+        <legend>
+            <h1>
+                <p>
+                    <i class="fa-fw fa fa-user"></i>
+                 	{{=auth.user['first_name']}} {{=auth.user['last_name']}}   
+                </p>
+                <small>Perfil de usuario</small>
+            </h1>
+        </legend>
+    </article>
+</div>
+{{else:}}
+	<h2>{{=T( request.args(0).replace('_',' ').capitalize() )}}</h2>
+{{pass}}
 <div id="web2py_user_form">
 {{
 if request.args(0)=='login' and not session.auth_2_factor_user:
