@@ -248,7 +248,7 @@ class EmpresaDB(object):
         )
 
         db.define_table('anio',
-            Field('numero', 'string'),
+            Field('numero', 'integer'),
             format='%(numero)s'
         )
 
@@ -261,10 +261,10 @@ class EmpresaDB(object):
             Field('clave', 'string', writable=False),
             Field('inicio', 'date', requires=IS_DATE()),
             Field('fin', 'date', requires=IS_DATE()),
-            Field('estatus', 'boolean', default=False),
+            Field('estatus', 'integer', default=1),
             Field('anio', 'reference anio'),
             Field('mes', 'reference mes'),
-            Field('consecutivo', 'string', readable=False, writable=False),
+            Field('consecutivo', 'integer', default=0, readable=False, writable=False),
         )
 
         db.define_table('poliza',

@@ -1,0 +1,124 @@
+{{extend 'layout.html'}}
+<div class="row">
+   <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <legend>
+         <h1>
+            <p>
+               <i class="fa-fw fa fa-dollar"></i>
+              Importar Pólizas
+            </p>
+            <small>Carga de polizas desde un archivo CSV</small>
+         </h1>
+      </legend>
+   </div>
+</div>
+{{if tipo_msg=='error': }}
+<div class="alert alert-block alert-danger">
+   <h4 class="alert-heading">
+      Error
+   </h4>
+{{elif tipo_msg=='exito':}}
+<div class="alert alert-block alert-success">
+   <h4 class="alert-heading">
+      Éxito en la carga
+   </h4>
+{{elif tipo_msg=='info':}}
+<div class="alert alert-block alert-info">
+   <h4 class="alert-heading">
+      Listo para la carga de pólizas
+   </h4>
+{{pass}}
+   <p>
+      <strong>{{=msg}}</strong>
+   </p>
+</div>
+<section id="widget-grid" class="">
+   <div class="row">
+      <article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+         <div id="wid-id-0" class="jarviswidget jarviswidget-sortable" data-widget-editbutton="false" data-widget-colorbutton="false" role="widget">
+            <header role="heading">
+               <span class="widget-icon">
+                  <i class="fa fa-edit"></i>
+               </span>
+               <h2>Formulario de carga CSV</h2>
+            </header>
+            <div role='content'>
+               <div class="widget-body">
+                   <form class="form-horizontal" method="POST" action="{{=URL('poliza','importar_polizas')}}" enctype="multipart/form-data">
+                     <div class="row">
+                        <div class="col-md-12 col-sm-12">
+                           <legend>Archivo CSV</legend>
+                           <input name="csv_saldo_inicial" type="file" required>       
+                        </div>
+                     </div>
+                     <div class="row">
+                        <div class="col-md-6">                           
+                           <button class="btn btn-default" onclick={{=URL('poliza','importar_polizas')}}> Cancelar </button>
+                           <input class="btn btn-primary" type="submit" value="Cargar">
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </article>
+      <article class="col-sm-12 col-md-12 col-lg-6 sortable-grid ui-sortable">
+         <div id="wid-id-0" class="jarviswidget jarviswidget-sortable" data-widget-editbutton="false" data-widget-colorbutton="false" role="widget">
+            <header role="heading">
+               <span class="widget-icon">
+                  <i class="fa fa-eye"></i>
+               </span>
+               <h2>Ejemplo CSV</h2>
+            </header>
+            <div role='content'>
+               <div class="widget-body">
+                  <div class="widget-body no-padding">
+                     <div class="alert alert-info no-margin fade in">
+                        <i class="fa-fw fa fa-info"></i>
+                        No incluir el encabezado.
+                     </div>
+                     <div class="table-responsive">
+                        <table  class="table table-bordered table-striped">
+                           <thead>
+                              <tr>
+                                 <th>Folio externo</th>
+                                 <th>Tipo de póliza</th> 
+                                 <th>Fecha</th>
+                                 <th>Concepto de Póliza</th>
+                                 <th>No. Cuenta</th>
+                                 <th>Concepto de Asiento</th>
+                                 <th>Debe</th>
+                                 <th>Haber</th>
+                              </tr>
+                           </thead>
+                           <tbody>
+                              <tr>
+                                 <td>P001</td>
+                                 <td>1</td>
+                                 <td>mm-dd-aaaa</td>
+                                 <td>Póliza por concepto "a"</td>
+                                 <td>1.1.1.1</td>
+                                 <td>Saldo de caja por concepto "x"</td>
+                                 <td>100.0</td>
+                                 <td>100.0</td>
+                              </tr>
+                              <tr>
+                                 <td>P001</td>
+                                 <td>1</td>
+                                 <td>mm-dd-aaaa</td>
+                                 <td>Póliza por concepto "a"</td>
+                                 <td>1.2.1</td>
+                                 <td>Saldo de la cuenta 1.2.1 por concepto "y"</td>
+                                 <td>10.0</td>
+                                 <td>10.0</td>
+                              </tr>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </article>
+   </div>
+</section>

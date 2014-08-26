@@ -157,109 +157,88 @@ def cambiar_catalogo():
         msg= 'Elija un archivo para subir'
     return dict(tipo_msg=tipo_msg,msg=msg)
 
-def saldo_inicial():
+
+def validar_periodo(fecha_usuario):
+    periodo = db(
+                (db.periodo.inicio <=fecha_usuario) &
+                (db.periodo.fin >=fecha_usuario) &
+                (db.periodo.estatus != 3)).select(
+            db.periodo.ALL,
+        ).first()
+    if periodo:
+        activo=True
+    else:
+        activo=False
+    return activo
+
+def importar_polizas():
     tipo_msg='error'
-    
     tipo = type(request.vars.csv_saldo_inicial)
-    msg='No entra '+str(tipo)
-   
     if type(request.vars.csv_saldo_inicial)!='str' and request.vars:
-            tipo = type(request.vars.csv_saldo_inicial)
-            msg = 'Entra '+str(tipo)
-        #try:
-        
-            file = request.vars.csv_saldo_inicial.file
-            reader = csv.reader(file)
-            
-            campos=['poliza_id','cc_empresa_id', 'concepto_asiento','debe', 'haber']
-             
-            for row in reader:
+                tipo = type(request.vars.csv_saldo_inicial)
+                file = request.vars.csv_saldo_inicial.file
+                reader = csv.reader(file)
+                
+                campos=['poliza_id','cc_empresa_id', 'concepto_asiento','debe', 'haber']
+                for row in reader:
                     folio_externo=row[0]
                     tipo_poliza=int(row[1])
                     fecha_poliza=row[2]
                     concepto_general=row[3]
-                    poliza = db(db.poliza.folio_externo==folio_externo).select(db.poliza.ALL).first()
-                    msg= 'Error al insertar la póliza'
-                    if not poliza:
-                        poliza_id = agregar_poliza(folio_externo, tipo_poliza, fecha_poliza, concepto_general)
+                    estatus = validar_periodo(fecha_poliza)
+                    if not estatus:
+                        msg = 'El periodo de la fecha '+fecha_poliza+' de la póliza '+folio_externo +' no se encuentra activo'
+                        break
                     else:
-                        poliza_id = poliza.id
-                    num_cc=row[4]
-                    concepto=row[5]
-                    debe=float(row[6])
-                    haber=float(row[7])
-                    cc=db(db.cc_empresa.num_cc==num_cc).select(db.cc_empresa.id).first()
-                    if not cc:
-                        msg= 'El número de cuenta '+num_cc+' no existe'
-                    valores=[]
-                    valores.append(poliza_id)
-                    valores.append(int(cc.id))
-                    valores.append(concepto)
-                    valores.append(debe)
-                    valores.append(haber)
-                    msg= 'Error al insertar los asientos'
-                    dictionary = dict(zip(campos, valores))
-                    db[db.asiento].insert(**dictionary)
-                    
-        #except:
-        #    db.rollback()
-        #    tipo_msg='error'
-            
-        #else:
-        #    db.commit()
-        #    tipo_msg='exito'
-        #    msg= 'Saldo inicial guardado'
+                        poliza = db(db.poliza.folio_externo==folio_externo).select(db.poliza.ALL).first()
+                        validacion_poliza=True
+                        if not poliza:
+                            try:
+                                poliza_id = agregar_poliza_csv(folio_externo, tipo_poliza, fecha_poliza, concepto_general)
+                            except:
+                                msg = 'Error al insertar la póliza. Verifique el formato del archivo CSV'
+                                validacion_poliza=False
+                        else:
+                            poliza_id = poliza.id
+                        if validacion_poliza:
+                            num_cc=row[4]
+                            concepto=row[5]
+                            debe=float(row[6])
+                            haber=float(row[7])
+                            cc=db(db.cc_empresa.num_cc==num_cc).select(db.cc_empresa.id).first()
+                            if not cc:
+                                msg= 'El número de cuenta '+num_cc+' no existe'
+                            else:
+                                valores=[]
+                                valores.append(poliza_id)
+                                valores.append(int(cc.id))
+                                valores.append(concepto)
+                                valores.append(debe)
+                                valores.append(haber)
+                                msg= 'Error al insertar los asientos'
+                                dictionary = dict(zip(campos, valores))
+                                db[db.asiento].insert(**dictionary)
+                                tipo_msg='exito'
+                                msg= 'Polizas guardadas'
     else:
-
         tipo_msg='info'
         msg= 'Elija un archivo para subir'
     return dict(tipo_msg=tipo_msg,msg=msg)
 
-def agregar_poliza(folio_externo, tipo, fecha_usuario, concepto_general):
+def agregar_poliza_csv(folio_externo, tipo, fecha_usuario, concepto_general):
     """
     Agrega un elemento a la tabla `póliza`
     """
-    ultimo = db(db.poliza.id > 0).select(
-            db.poliza.id,
-            db.poliza.creada_en,
-            orderby =~ db.poliza.id
+    periodo = db(
+                (db.periodo.inicio <=fecha_usuario)&
+                (db.periodo.fin >=fecha_usuario)).select(
+            db.periodo.ALL,
         ).first()
-    # en caso de que no existan pólizas
-    if ultimo:
-        ultimo = int(ultimo.creada_en.strftime('%m'))
-    else:
-        ultimo = int(datetime.now().strftime('%m'))
-    # fin-en caso de que no existan pólizas
-    id = db.poliza.insert(
-            folio = '',
-            tipo = int(tipo),
-            concepto_general = '',
-            fecha_usuario=fecha_usuario,
-            importe = 0,
-            )
-    fila = db(db.poliza.id == id).select(
-            db.poliza.tipo,
-            db.poliza.fecha_usuario,
-            ).first()
-    ahora = int(fila.fecha_usuario.strftime('%m'))
-    consecutivo_actual = db(db.misc.id > 0).select(
-            db.misc.consecutivo_polizas
-            ).first().consecutivo_polizas
-    if ultimo < ahora:
-        # cambio de mes
-        consecutivo = 1 
-        db(db.misc.consecutivo_polizas == consecutivo_actual).update(
-                consecutivo_polizas = 1
+    db(db.periodo.id == periodo.id).update(
+                consecutivo = periodo.consecutivo+1
                 )
-    else:
-        consecutivo = consecutivo_actual 
-        db(db.misc.consecutivo_polizas == consecutivo_actual).update(
-                consecutivo_polizas = consecutivo + 1
-                )
-        consecutivo += 1
-
-    folio = armar_folio(consecutivo, fila.tipo, fila.fecha_usuario)
-    db(db.poliza.id == id).update(
+    folio = armar_folio(consecutivo+1, tipo, periodo.fecha_inicio)
+    id = db(db.poliza.id == id).update(
             folio = folio,
             tipo=tipo,
             folio_externo=folio_externo,
