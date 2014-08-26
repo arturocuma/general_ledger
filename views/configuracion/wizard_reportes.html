@@ -1,6 +1,29 @@
 {{extend 'layout.html'}}
 
 <link href="{{=URL('static', 'chosen/chosen.css')}}" rel="stylesheet">
+<script>
+    $(function() {
+        
+        /*
+        $('#sel_tipo_cuentas').on('change', function (e) {
+
+            tipo_cuentas=$(this).val();
+            if (tipo_cuentas!='0'){
+                //$( "#div_cat_cuentas" ).load( '{{=URL('ul_list2')}}', { tipo_cuentas: tipo_cuentas });
+            }
+        });
+
+        $(document).ready(function(){
+            $('tr')
+            .filter(function() {
+                return this.id.match(/\d./);
+            }).hide();
+
+        });
+        */
+});
+
+</script>
 <style>
 
 table > tbody > tr:hover{
@@ -21,8 +44,8 @@ table > tbody > tr:hover{
         <legend>
             <h1>
                 <p>
-                    <i class="fa-fw fa  fa-usd"></i>
-                    Estado de resultados
+                    <i class="fa fa-book"></i>
+                    Wizard de Reportes
                 </p>
             </h1>
         </legend>
@@ -37,7 +60,7 @@ table > tbody > tr:hover{
          <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
             <header>
                <span class="widget-icon"> <i class="fa fa-cog txt-color-darken"></i> </span>
-               <h2>Configuración del Reporte: Estado de Resultados</h2>
+               <h2>Configuración del Reporte:</h2>
             </header>
             <!-- widget div-->
             <div class="no-padding">
@@ -60,18 +83,18 @@ table > tbody > tr:hover{
                                     {{=msg}}
                                  </div>
                                  <div class="table">
-                                    <div class="fila"  style="display:None">
+                                    <div class="fila">
                                        <div class="cell">
                                           Nombre del reporte:
                                        </div>
                                        <div class="cell">
-                                          <input name="nombre_reporte" value="estado_resultados" type="text" style="width:450px;"
+                                          <input name="nombre_reporte" type="text" style="width:450px;"
                                           >
                                        </div> 
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para la sección de Ingresos:
+                                          Etiqueta para la primer sección:
                                        </div>
                                        <div class="cell">
                                           <input name="etiqueta_1" type="text" style="width:450px;">
@@ -79,7 +102,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de la sección de Ingresos:
+                                          Cuentas de la primer sección:
                                        </div>   
                                        <div class="cell">
                                           <select name="cuentas_1" data-placeholder="Eija la cuenta" style="width:450px;" multiple class="chosen-select">
@@ -93,7 +116,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para la sección de Costos:
+                                          Etiqueta para la segunda sección:
                                        </div>
                                        <div class="cell">
                                           <input name="etiqueta_2" type="text" style="width:450px;"
@@ -102,7 +125,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de la sección de Costos:
+                                          Cuentas de la segunda sección:
                                        </div>
                                        <div class="cell">    
                                           <select name="cuentas_2" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
@@ -116,7 +139,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para la sección de Gastos Generales:
+                                          Etiqueta para la tercer sección:
                                        </div>
                                        <div class="cell">
                                           <input name="etiqueta_3" type="text" style="width:450px;"
@@ -125,7 +148,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de la sección de Gastos Generales:
+                                          Cuentas de la tercer sección:
                                        </div>
                                        <div class="cell">    
                                           <select name="cuentas_3" data-placeholder="Elija la cuenta" style="width:450px;" multiple class="chosen-select">
@@ -139,7 +162,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para la sección de Otros Ingresos y Gastos:
+                                          Etiqueta para la cuarta sección:
                                        </div>
                                        <div class="cell">
                                           <input name="etiqueta_4" type="text" style="width:450px;"
@@ -148,7 +171,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de la sección de Otros Ingresos y Gastos:
+                                          Cuentas de la cuarta sección:
                                        </div>  
                                        <div class="cell">
                                           <select name="cuentas_4"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
@@ -162,7 +185,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Etiqueta para la sección de Impuestos:
+                                          Etiqueta para la quinta sección:
                                        </div>
                                        <div class="cell">
                                           <input name="etiqueta_5" type="text" style="width:450px;"
@@ -171,7 +194,7 @@ table > tbody > tr:hover{
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
-                                          Cuentas de la sección de Impuestos:
+                                          Cuentas de la quinta sección:
                                        </div>
                                        <div class="cell">
                                           <select name="cuentas_5"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
@@ -181,7 +204,30 @@ table > tbody > tr:hover{
                                              </option>    
                                              {{pass}}
                                           </select>
+                                       </div>   
+                                    </div> 
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Etiqueta para la sexta sección:
                                        </div>
+                                       <div class="cell">
+                                          <input name="etiqueta_6" type="text" style="width:450px;"
+                                          >
+                                       </div> 
+                                    </div>
+                                    <div class="fila">
+                                       <div class="cell">
+                                          Cuentas de la sexta sección:
+                                       </div>
+                                       <div class="cell">
+                                          <select name="cuentas_6"  style="width:450px;" data-placeholder="Elija la cuenta" multiple class="chosen-select">
+                                             {{for cc in cc_empresa:}}
+                                             <option value="{{=cc[3]}}" 
+                                                >{{=cc[0]+' '+cc[1]}}        
+                                             </option>    
+                                             {{pass}}
+                                          </select>
+                                       </div>   
                                     </div>
                                     <div class="fila">
                                        <div class="cell">
@@ -190,7 +236,7 @@ table > tbody > tr:hover{
                                           <input type="submit" value="Enviar">
                                        </div>
                                     </div>
-                                 </div>  
+                                 </div>
                               </form>
                            </ul>
                         </div>

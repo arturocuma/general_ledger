@@ -262,10 +262,10 @@ class EmpresaDB(object):
             Field('clave', 'string', writable=False),
             Field('inicio', 'date', requires=IS_DATE()),
             Field('fin', 'date', requires=IS_DATE()),
-            Field('estatus', 'boolean', default=True),
+            Field('estatus', 'integer', default=1),
             Field('anio_id', 'reference anio'),
             Field('mes_id', 'reference mes'),
-            Field('consecutivo', 'string', default=0, readable=False, writable=False),
+            Field('consecutivo', 'integer', default=0, readable=False, writable=False),
         )
 
         db.define_table('poliza',
