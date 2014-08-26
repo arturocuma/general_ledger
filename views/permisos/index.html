@@ -1,7 +1,71 @@
 {{extend 'layout.html'}}
-
-{{include 'botones.html'}}
-
-<div id="stylized" class="myform">
-    {{=usuarios}}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <legend>
+            <h1>
+                <p>
+                    <i class="fa-fw fa fa-group"></i>
+                    Usuarios de {{=razon_social.razon_social}}
+                </p>
+                <small>Listado de usuarios</small>
+            </h1>
+        </legend>
+    </div>
 </div>
+<section id="widget-grid" class="">
+	<!-- row -->
+	<div class="row">
+		<article class="col-sm-12">
+			<!-- new widget -->
+			<div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false"  data-widget-colorbutton="false" data-widget-deletebutton="false">
+				<header>
+					<span class="widget-icon"> <i class="fa fa-group txt-color-darken"></i> </span>
+					<h2>Usuarios de {{=razon_social.razon_social}}</h2>
+				</header>
+				<!-- widget div-->
+				<div>					
+					<div class="jarviswidget-editbox"><!-- widget edit box -->
+						<!-- This area used as dropdown edit box -->
+					</div>
+					<!-- end widget edit box -->
+					<!-- widget content -->
+					<div class="widget-body no-padding">						
+						<div class="widget-body-toolbar">
+						</div>
+						<div class="table-responsive">
+							<table class="table table-striped table-bordered table-hover DT-estandar">
+								<thead>
+									<tr>
+										<th>ID</th>
+										<th>Nombre</th>
+										<th>Apelldos</th>
+										<th>Correo</th>
+									</tr>
+								</thead>
+								<tbody>
+									{{for u in usuarios:}}
+										<tr>
+											<td>{{=u.auth_user.id}}</td>
+											<td>{{=u.auth_user.first_name}}</td>
+											<td>{{=u.auth_user.last_name}}</td>
+											<td>{{=u.auth_user.email}}</td>
+										</tr>
+									{{pass}}
+								</tbody>
+							</table>
+						</div>
+					</div>
+			</div>
+			<!-- end widget -->
+		</article>
+	</div>
+<!-- end row -->
+</section>
+<!-- end widget grid -->
+<script>
+	  $(document).ready(function() {
+			
+			pageSetUp();
+
+		});
+</script>

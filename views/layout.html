@@ -573,11 +573,18 @@ header,h1,h2,h3,h4{
 				-->
 
 				<ul>
-					<li class="">
+					<li class="">					
+						{{if session.instancias:}}
+						<a href="{{=URL('default','empresa')}}">
+							<i class="fa fa-lg fa-fw fa-home"></i>
+							<span class="menu-item-parent">Home</span>
+						</a>
+						{{else:}}
 						<a href="{{=URL('default','index')}}">
 							<i class="fa fa-lg fa-fw fa-home"></i>
 							<span class="menu-item-parent">Home</span>
 						</a>
+						{{pass}}
 					</li>
 					<li>
 						<a href="javascript:void();">
@@ -752,11 +759,11 @@ header,h1,h2,h3,h4{
 		-->
 		<div id="shortcut">
 			<ul>
-				<li>
+				<!--<li>
 					<a href="#calendar.html" class="jarvismetro-tile big-cubes bg-color-orangeDark"> <span class="iconbox"> <i class="fa fa-calendar fa-4x"></i> <span>Calendario</span> </span> </a>
-				</li>
+				</li>-->
 				<li>
-					<a href="javascript:void(0);" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Mi Pérfil </span> </span> </a>
+					<a href="{{=URL('default','user/profile')}}" class="jarvismetro-tile big-cubes selected bg-color-pinkDark"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Mi Pérfil </span> </span> </a>
 				</li>
 			</ul>
 		</div>
@@ -852,6 +859,111 @@ header,h1,h2,h3,h4{
 		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/media/js/TableTools.min.js')}}"></script>
 		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/DT_bootstrap.js')}}"></script>
 		<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/jquery.dataTables-cust.min.js')}}"></script>
+
+		<script type="text/javascript">
+		$(document).ready(function(){
+			/*
+			 * BASIC
+			 */
+			$('.DT-estandar').dataTable({
+				"oLanguage": {
+			      	"sProcessing":     "Procesando...",
+				    "sLengthMenu":     "_MENU_",
+				    "sZeroRecords":    "No se encontraron resultados",
+				    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+				    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+				    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+				    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+				    "sInfoPostFix":    "",
+				    "sUrl":            "",
+				    "sInfoThousands":  ",",
+				    "sLoadingRecords": "Cargando...",
+				    "oPaginate": {
+				        "sFirst":    "Primero",
+				        "sLast":     "Último",
+				        "sNext":     "Siguiente",
+				        "sPrevious": "Anterior"
+				    },
+				    "oAria": {
+				        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+				        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+				    }
+			    },
+			    "bSortCellsTop":true,
+				"sPaginationType" : "bootstrap_full",
+                "aLengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "Todos"]],
+                "iDisplayLength":50
+			});
+	
+			/* END BASIC */
+	
+			/* Add the events etc before DataTables hides a column */
+			$("#datatable_fixed_column thead input").keyup(function() {
+				oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(oTable.fnSettings(), $("thead input").index(this)));
+			});
+	
+			$("#datatable_fixed_column thead input").each(function(i) {
+				this.initVal = this.value;
+			});
+			$("#datatable_fixed_column thead input").focus(function() {
+				if (this.className == "search_init") {
+					this.className = "";
+					this.value = "";
+				}
+			});
+			$("#datatable_fixed_column thead input").blur(function(i) {
+				if (this.value == "") {
+					this.className = "search_init";
+					this.value = this.initVal;
+				}
+			});		
+			
+	
+			var oTable = $('#datatable_fixed_column').dataTable({
+				"sDom" : "<'dt-top-row'><'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+				//"sDom" : "t<'row dt-wrapper'<'col-sm-6'i><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'>>",
+				"oLanguage" : {
+					"sSearch" : "Search all columns:"
+				},
+				"bSortCellsTop" : true
+			});		
+			
+	
+	
+			/*
+			 * COL ORDER
+			 */
+			$('#datatable_col_reorder').dataTable({
+				"sPaginationType" : "bootstrap",
+				"sDom" : "R<'dt-top-row'Clf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+				"fnInitComplete" : function(oSettings, json) {
+					$('.ColVis_Button').addClass('btn btn-default btn-sm').html('Columns <i class="icon-arrow-down"></i>');
+				}
+			});
+			
+			/* END COL ORDER */
+	
+			/* TABLE TOOLS */
+			$('#datatable_tabletools').dataTable({
+				"sDom" : "<'dt-top-row'Tlf>r<'dt-wrapper't><'dt-row dt-bottom-row'<'row'<'col-sm-6'i><'col-sm-6 text-right'p>>",
+				"oTableTools" : {
+					"aButtons" : ["copy", "print", {
+						"sExtends" : "collection",
+						"sButtonText" : 'Save <span class="caret" />',
+						"aButtons" : ["csv", "xls", "pdf"]
+					}],
+					"sSwfPath" : "js/plugin/datatables/media/swf/copy_csv_xls_pdf.swf"
+				},
+				"fnInitComplete" : function(oSettings, json) {
+					$(this).closest('#dt_table_tools_wrapper').find('.DTTT.btn-group').addClass('table_tools_group').children('a.btn').each(function() {
+						$(this).addClass('btn-sm btn-default');
+					});
+				}
+			});
+		
+		/* END TABLE TOOLS */
+		});
+		</script>
 
 		<!-- Your GOOGLE ANALYTICS CODE Below -->
 		<script type="text/javascript">
