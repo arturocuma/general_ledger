@@ -573,11 +573,18 @@ header,h1,h2,h3,h4{
 				-->
 
 				<ul>
-					<li class="">
+					<li class="">					
+						{{if session.instancias:}}
+						<a href="{{=URL('default','empresa')}}">
+							<i class="fa fa-lg fa-fw fa-home"></i>
+							<span class="menu-item-parent">Home</span>
+						</a>
+						{{else:}}
 						<a href="{{=URL('default','index')}}">
 							<i class="fa fa-lg fa-fw fa-home"></i>
 							<span class="menu-item-parent">Home</span>
 						</a>
+						{{pass}}
 					</li>
 					<li>
 						<a href="javascript:void();">
