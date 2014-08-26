@@ -257,13 +257,19 @@ class EmpresaDB(object):
             format='%(nombre)s'
         )
 
+        db.define_table('estatus_periodo',
+            Field('nombre', 'string'),
+            format='%(nombre)s',
+        )
+
         db.define_table('periodo',
+            historico,
             Field('clave', 'string', writable=False),
             Field('inicio', 'date', requires=IS_DATE()),
             Field('fin', 'date', requires=IS_DATE()),
-            Field('estatus', 'integer', default=1),
-            Field('anio', 'reference anio'),
-            Field('mes', 'reference mes'),
+            Field('estatus_periodo_id', 'reference estatus_periodo', default=1),
+            Field('anio_id', 'reference anio'),
+            Field('mes_id', 'reference mes'),
             Field('consecutivo', 'integer', default=0, readable=False, writable=False),
         )
 
@@ -278,7 +284,7 @@ class EmpresaDB(object):
                 represent = lambda value, row: calcula_importe(row.id) or 0.0
                 ),
             Field('folio_externo', 'string', label='Folio Externo'),
-            Field('periodo', 'reference periodo'),
+            Field('periodo_id', 'reference periodo'),
             Field('fecha_usuario', 'date', label='Fecha de Póliza')
         )
         db.poliza.id.label='#Póliza'

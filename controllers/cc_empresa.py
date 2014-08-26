@@ -394,6 +394,12 @@ def wiz_cc():
         db.executesql('alter sequence mes_id_seq restart with 1')
         db.anio.insert(numero = date.today().year)
 
+        db(db.estatus_periodo).delete()
+        db.executesql('alter sequence estatus_periodo_id_seq restart with 1')
+        db.estatus_periodo.insert(nombre = 'ABIERTO')
+        db.estatus_periodo.insert(nombre = 'CERRADO')
+        db.estatus_periodo.insert(nombre = 'ACTUAL')
+
         db(db.cc_vista).delete()
         db.executesql('alter sequence cc_vista_id_seq restart with 1')
         db.cc_vista.insert(nombre = 'ACUMULATIVA')
