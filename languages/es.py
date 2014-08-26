@@ -1,4 +1,4 @@
-# coding: utf-8
+# coding: utf8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -358,6 +358,7 @@
 'New Record': 'Registro nuevo',
 'new record inserted': 'nuevo registro insertado',
 'New Search': 'New Search',
+'Next': 'Next',
 'next %s rows': 'next %s rows',
 'next 100 rows': '100 filas siguientes',
 'Nivel': 'Nivel',
@@ -407,6 +408,7 @@
 'Polizas': 'Polizas',
 'Powered by': 'Este sitio usa',
 'Preface': 'Prefacio',
+'Previous': 'Previous',
 'previous %s rows': 'previous %s rows',
 'previous 100 rows': '100 filas anteriores',
 'Print invoice': 'Print invoice',

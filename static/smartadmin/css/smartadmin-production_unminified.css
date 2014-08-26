@@ -12158,6 +12158,7 @@ textarea.clone {
 /* Mobile Phones */
 @media screen and (max-width: 450px) and (max-width: 767px) {
   /* SmallBox Responsive */
+  .dt-wrapper{overflow-x:scroll;}
   #divSmallBoxes {
     position: fixed;
     width: 90%;

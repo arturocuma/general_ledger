@@ -261,10 +261,6 @@ db_maestro.define_table('proveedor_banco',
     format='%(banco_id)s %(cuenta)s'
     )
 
-auth.settings.extra_fields['auth_user']= [
-    Field('empleado_id', 'reference empleado', requires=IS_NULL_OR(IS_IN_DB(db_maestro, 'empleado.id', '%(nombre)s %(ap_paterno)s %(ap_materno)s'))),
-    ]
-
 auth.define_tables(username=False, signature=False)
 db_maestro.auth_user._format = '%(first_name)s %(last_name)s (%(email)s)'
 ## auth.settings.everybody_group_id = 1 ##asignar a nuevos usuarios a un grupo por default 1=ADMIN, 2=BASICO, 3=ETC
