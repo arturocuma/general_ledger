@@ -25,8 +25,6 @@ def index():
 
     #if request.vars:
     if form.process().accepted:
-        
-        print form.vars
 
         form.vars.anio_id = obtener_id_anio(form.vars.anio)
         form.vars.mes_id = obtener_id_mes(form.vars.mes)
