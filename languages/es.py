@@ -1,4 +1,4 @@
-# coding: utf-8
+# -*- coding: utf-8 -*-
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -218,6 +218,7 @@
 'enter a value': 'introduzca un valor',
 'Enter an integer between %(min)g and %(max)g': 'Enter an integer between %(min)g and %(max)g',
 'enter an integer between %(min)g and %(max)g': 'introduzca un entero entre %(min)g y %(max)g',
+'Enter an integer greater than or equal to %(min)g': 'Enter an integer greater than or equal to %(min)g',
 'enter date and time as %(format)s': 'introduzca fecha y hora como %(format)s',
 'Enviar': 'Enviar',
 'Error al eliminar las cuentas de costos': 'Error al eliminar las cuentas de costos',
@@ -301,8 +302,8 @@
 'invalid ticket': 'tiquete inválido',
 'IP del Cliente': 'IP del Cliente',
 'Is Active': 'Está Activo',
-'json': 'json',
 'JSON': 'JSON',
+'json': 'json',
 'JSON export of visible columns': 'JSON export of visible columns',
 'Key': 'Llave',
 'language file "%(filename)s" created/updated': 'archivo de lenguaje "%(filename)s" creado/actualizado',
