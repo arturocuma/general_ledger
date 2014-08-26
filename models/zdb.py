@@ -257,12 +257,17 @@ class EmpresaDB(object):
             format='%(nombre)s'
         )
 
+        db.define_table('estatus_periodo',
+            Field('nombre', 'string'),
+            format='%(nombre)s',
+        )
+
         db.define_table('periodo',
             historico,
             Field('clave', 'string', writable=False),
             Field('inicio', 'date', requires=IS_DATE()),
             Field('fin', 'date', requires=IS_DATE()),
-            Field('estatus', 'integer', default=1),
+            Field('estatus_periodo_id', 'reference estatus_periodo', default=1),
             Field('anio_id', 'reference anio'),
             Field('mes_id', 'reference mes'),
             Field('consecutivo', 'integer', default=0, readable=False, writable=False),

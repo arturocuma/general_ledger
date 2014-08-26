@@ -11,6 +11,7 @@ def index(): return dict(message="hello from poliza.py")
 
 def listar():
     """
+    Crea un objeto `smartgrid` para editar las pólizas
     """
 
     db.asiento.cc_empresa_id.represent = lambda value, row: \
@@ -277,8 +278,13 @@ def agregar_poliza():
 
     periodo = db(db.periodo.id == periodo_id).select(
             db.periodo.consecutivo,
-            db.periodo.inicio
+            db.periodo.inicio,
+            db.periodo.estatus_periodo_id
             ).first()
+
+    print '<<<<<<<<<<<<<<<<<<'
+    print periodo
+    print '>>>>>>>>>>>>>>>>>>'
 
     consecutivo_actual = periodo.consecutivo
 
@@ -374,15 +380,15 @@ def actualiza_tipo_poliza():
         })
 
     # reducir el código aquí
-    fila = db(db.poliza.id == id).select(
-            db.poliza.folio,
-            db.poliza.tipo,
-            db.poliza.creada_en,
-            ).first()
+    #fila = db(db.poliza.id == id).select(
+    #        db.poliza.folio,
+    #        db.poliza.tipo,
+    #        db.poliza.creada_en,
+    #        ).first()
 
-    consecutivo = int(fila.folio[2:8])
-    folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
-    db(db.poliza.id == id).update(folio = folio)
+    #consecutivo = int(fila.folio[2:8])
+    #folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
+    #db(db.poliza.id == id).update(folio = folio)
     # fin-reducir el código aquí
 
     return folio
