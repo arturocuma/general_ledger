@@ -16,16 +16,37 @@ def index():
     Habrá un botón para crear, un filtro y así
     """
 
-    query = (db.periodo.anio == db.anio.id) &\
-            (db.periodo.anio == db.mes.id)
+    campos = [
+        Field('anio', 'integer', label='Año'),
+        Field('mes', requires = IS_IN_DB(db, 'mes.nombre'), label='Mes'),
+    ]
 
-    periodos = db(query).select(
-            db.periodo.ALL
-            )
+    form = SQLFORM.factory(*campos)
 
-    periodos = SQLFORM.grid(db.periodo)
+    #if request.vars:
+    if form.process().accepted:
 
-    return dict(periodos=periodos)
+        form.vars.anio_id = obtener_id_anio(form.vars.anio)
+        form.vars.mes_id = obtener_id_mes(form.vars.mes)
+
+        cadena = '{}{}'.format(form.vars.anio, form.vars.mes)
+        fecha = datetime.strptime(cadena, "%Y%B").date()
+
+        # crear un form.vars.clave
+        form.vars.inicio = date(fecha.year, fecha.month, 1)
+        ultimo_dia = calendar.monthrange(fecha.year, fecha.month)[1]
+        form.vars.fin = date(fecha.year, fecha.month, ultimo_dia)
+
+        periodo_id = db.periodo.insert(
+                **db.periodo._filter_fields(form.vars)
+                )
+
+    elif form.errors:
+        print form.errors
+    else:
+        pass
+
+    return dict(form=form)
 
 
 def listar():
@@ -33,8 +54,8 @@ def listar():
     Crear archivo JSON de los periodos contables
     """
 
-    query = (db.periodo.anio == db.anio.id) &\
-            (db.periodo.anio == db.mes.id)
+    query = (db.periodo.anio_id == db.anio.id) &\
+            (db.periodo.mes_id == db.mes.id)
 
     periodos = db(query).select(
             db.periodo.id.with_alias('id'),
@@ -72,9 +93,8 @@ def iniciar():
     """
 
     hoy = date.today()
-
-    anio = obtener_id_anio(hoy.strftime('%Y'))
-    mes = obtener_id_mes(hoy.strftime('%B').upper())
+    anio_id = obtener_id_anio(hoy.strftime('%Y'))
+    mes_id = obtener_id_mes(hoy.strftime('%B').upper())
 
     inicio = date(hoy.year, hoy.month, 1)
     ultimo_dia = calendar.monthrange(hoy.year, hoy.month)[1]
@@ -83,8 +103,16 @@ def iniciar():
     db.periodo.insert(
             inicio = inicio,
             fin = fin,
-            anio = anio,
-            mes = mes,
+            anio_id = anio_id,
+            mes_id = mes_id,
             estatus = True,
             consecutivo = 0
             )
+
+def crear():
+    """
+    Similar a `iniciar`,
+    Crea un formulario para insertar un periodo
+    """
+
+    return dict(form=form)
