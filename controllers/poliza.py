@@ -1,6 +1,6 @@
 # coding: utf8
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
-
+import csv
 from datetime import datetime
 
 empresa_id = session.instancias
@@ -389,3 +389,96 @@ def carga_tipo_poliza():
             for r in resultado]
 
     return dumps(diccionario)
+
+def validar_periodo(fecha_usuario):
+    periodo = db(
+                (db.periodo.inicio <=fecha_usuario) &
+                (db.periodo.fin >=fecha_usuario) &
+                (db.periodo.estatus != 3)).select(
+            db.periodo.ALL,
+        ).first()
+    if periodo:
+        activo=True
+    else:
+        activo=False
+    return activo
+
+def importar_polizas():
+    tipo_msg='error'
+    tipo = type(request.vars.csv_saldo_inicial)
+    if type(request.vars.csv_saldo_inicial)!='str' and request.vars:
+        tipo = type(request.vars.csv_saldo_inicial)
+        file = request.vars.csv_saldo_inicial.file
+        reader = csv.reader(file)
+        campos=['poliza_id','cc_empresa_id', 'concepto_asiento','debe', 'haber']
+        for row in reader:
+            folio_externo=row[0]
+            tipo_poliza=int(row[1])
+            fecha_poliza=row[2]
+            concepto_general=row[3]
+            estatus = validar_periodo(fecha_poliza)
+            if not estatus:
+                msg = 'El periodo de la fecha '+fecha_poliza+' de la póliza '+folio_externo +' no se encuentra activo'
+                break
+            else:
+                poliza = db(db.poliza.folio_externo==folio_externo).select(db.poliza.ALL).first()
+                validacion_poliza=True
+                if not poliza:
+                    try:
+                        poliza_id = agregar_poliza_csv(folio_externo, tipo_poliza, fecha_poliza, concepto_general)
+                    except:
+                        msg = 'Error al insertar la póliza. Verifique el formato del archivo CSV'
+                        validacion_poliza=False
+                        db.rollback()
+                    else:
+                        db.commit()
+                else:
+                    poliza_id = poliza.id
+                print "Termina poliza_id "+str(poliza_id)
+                if validacion_poliza:
+                    num_cc=row[4]
+                    concepto=row[5]
+                    debe=float(row[6])
+                    haber=float(row[7])
+                    cc=db(db.cc_empresa.num_cc==num_cc).select(db.cc_empresa.id).first()
+                    if not cc:
+                        msg= 'El número de cuenta '+num_cc+' no existe'
+                    else:
+                        valores=[]
+                        valores.append(poliza_id)
+                        valores.append(int(cc.id))
+                        valores.append(concepto)
+                        valores.append(debe)
+                        valores.append(haber)
+                        msg= 'Error al insertar los asientos'
+                        dictionary = dict(zip(campos, valores))
+                        db[db.asiento].insert(**dictionary)
+                        tipo_msg='exito'
+                        msg= 'Polizas guardadas'
+    else:
+        tipo_msg='info'
+        msg= 'Elija un archivo para subir'
+    return dict(tipo_msg=tipo_msg,msg=msg)
+
+def agregar_poliza_csv(folio_externo, tipo, fecha_usuario, concepto_general):
+    """
+    Agrega un elemento a la tabla `póliza`
+    """
+    periodo = db(
+                (db.periodo.inicio <=fecha_usuario)&
+                (db.periodo.fin >=fecha_usuario)).select(
+            db.periodo.ALL,
+        ).first()
+    
+    db(db.periodo.id == periodo.id).update(
+                consecutivo = periodo.consecutivo+1
+                )
+    folio = armar_folio(periodo.consecutivo+1, tipo, periodo.inicio)
+    id = db.poliza.insert(
+            folio = folio,
+            tipo=tipo,
+            folio_externo=folio_externo,
+            fecha_usuario=fecha_usuario,
+            concepto_general=concepto_general
+                )
+    return id
