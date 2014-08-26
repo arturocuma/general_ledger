@@ -313,10 +313,6 @@ class EmpresaDB(object):
             format='%(cc_empresa_id)s'
             )
 
-        db.define_table('misc',
-            Field('consecutivo_polizas', 'integer'),
-        )
-
         return db
 
 

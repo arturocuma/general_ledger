@@ -365,40 +365,59 @@ def cat_cuentas_personal(empresa_id,archivo):
     return
 
 def wiz_cc():
+        
+        from datetime import date
     #db_ = db_maestro
         empresa_id = request.vars.empresa_id
-        db_ = empresas.dbs[int(empresa_id)]
+        db = empresas.dbs[int(empresa_id)]
         msg=""
     #try:
-        tabla = db_['cc_empresa']
+        tabla = db['cc_empresa']
         cc_preconf = request.vars.cc_preconf
-        db_(db_.cc_vista).delete()
-        db_.executesql('alter sequence cc_vista_id_seq restart with 1')
-        db_.cc_vista.insert(nombre = 'ACUMULATIVA')
-        db_.cc_vista.insert(nombre = 'DETALLE')
+
+        db(db.mes).delete()
+        db.executesql('alter sequence mes_id_seq restart with 1')
+        db.mes.insert(nombre = 'ENERO')
+        db.mes.insert(nombre = 'FEBRERO')
+        db.mes.insert(nombre = 'MARZO')
+        db.mes.insert(nombre = 'ABRIL')
+        db.mes.insert(nombre = 'MAYO')
+        db.mes.insert(nombre = 'JUNIO')
+        db.mes.insert(nombre = 'JULIO')
+        db.mes.insert(nombre = 'AGOSTO')
+        db.mes.insert(nombre = 'SEPTIEMBRE')
+        db.mes.insert(nombre = 'OCTUBRE')
+        db.mes.insert(nombre = 'NOVIEMBRE')
+        db.mes.insert(nombre = 'DICIEMBRE')
+
+        db(db.anio).delete()
+        db.executesql('alter sequence mes_id_seq restart with 1')
+        db.anio.insert(numero = date.today().year)
+
+        db(db.cc_vista).delete()
+        db.executesql('alter sequence cc_vista_id_seq restart with 1')
+        db.cc_vista.insert(nombre = 'ACUMULATIVA')
+        db.cc_vista.insert(nombre = 'DETALLE')
     
-        db_(db_.cc_naturaleza).delete()
-        db_.executesql('alter sequence cc_naturaleza_id_seq restart with 1')
-        db_.cc_naturaleza.insert(nombre = 'ACREEDORA')
-        db_.cc_naturaleza.insert(nombre = 'DEUDORA')
-        db_.cc_naturaleza.insert(nombre = 'CAPITAL')
-        db_.cc_naturaleza.insert(nombre = 'RESULTADO')
+        db(db.cc_naturaleza).delete()
+        db.executesql('alter sequence cc_naturaleza_id_seq restart with 1')
+        db.cc_naturaleza.insert(nombre = 'ACREEDORA')
+        db.cc_naturaleza.insert(nombre = 'DEUDORA')
+        db.cc_naturaleza.insert(nombre = 'CAPITAL')
+        db.cc_naturaleza.insert(nombre = 'RESULTADO')
     
-        db_(db_.tipo_poliza).delete()
-        db_.executesql('alter sequence tipo_poliza_id_seq restart with 1')
-        db_.tipo_poliza.insert(nombre = 'INGRESO')
-        db_.tipo_poliza.insert(nombre = 'EGRESO')
-        db_.tipo_poliza.insert(nombre = 'DIARIO')
+        db(db.tipo_poliza).delete()
+        db.executesql('alter sequence tipo_poliza_id_seq restart with 1')
+        db.tipo_poliza.insert(nombre = 'INGRESO')
+        db.tipo_poliza.insert(nombre = 'EGRESO')
+        db.tipo_poliza.insert(nombre = 'DIARIO')
         
-        db_(db_.misc).delete()
-        db_.executesql('alter sequence misc_id_seq restart with 1')
-        db_.misc.insert(consecutivo_polizas = 0)
-    
-        db_(db_.estatus_poliza).delete()
-        db_.executesql('alter sequence estatus_poliza_id_seq restart with 1')
-        db_.estatus_poliza.insert(nombre = 'EN  REVISIÓN')
-        db_.estatus_poliza.insert(nombre = 'REVISADA')
-        db_.estatus_poliza.insert(nombre = 'APLICADA')
+        db(db.estatus_poliza).delete()
+        db.executesql('alter sequence estatus_poliza_id_seq restart with 1')
+        db.estatus_poliza.insert(nombre = 'EN REVISIÓN')
+        db.estatus_poliza.insert(nombre = 'REVISADA')
+        db.estatus_poliza.insert(nombre = 'APLICADA')
+
         #cc_preconf = '1'
         if type(request.vars.csvfile) != str:
         #f request.vars.csvfile!=None:
@@ -417,7 +436,7 @@ def wiz_cc():
                     num_cc_i = num_cc[::-1]
                     ultimo_punto = num_cc_i.find(".")
                     num_cc = num_cc[:-(ultimo_punto+1)]
-                    padre_id = int(db_(tabla.num_cc == num_cc).select().first().id)
+                    padre_id = int(db(tabla.num_cc == num_cc).select().first().id)
                 else:
                     padre_id = None
         
