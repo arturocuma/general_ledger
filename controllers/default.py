@@ -462,10 +462,8 @@ def cookieDelete():
 def login():
     from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
     auth = Auth(db_maestro)
-
-    #auth.settings.login_form=GoogleAccount()
     form = auth.login()
-
+    form.add_button(T('Register'),URL('default','user/register'),_class='btn')
     return dict(form=form)
 
 
@@ -542,11 +540,6 @@ def index():
     else:
         # the user is not logged
         mias = ''
-        compartidas = ''
-        from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-        auth2 = Auth(db_maestro)
+        compartidas = ''        
 
-        #auth.settings.login_form=GoogleAccount()
-        login = auth2.login()
-
-    return dict(mias=mias, compartidas=compartidas, login=login)
+    return dict(mias=mias, compartidas=compartidas)
