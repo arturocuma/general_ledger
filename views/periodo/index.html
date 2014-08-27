@@ -159,7 +159,7 @@ $(document).ready(function(){
         }, function(ButtonPressed) {
             if (ButtonPressed === "Si") {
                 $.ajax({
-                        data:  { periodo_id : $(this).data('id') },
+                        data:  { periodo_id : row },
                         url:   url,
                         type:  'post',
                         success:  function (response) {
