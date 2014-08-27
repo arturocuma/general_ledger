@@ -157,14 +157,10 @@ def verificar_estatus_periodo():
     """
     Función auxiliar
     """
-    if request.vars.id:
-        print 'vars'
-        print request.vars
-        estatus = obtener_estatus_periodo(request.vars.id)
+    if request.vars.id_poliza:
+        estatus = obtener_estatus_periodo(request.vars.id_poliza)
     else:
-        print 'args'
-        print request.args
-        poliza_id = request.args(-1)
+        poliza_id = request.vars.id_asiento
         id = db(db.poliza.id == poliza_id).select(
                 db.poliza.periodo_id
                 ).first().periodo_id

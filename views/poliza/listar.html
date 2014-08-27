@@ -22,10 +22,14 @@ $(document).ready(function(){
 
     cuadrarPoliza();
 
-    $.getJSON("{{=URL('verificar_estatus_periodo', vars={'id': request.vars.id})}}", function(json) {
-        $.each(json, function(index, value) {
+    {{if request.vars.id:}}
+        {{url = URL('verificar_estatus_periodo', vars={'id_poliza': request.vars.id})}}
+    {{else:}}
+        {{url = URL('verificar_estatus_periodo', vars={'id_asiento': request.args(-1)})}}
+    {{pass}}
 
-            console.log(value);
+    $.getJSON("{{=url}}", function(json) {
+        $.each(json, function(index, value) {
 
             /* inicio: validación de periodo */
             if (value != "CERRADO") {
