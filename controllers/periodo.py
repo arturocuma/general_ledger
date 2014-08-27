@@ -18,7 +18,7 @@ def index():
 
     campos = [
         Field('anio', 'integer', label='Año'),
-        Field('mes', requires = IS_IN_DB(db, 'mes.nombre'), label='Mes'),
+        Field('mes', requires = IS_IN_DB(db, 'mes.nombre',orderby='mes.id',zero='Selecciona mes'), label='Mes'),
     ]
 
     form = SQLFORM.factory(*campos)
