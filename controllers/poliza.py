@@ -1,7 +1,8 @@
 # coding: utf8
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 import csv
-from datetime import datetime
+from json import dumps
+from datetime import datetime, date
 
 empresa_id = session.instancias
 db = empresas.dbs[int(empresa_id)]
@@ -78,6 +79,15 @@ def listar():
 
     query = db.poliza.periodo_id == request.vars.id
 
+    if request.vars.id:
+        periodo = obtener_estatus_periodo(request.vars.id)
+    else:
+        poliza_id = request.args(-1)
+        id = db(db.poliza.id == poliza_id).select(
+                db.poliza.periodo_id
+                ).first().periodo_id
+        periodo = obtener_estatus_periodo(id)
+
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
@@ -85,7 +95,7 @@ def listar():
             constraints = dict(poliza=query),
             #selectable=selectable,
             #deletable=auth.has_permission('delete_poliza') or False,
-            deletable=True,
+            deletable=True if periodo != 'CERRADO' else False,
             searchable=False,
             editable=False,
             details=False,
@@ -118,7 +128,9 @@ def listar():
                     args=["poliza", request.args(-1)]
                     )
                 )
-        polizas[2].insert(-1, boton_agregar_asiento)
+
+        if periodo != 'CERRADO':
+            polizas[2].insert(-1, boton_agregar_asiento)
 
         polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
 
@@ -133,9 +145,22 @@ def listar():
                     vars={'id':request.vars.id}
                     )
                 )
-        polizas[2].insert(-1, boton_agregar_poliza)
+
+        if periodo != 'CERRADO':
+            polizas[2].insert(-1, boton_agregar_poliza)
 
     return dict(polizas=polizas)
+
+
+def verificar_estatus_periodo():
+    """
+    Función auxiliar
+    """
+
+    estatus = obtener_estatus_periodo(request.vars.id)
+    diccionario = {'id': estatus}
+
+    return dumps(diccionario, sort_keys=True)
 
 
 def agregar_asiento():
@@ -307,6 +332,7 @@ def agregar_poliza():
             folio = '',
             concepto_general = '',
             importe = 0,
+            fecha_usuario = date.today(),
             periodo_id=periodo_id
             )
 
@@ -380,18 +406,6 @@ def actualiza_tipo_poliza():
         'actualizada_en':datetime.now(),
         'actualizada_por':auth.user['id']
         })
-
-    # reducir el código aquí
-    #fila = db(db.poliza.id == id).select(
-    #        db.poliza.folio,
-    #        db.poliza.tipo,
-    #        db.poliza.creada_en,
-    #        ).first()
-
-    #consecutivo = int(fila.folio[2:8])
-    #folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
-    #db(db.poliza.id == id).update(folio = folio)
-    # fin-reducir el código aquí
 
     return folio
 

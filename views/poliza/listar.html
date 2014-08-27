@@ -2,25 +2,6 @@
 
 <script>
 
-$(function() {
-    $("input[id$=-fecha_usuario]").each(function(){
-
-        $(this).datepicker({ 
-            dateFormat: 'yy-mm-dd',
-            onSelect: function(fecha) { 
-                var id = $(this).attr('id');
-                id = id.replace('-', '.');
-
-                datos = {'value': fecha, 'id': id}
-
-                $.post("{{=URL('actualiza_poliza')}}", datos).success(
-                    function(data){ $(id).html(data); }
-                );
-            }
-        });
-    });
-});
-
 /* cuadrar las cuentas */
 function cuadrarPoliza() {
 
@@ -38,98 +19,100 @@ function cuadrarPoliza() {
 
 $(document).ready(function(){
 
+
     cuadrarPoliza();
 
-    /* Funciones para modificar los valores de los asientos */
-    $.getJSON('{{=URL("carga_cc")}}', function(json) {
+    $.getJSON("{{=URL('verificar_estatus_periodo', vars={'id': request.vars.id})}}", function(json) {
+        $.each(json, function(index, value) {
 
-        var dataArray = [];
+            console.log(value);
 
-        $.each(json, function (index, value) {
-            dataArray.push(value);
+            /* inicio: validación de periodo */
+            if (value != "CERRADO") {
+
+                /* Funciones para modificar los valores de las pólizas */
+                $("input[id$=-fecha_usuario]").each(function(){
+
+                    $(this).datepicker({ 
+                        dateFormat: 'yy-mm-dd',
+                        onSelect: function(fecha) { 
+                            var id = $(this).attr('id');
+                            id = id.replace('-', '.');
+
+                            datos = {'value': fecha, 'id': id}
+
+                            $.post("{{=URL('actualiza_poliza')}}", datos).success(
+                                function(data){ $(id).html(data); }
+                            );
+                        }
+                    });
+                });
+
+                $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator: "Actualizando...",
+                });
+
+                $('.cambiar_tipo').change(function() {
+
+                    var id = $(this).attr('id');
+                    var value = $(this).val();
+                    var datos = {id: id, value:value};
+
+                    $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
+                        id = id.replace('.', '');
+                        id = '#' + id.replace('tipo', 'folio');
+                        $(id).html(data);
+                    });
+                });
+
+                /* Funciones para modificar los valores de los asientos */
+                $.getJSON('{{=URL("carga_cc")}}', function(json) {
+
+                    var dataArray = [];
+
+                    $.each(json, function (index, value) {
+                        dataArray.push(value);
+                    });
+
+                    $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
+                        tooltip: 'Click para editar, ENTER para salvar.',
+                        indicator: 'Actualizando...',
+                    }).click(function() {
+                        $(this).find('input').autocomplete({
+                            source: dataArray
+                        });
+                    });
+                });
+
+                $('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator : "Actualizando...",
+                });
+
+
+                $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator : "Actualizando...",
+                    callback: function (value, settings) {
+                        cuadrarPoliza();
+                    }
+                });
+
+                $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator: "Actualizando...",
+                    callback: function (value, settings) {
+                        cuadrarPoliza();
+                    }
+                });
+            }
+            /* validación de póliza */
+
         });
-
-        $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
-            tooltip: 'Click para editar, ENTER para salvar.',
-            indicator: 'Actualizando...',
-        }).click(function() {
-            $(this).find('input').autocomplete({
-                source: dataArray
-            });
-        });
-    });
-
-    $('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-    });
-
-    $('.cambiar_estatus').change(function() {
-
-        var id = $(this).attr('id');
-        var value = $(this).val();
-        var datos = {id: id, value:value};
-
-        $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
-            $(id).html(data);
-        });
-    });
-
-    $('.cambiar_tipo').change(function() {
-
-        var id = $(this).attr('id');
-        var value = $(this).val();
-        var datos = {id: id, value:value};
-
-        $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
-            id = id.replace('.', '');
-            id = '#' + id.replace('tipo', 'folio');
-            $(id).html(data);
-        });
-    });
-
-    $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-        callback: function (value, settings) {
-            cuadrarPoliza();
-        }
-    });
-
-    $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
-        callback: function (value, settings) {
-            cuadrarPoliza();
-        }
-    });
-
-    /* Funciones para modificar los valores de las pólizas */
-    $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
     });
 
 
-    /*
-    $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
-
-        var dataArray = [];
-
-        $.each(json, function (index, value) {
-            dataArray.push(value);
-        });
-
-        $('.tipo_poliza').editable("{{=URL('poliza', 'actualiza_tipo_poliza')}}",{
-            tooltip: "Click para editar, ENTER para salvar.",
-            indicator : "Actualizando...",
-        }).click(function() {
-            $(this).find('input').autocomplete({
-                source: dataArray
-            });
-        });
-    });
-    */
 
 });
 </script>
