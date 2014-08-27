@@ -87,18 +87,34 @@
                                 <thead>
                                     <tr>
                                         <th style="width:10px;text-align:center;">ID</th>
-                                        <th>Año</th>
                                         <th>Periodo</th>
+                                        <th>Año</th>
                                         <th>Estatus</th>
+                                        <th>Opción</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {{for p in periodos:}}
                                     <tr>
-                                        <td style="width:10px;text-align:center;"><a href="{{=URL('poliza', 'listar',vars=dict(id=p.id))}}">{{=p.id}}</a></td>
-                                        <td>{{=p.numero}}</td>
+                                        <td style="width:10px;text-align:center;">
+                                            <a href="{{=URL('poliza', 'listar',vars=dict(id=p.id))}}">
+                                                <i class="fa fa-paperclip"></i>
+                                                {{=p.id}}
+                                            </a>
+                                        </td>
                                         <td>{{=p.nombre}}</td>
+                                        <td>{{=p.numero}}</td>
                                         <td>{{=XML('Abierto') if p.estatus==1 else XML('Cerrado')}}</td>
+                                        <td>
+                                            <span class="onoffswitch">
+                                                <input id="chk-{{=p.id}}" data-id="{{=p.id}}" class="onoffswitch-checkbox estatus" type="checkbox" name="onoffswitch"
+                                                 {{=XML("checked='checked'") if p.estatus==1 else XML('')}}>
+                                                <label class="onoffswitch-label" for="chk-{{=p.id}}">
+                                                    <span class="onoffswitch-inner" data-swchoff-text="OFF" data-swchon-text="ON"></span>
+                                                    <span class="onoffswitch-switch"></span>
+                                                </label>
+                                            </span>
+                                        </td>
                                     </tr>
                                     {{pass}}
                                 </tbody>
@@ -117,63 +133,21 @@ $(document).ready(function(){
 
     pageSetUp();
 
-    $('.cerrar').each(function(){
-        console.log('cerrar');
-    });
-
-    $('.abrir').click(function(){
-        console.log('abrir');
-    });
-
-});
-
-$.getJSON('{{=URL("listar")}}', function(json){ 
-
-    console.log(json);
-
-    var tabla = "";
-    $.each(json, function(ke, va) {
-
-        var fila = "";
-
-        id = va['id'];
-        
-        $.each(this, function(k , v) {
-            
-            if (k == 'nombre') {
-                div = "<div class='poliza' id='" + id + "poliza'>Póliza</div>";
-                fila += "<td class='poliza'><a href={{=URL('poliza', 'listar')}}?id=" + id + ">Ir a periodo</a></td>";
-            }
-
-            if (k != '_extra')
-                if (k != 'estatus')
-                    fila += "<td>"+v+"</td>";
-
-                /* construir link para abrir y cerrar póliza */
-                else if (v == 'T'){
-                    div = "<div class='cerrar' id='" + id + "cerrar'>Cerrar</div>";
-                    fila += "<td>" + div + "</td>";
-                    fila += "<td class='cerrar'><a href='cerrar?cerrar=" + id + "'>Cerrar</a></td>";
+    $('.estatus').click(function(){
+        console.log($(this).data('id'));
+        $.ajax({
+                data:  { periodo_id : $(this).data('id') },
+                url:   "{{=URL('periodo','abrir_periodo')}}",
+                type:  'post',
+                beforeSend: function () {
+                        //$("#resultado").html("Procesando, espere por favor...");
+                },
+                success:  function (response) {
+                        console.log('Exito en el cierre');
                 }
-                else {
-                    div = "<div class='abrir' id='" + id + "abrir'>Abrir</div>";
-                    fila += "<td>" + div + "</td>";
-                    fila += "<td class='abrir'><a href='abrir?abrir=" + id + "'>Abrir</a></td>";
-                }
-
         });
 
-        tabla += "<tr>"+fila+"</tr>";                
     });
 
-    $("#periodos").html(tabla);
-
 });
-
 </script>
-
-<style>
-    td { padding: 20px; }
-</style>
-
-<div id='periodos'></div>

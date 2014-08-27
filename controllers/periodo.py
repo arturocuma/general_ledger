@@ -79,20 +79,22 @@ def listar():
     return dumps(diccionario, sort_keys=True)
 
 
-def cerrar():
+def cerrar_perido():
     """
     Cierra un periodo contable
     """
-    id = request.vars.cerrar
-    db(db.periodo.id == id).update(estatus = False) 
+    id = request.vars.periodo_id
+    db(db.periodo.id == id).update(estatus_periodo_id = 0) 
+    return True
 
 
-def abrir():
+def abrir_periodo():
     """
     Abre un periodo contable
     """
-    id = request.vars.abrir
-    db(db.periodo.id == id).update(estatus = True) 
+    id = request.vars.periodo_id
+    db(db.periodo.id == id).update(estatus_periodo_id = 1) 
+    return True
 
 
 def iniciar():
