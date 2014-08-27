@@ -1,5 +1,19 @@
 {{extend 'layout.html'}}
 
+<div class="row">
+    <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+        <legend>
+            <h1>
+                <p>
+                    <i class="fa-fw fa  fa-usd"></i>
+                    Balanza
+                </p>
+                <small>Balanza del periodo: {{=fecha_inicial}} al {{=fecha_final}}</small>
+            </h1>
+        </legend>
+    </article>
+</div>
+
 <style>
 
 table > tbody > tr:hover{
@@ -20,16 +34,19 @@ table > tbody > tr:hover{
         </legend>
     </div>
 </div>
+
 <!-- widget grid -->
 <section id="widget-grid" class="">
     <!-- row -->
     <div class="row">
         <article class="col-sm-12">
             <!-- new widget -->
-            <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+            <div class="jarviswidget" id="wid-id-balanza" data-widget-editbutton="false"  data-widget-deletebutton="false">
                 <header>
-                    <span class="widget-icon"> <i class="fa fa-filter txt-color-darken"></i> </span>
-                    <h2>Balanza del periodo: {{=fecha_inicial}} al {{=fecha_final}}</h2>
+
+                    <span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
+                    <h2>Balanza</h2>
+
                     <ul class="nav nav-tabs pull-right in" id="myTab">
                         <li class="active">
                             <a data-toggle="tab" href="#s1"><i class="fa fa-list"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
@@ -42,7 +59,11 @@ table > tbody > tr:hover{
                 <!-- widget div-->
                 <div class="no-padding">
                     <!-- widget edit box -->
-                    <div class="jarviswidget-editbox">test</div>
+					<div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                            <input class="form-control" type="text">
+							<span class="note"><i class="fa fa-check text-success"></i> Change title to update and save instantly!</span>
+					</div>
                     <!-- end widget edit box -->
                     <div class="widget-body">
                         <!-- content -->
@@ -109,9 +130,10 @@ table > tbody > tr:hover{
     <!-- end row -->
 </section>
 <!-- end widget grid -->
+
 <script>
     $(function() {
-
+        pageSetUp();
     $('tr.padre')
             .css("cursor","pointer")
             .attr("title","Click para abrir/cerrar")

@@ -624,4 +624,4 @@ def reportes_creados():
                 else:
                     tabla+=fila_balanza(clase,num_cc, descripcion, None,importe_inicial, debe, haber, importe_final)
         tabla+=pie_balanza(clase)
-    return dict(reporte_id=reporte_id,nombre_reporte=nombre_reporte, tabla=XML(tabla))
+    return dict(reporte_id=reporte_id,nombre_reporte=nombre_reporte, tabla=XML(tabla), fecha_inicial=fecha_inicial, fecha_final=fecha_final)
