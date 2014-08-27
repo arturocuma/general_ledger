@@ -30,6 +30,7 @@ def index():
         form.vars.mes_id = obtener_id_mes(form.vars.mes)
 
         cadena = '{}{}'.format(form.vars.anio, form.vars.mes)
+        form.vars.clave = cadena
         fecha = datetime.strptime(cadena, "%Y%B").date()
 
         # crear un form.vars.clave
@@ -58,34 +59,12 @@ def index():
 
     return dict(form=form, periodos =periodos)
 
-
-def listar():
-    """
-    Crear archivo JSON de los periodos contables
-    """
-
-    query = (db.periodo.anio_id == db.anio.id) &\
-            (db.periodo.mes_id == db.mes.id)
-
-    periodos = db(query).select(
-            db.periodo.id.with_alias('id'),
-            db.anio.numero.with_alias('numero'),
-            db.mes.nombre.with_alias('nombre'),
-            db.periodo.estatus_periodo_id.with_alias('estatus')
-            )
-
-    diccionario = periodos.as_dict()
-
-    return dumps(diccionario, sort_keys=True)
-
-
-def cerrar_perido():
+def cerrar_periodo():
     """
     Cierra un periodo contable
     """
     id = request.vars.periodo_id
-    db(db.periodo.id == id).update(estatus_periodo_id = 0) 
-    return True
+    db(db.periodo.id == id).update(estatus_periodo_id = 2) 
 
 
 def abrir_periodo():
@@ -94,7 +73,6 @@ def abrir_periodo():
     """
     id = request.vars.periodo_id
     db(db.periodo.id == id).update(estatus_periodo_id = 1) 
-    return True
 
 
 def iniciar():
@@ -117,7 +95,7 @@ def iniciar():
             fin = fin,
             anio_id = anio_id,
             mes_id = mes_id,
-            estatus = True,
+            estatus_periodo_id = 1,
             consecutivo = 0
             )
 
@@ -128,3 +106,24 @@ def crear():
     """
 
     return dict(form=form)
+
+
+
+def listar():
+    """
+    Crear archivo JSON de los periodos contables
+    """
+
+    query = (db.periodo.anio_id == db.anio.id) &\
+            (db.periodo.mes_id == db.mes.id)
+
+    periodos = db(query).select(
+            db.periodo.id.with_alias('id'),
+            db.anio.numero.with_alias('numero'),
+            db.mes.nombre.with_alias('nombre'),
+            db.periodo.estatus_periodo_id.with_alias('estatus')
+            )
+
+    diccionario = periodos.as_dict()
+
+    return dumps(diccionario, sort_keys=True)
