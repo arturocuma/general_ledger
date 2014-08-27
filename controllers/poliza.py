@@ -288,10 +288,6 @@ def agregar_poliza():
             db.periodo.estatus_periodo_id
             ).first()
 
-    print '<<<<<<<<<<<<<<<<<<'
-    print periodo
-    print '>>>>>>>>>>>>>>>>>>'
-
     consecutivo_actual = periodo.consecutivo
 
     ultimo = db(db.poliza.id > 0).select(
