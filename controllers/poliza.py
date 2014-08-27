@@ -101,6 +101,7 @@ def listar():
             details=False,
             create=False,
             user_signature=True,
+            _class="web2py_grid",
             exportclasses=dict(
                 #csv=False,
                 csv_with_hidden_cols=False,
@@ -118,7 +119,7 @@ def listar():
 
     if request.args(-3) == 'poliza' and request.args(-2) == 'asiento.poliza_id':
 
-        boton_agregar_asiento = A(
+        boton_agregar_asiento = DIV(A(
                 SPAN(_class="fa fa-plus-square"),
                 ' Agregar Asiento',
                 _class="button btn btn-default",
@@ -127,7 +128,7 @@ def listar():
                     "agregar_asiento",
                     args=["poliza", request.args(-1)]
                     )
-                )
+                ),BR(), BR())
 
         if periodo != 'CERRADO':
             polizas[2].insert(-1, boton_agregar_asiento)
@@ -135,7 +136,7 @@ def listar():
         polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
 
     else:
-        boton_agregar_poliza = A(
+        boton_agregar_poliza = DIV(A(
                 SPAN(_class="fa fa-plus-square"),
                 ' Agregar Póliza',
                 _class="button btn btn-default",
@@ -144,7 +145,7 @@ def listar():
                     "agregar_poliza",
                     vars={'id':request.vars.id}
                     )
-                )
+                ),BR(), BR())
 
         if periodo != 'CERRADO':
             polizas[2].insert(-1, boton_agregar_poliza)
@@ -156,8 +157,19 @@ def verificar_estatus_periodo():
     """
     Función auxiliar
     """
+    if request.vars.id:
+        print 'vars'
+        print request.vars
+        estatus = obtener_estatus_periodo(request.vars.id)
+    else:
+        print 'args'
+        print request.args
+        poliza_id = request.args(-1)
+        id = db(db.poliza.id == poliza_id).select(
+                db.poliza.periodo_id
+                ).first().periodo_id
+        estatus = obtener_estatus_periodo(id)
 
-    estatus = obtener_estatus_periodo(request.vars.id)
     diccionario = {'id': estatus}
 
     return dumps(diccionario, sort_keys=True)
@@ -407,6 +419,17 @@ def actualiza_tipo_poliza():
         'actualizada_por':auth.user['id']
         })
 
+    # reducir el código aquí
+    fila = db(db.poliza.id == id).select(
+            db.poliza.folio,
+            db.poliza.tipo,
+            db.poliza.creada_en
+            ).first()
+    consecutivo = int(fila.folio[2:8])
+    folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
+    db(db.poliza.id == id).update(folio = folio)
+    # fin-reducir el código aquí
+
     return folio
 
 
@@ -434,7 +457,7 @@ def validar_periodo(fecha_usuario):
     periodo = db(
                 (db.periodo.inicio <=fecha_usuario) &
                 (db.periodo.fin >=fecha_usuario) &
-                (db.periodo.estatus != 3)).select(
+                (db.periodo.estatus_periodo_id != 2)).select(
             db.periodo.ALL,
         ).first()
     if periodo:

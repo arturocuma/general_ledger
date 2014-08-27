@@ -162,7 +162,7 @@ def validar_periodo(fecha_usuario):
     periodo = db(
                 (db.periodo.inicio <=fecha_usuario) &
                 (db.periodo.fin >=fecha_usuario) &
-                (db.periodo.estatus != 3)).select(
+                (db.periodo.estatus_periodo_id != 2)).select(
             db.periodo.ALL,
         ).first()
     if periodo:

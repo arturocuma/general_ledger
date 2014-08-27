@@ -7,6 +7,7 @@
                     <i class="fa-fw fa  fa-usd"></i>
                     {{=nombre_reporte}}
                 </p>
+                <small>Reporte del periodo del: {{=fecha_inicial}} al {{=fecha_final}}</small>
             </h1>
         </legend>
     </article>
@@ -17,19 +18,36 @@
 	<div class="row">
 		<article class="col-sm-12">
 			<!-- new widget -->
-			<div class="jarviswidget" id="wid-id-rep-creado-{{=str(reporte_id)}}" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+			<div class="jarviswidget" id="wid-id-rep-creado-{{=str(reporte_id)}}"   data-widget-deletebutton="false">
 				<header>
 					<span class="widget-icon"> <i class="fa fa-building txt-color-darken"></i> </span>
 					<h2>{{=nombre_reporte}}</h2>
+                    <ul class="nav nav-tabs pull-right in" id="myTab">
+                        <li class="active">
+                            <a data-toggle="tab" href="#s1"><i class="fa fa-bar-chart-o"></i> <span class="hidden-mobile hidden-tablet">Listado</span></a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#s2"><i class="fa fa-search"></i> <span class="hidden-mobile hidden-tablet">Filtros</span></a>
+                        </li>
+                    </ul>
 				</header>
 				<!-- widget div-->
-				<div class="no-padding">				
+				<div class="no-padding">
+                    <!-- widget edit box -->
+					<div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->
+                            <input class="form-control" type="text">
+							<span class="note"><i class="fa fa-check text-success"></i> Cambia el título!</span>
+					</div>
+                    <!-- end widget edit box -->
+                
+                     
 					<div class="widget-body">
 						<!-- content -->
 						<div id="myTabContent" class="tab-content">
 							<div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
 								<div class="padding-10">
-									<ul id="expList">
+									
 										<!-- widget div-->
 										<div>
 											<!-- widget content -->
@@ -41,10 +59,56 @@
 												</div>
 											</div>
 										</div>
-									</ul>
+									
 								</div>
 							</div>
 							<!-- end s1 tab pane -->
+                            <div class="tab-pane fade " id="s2">
+                                <div class="padding-10">    
+                                    <div class="panel-body" id="campos-filtro">
+		                                <form class="smart-form" method="POST" id="filtros" name="filtros">
+			                            <!--<article class="col-sm-12 col-md-12 col-lg-4">-->
+			                                 <div role="content">
+			                                 <div class="widget-body no-padding" >
+			                                     <fieldset class="col-sm-12 col-md-12 col-lg-4">
+                        			                 <section>
+                                        				<label class="label">Tipo de cuenta</label>
+                                        				<label class="select">
+                                        				  <select id="tipo_cuentas" name="tipo_cuentas" class="activo">
+                                        				    <option value="">Elegir</option>
+                                        				    <option value="con_saldo" {{=XML("selected='selected'") if request.vars.tipo_cuentas=="con_saldo" else ""}}>Con saldo</option></option>
+                                        				   <option value="todas" {{=XML("selected='selected'") if request.vars.tipo_cuentas=="todas" else ""}}>Todas</option>
+                                        			     </select>
+                                        				</label>
+                                        			 </section>
+                                        			 <section>
+                                        				<label class="label">Fecha inicial</label>
+                                        				<label class="input">
+                                        				  <div class="input-group">
+                                        				    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        				    <input type="text" name="fecha_ini" class="activo fecha form-control input-sm" placeholder="Fecha inicio" value="{{=XML(request.vars.fecha_ini) if request.vars.fecha_ini else ''}}">
+                                        				  </div>
+                                        				</label>
+                                    			      </section>
+                                    			      <section>
+                                        				<label class="label">Fecha final</label>
+                                        				<label class="input">
+                                        				  <div class="input-group">
+                                        				    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+                                        				    <input type="text" name="fecha_fin" class="activo fecha form-control input-sm" placeholder="Fecha fin" value="{{=XML(request.vars.fecha_fin) if request.vars.fecha_fin else ''}}">
+                                        				  </div>
+                                        				</label>
+                                    			      </section>
+                                        			      <input type="submit" value="Buscar">
+                                        			      <button class="btn btn-default" type="button" onclick="location.href='{{=URL('reportes','libro_diario')}}'"> Limpiar </button>
+                                    			    </fieldset>
+                                    			</div>
+                                    	    </div>
+                                    	</form>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- end s2 tab pane -->
 						</div>
 						<!-- end content -->
 					</div>
@@ -77,13 +141,40 @@
 			 * BASIC
 			 */
 			$('#dt_basic').dataTable({
-				"sPaginationType" : "bootstrap_full",
                 "bSort": false,
                 "aoColumnDefs": [
                      { 'bSortable': false, 'aTargets': [0,1,2,3,4] }
                 ],
                 "aLengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "Todos"]],
-                "iDisplayLength":50
+                "iDisplayLength":50,
+                "scrollX":true,
+                "scrollY": true,
+                "oLanguage":{
+                    "sProcessing":     "Procesando...",
+                    "sLengthMenu":     "_MENU_",
+                    "sZeroRecords":    "No se encontraron resultados",
+                    "sEmptyTable":     "Ningún dato disponible en esta tabla",
+                    "sInfo":           "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty":      "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered":   "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix":    "",
+                    "sUrl":            "",
+                    "sInfoThousands":  ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst":    "Primero",
+                        "sLast":     "Último",
+                        "sNext":     "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending":  ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                "language":{
+                    "searchPlaceholder": "Search..."
+                }
 			});
 	
 			/* END BASIC */
@@ -150,5 +241,14 @@
 				}
 			});
 		/* END TABLE TOOLS */
+        
+        $(".fa-calendar").click(function () {
+				$(".fecha").datepicker({
+						dateFormat: 'yy-mm-dd',
+					});
+			});
+			$(".fecha").datepicker({
+				dateFormat: 'yy-mm-dd',
+			});
 		})
 </script>

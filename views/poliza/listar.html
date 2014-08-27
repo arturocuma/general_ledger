@@ -66,6 +66,15 @@ $(document).ready(function(){
                     });
                 });
 
+                $('.cambiar_estatus').change(function() {
+                    var id = $(this).attr('id');
+                    var value = $(this).val();
+                    var datos = {id: id, value:value};
+                    $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
+                        $(id).html(data);
+                    });
+                });
+
                 /* Funciones para modificar los valores de los asientos */
                 $.getJSON('{{=URL("carga_cc")}}', function(json) {
 
@@ -107,13 +116,8 @@ $(document).ready(function(){
                     }
                 });
             }
-            /* validación de póliza */
-
         });
     });
-
-
-
 });
 </script>
 
@@ -152,55 +156,65 @@ $(document).ready(function(){
         </legend>
     </div>
 </div>
-                                <!-- widget grid -->
-                                <section id="widget-grid" class="">
-                                        <!-- row -->
-                                        <div class="row">
-                                                <article class="col-sm-12">
-                                                        <!-- new widget -->
-                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-                                                                <!-- widget options:
-                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                                                                data-widget-colorbutton="false"
-                                                                data-widget-editbutton="false"
-                                                                data-widget-togglebutton="false"
-                                                                data-widget-deletebutton="false"
-                                                                data-widget-fullscreenbutton="false"
-                                                                data-widget-custombutton="false"
-                                                                data-widget-collapsed="true"
-                                                                data-widget-sortable="false"
-                                                                -->
-                                                                <header>
-                                                                        <span class="widget-icon"> <i class="fa fa-list txt-color-darken"></i> </span>
-                                                                        <h2>Listado de Pólizas Contables</h2>
-                                                                </header>
-                                                                <!-- widget div-->
-                                                                <div class="no-padding">
-                                                                        <!-- widget edit box -->
-                                                                        <div class="jarviswidget-editbox">
-                                                                                test
-                                                                        </div>
-                                                                        <!-- end widget edit box -->
-                                                                        <div class="widget-body">
-                                                                                <!-- content -->
-                                                                                <div id="myTabContent" class="tab-content">
-                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
-                                                <div class="padding-10">
-                                                    <ul id="expList">
-                                                        {{=polizas}}
-                                                    </ul>
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <!-- end s1 tab pane -->
-                                                                                </div>
-                                                                                <!-- end content -->
-                                                                        </div>
-                                                                </div>
-                                                                <!-- end widget div -->
-                                                        </div>
-                                                        <!-- end widget -->
-                                                </article>
-                                        </div>
-                                        <!-- end row -->
-                                </section>
-                                <!-- end widget grid -->
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <p>
+            <a href="{{=URL('periodo','index')}}"><i class="fa fa-calendar"></i> Ver periodos</a>
+        </p>
+    </div>
+</div>
+
+<!-- widget grid -->
+<section id="widget-grid" class="">
+<!-- row -->
+<div class="row">
+    <article class="col-sm-12">
+    <!-- new widget -->
+    <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+        <!-- widget options:
+        usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+            data-widget-colorbutton="false"
+            data-widget-editbutton="false"
+            data-widget-togglebutton="false"
+            data-widget-deletebutton="false"
+            data-widget-fullscreenbutton="false"
+            data-widget-custombutton="false"
+            data-widget-collapsed="true"
+            data-widget-sortable="false"
+            -->
+            <header>
+            <span class="widget-icon"> <i class="fa fa-list txt-color-darken"></i> </span>
+            <h2>Listado de Pólizas Contables</h2>
+            </header>
+            <!-- widget div-->
+            <div class="no-padding">
+                <!-- widget edit box -->
+                <div class="jarviswidget-editbox">
+                    test
+                </div>
+                <!-- end widget edit box -->
+                <div class="widget-body">
+                    <!-- content -->
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+
+                            <div class="padding-10">
+                                <ul id="expList">
+
+                                    {{=polizas}}
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- end s1 tab pane -->
+                    </div>
+                    <!-- end content -->
+                </div>
+            </div>
+            <!-- end widget div -->
+        </div>
+        <!-- end widget -->
+        </article>
+    </div>
+    <!-- end row -->
+    </section>
+    <!-- end widget grid -->

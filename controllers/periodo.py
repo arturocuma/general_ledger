@@ -18,7 +18,7 @@ def index():
 
     campos = [
         Field('anio', 'integer', label='Año'),
-        Field('mes', requires = IS_IN_DB(db, 'mes.nombre'), label='Mes'),
+        Field('mes', requires = IS_IN_DB(db, 'mes.nombre',orderby='mes.id',zero='Selecciona mes'), label='Mes'),
     ]
 
     form = SQLFORM.factory(*campos)
@@ -47,14 +47,6 @@ def index():
     else:
         pass
 
-    return dict(form=form)
-
-
-def listar():
-    """
-    Crear archivo JSON de los periodos contables
-    """
-
     query = (db.periodo.anio_id == db.anio.id) &\
             (db.periodo.mes_id == db.mes.id)
 
@@ -65,24 +57,21 @@ def listar():
             db.periodo.estatus_periodo_id.with_alias('estatus')
             )
 
-    diccionario = periodos.as_dict()
+    return dict(form=form, periodos =periodos)
 
-    return dumps(diccionario, sort_keys=True)
-
-
-def cerrar():
+def cerrar_periodo():
     """
     Cierra un periodo contable
     """
-    id = request.vars.cerrar
+    id = request.vars.periodo_id
     db(db.periodo.id == id).update(estatus_periodo_id = 2) 
 
 
-def abrir():
+def abrir_periodo():
     """
     Abre un periodo contable
     """
-    id = request.vars.abrir
+    id = request.vars.periodo_id
     db(db.periodo.id == id).update(estatus_periodo_id = 1) 
 
 
@@ -117,3 +106,24 @@ def crear():
     """
 
     return dict(form=form)
+
+
+
+def listar():
+    """
+    Crear archivo JSON de los periodos contables
+    """
+
+    query = (db.periodo.anio_id == db.anio.id) &\
+            (db.periodo.mes_id == db.mes.id)
+
+    periodos = db(query).select(
+            db.periodo.id.with_alias('id'),
+            db.anio.numero.with_alias('numero'),
+            db.mes.nombre.with_alias('nombre'),
+            db.periodo.estatus_periodo_id.with_alias('estatus')
+            )
+
+    diccionario = periodos.as_dict()
+
+    return dumps(diccionario, sort_keys=True)
