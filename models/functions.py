@@ -38,11 +38,30 @@ def comparar_flotantes(a, b):
         return False
     
 
+def cambia_breadcrumb(items):
+    """
+    Hack para hacer funcionar el código, este código es muy extraño
+    """
+
+    if request.vars.id:
+        id = request.vars.id
+    else:
+        poliza_id = request.args(-1)
+        id = db(db.poliza.id == poliza_id).select(
+                db.poliza.periodo_id
+                ).first().periodo_id
+
+    items[0] = A(
+            'Póliza',
+            _href=URL('listar', vars={'id': id})
+            )
+    return items
+
+
 def agrega_cuadrar(items):
     """
     agrega un TR al final
     """
-
     row = TR(_class='fila-final')
     for x in xrange(8):
         row.append(TD(''))

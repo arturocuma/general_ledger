@@ -591,9 +591,18 @@ header,h1,h2,h3,h4{
 							<i class="fa fa-lg fa-fw  fa-file-text-o "></i>
 							<span class="menu-item-parent">Pólizas</span>
 						</a>
+
+                        {{if session.instancias:}}
+                        {{db = empresas.dbs[int(session.instancias)]}}
+                        <!-- perfeccionar esto -->
+                        {{ultimo = db(db.periodo).select(db.periodo.id).last()}}
 						<ul>
 							<li>
-								<a href="{{=URL('poliza','listar')}}">
+                                {{if ultimo:}}
+                                <a href="{{=URL('poliza', 'listar', vars={'id':ultimo.id})}}">
+                                {{else:}}
+                                <a href="javascript:void(0)" disabled='disabled'>
+                                {{pass}}
 									<i class="fa fa-lg fa-fw  fa-plus-square"></i>
 									Agregar pólizas
 								</a>
@@ -605,6 +614,8 @@ header,h1,h2,h3,h4{
                                 </a>
                             </li>
 						</ul>
+                        {{pass}}
+
 					</li>
 					<li>
 						<a href="javascript:void();"><i class="fa fa-lg fa-fw fa-clipboard  "></i> <span class="menu-item-parent">Reportes</span></a>
