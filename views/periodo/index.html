@@ -1,10 +1,121 @@
 {{extend 'layout.html'}}
-
-{{=form}}
+<div class="row">
+    <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+        <legend>
+            <h1>
+                <p>
+                    <i class="fa-fw fa  fa-calendar"></i>
+                    Periodos
+                </p>
+                <small>Creacion y listado de periodos</small>
+            </h1>
+        </legend>
+    </article>
+</div>
+<!-- widget grid -->
+<section id="widget-grid" class="">
+    <div class="row"><!-- row -->
+        <article class="col-xs-12 col-sm-12 col-md-4 col-lg-4"><!-- NEW WIDGET START -->
+            <!-- Widget ID (each widget will need unique ID)-->                            
+                <div class="jarviswidget" id="wid-id-crear-periodo" data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-edit"></i> </span>
+                    <h2>Periodos</h2>
+                </header>                                
+                <div><!-- widget div-->                                    
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->                                        
+                    </div>
+                    <!-- end widget edit box -->                                    
+                    <!-- widget content -->
+                    <div class="widget-body">                                        
+                        <form class="form-horizontal" method="POST">
+                        {{=form.custom.begin}}                    
+                            <fieldset>
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Año</label>
+                                    <div class="col-md-10">
+                                        {{=form.custom.widget.anio}}
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="col-md-2 control-label">Mes</label>
+                                    <div class="col-md-10">
+                                        {{=form.custom.widget.mes}}
+                                    </div>                                    
+                                </div>
+                                <div class="col-md-offset-9">
+                                    {{=form.custom.submit}}
+                                </div>
+                            {{=form.custom.end}}
+                            </fieldset>
+                        </form>                    
+                    </div>
+                    <!-- end widget content -->                    
+                </div>
+                <!-- end widget div -->                
+            </div><!-- end widget -->
+        </article>        
+        <article class="col-xs-12 col-sm-12 col-md-8 col-lg-8"><!-- NEW WIDGET START -->
+            <!-- Widget ID (each widget will need unique ID)-->                            
+                <div class="jarviswidget" id="wid-id-crear-periodo" data-widget-editbutton="false"
+                    data-widget-togglebutton="false"
+                    data-widget-deletebutton="false"
+                    data-widget-custombutton="false"
+                    data-widget-collapsed="false">
+                <header>
+                    <span class="widget-icon"> <i class="fa fa-list"></i> </span>
+                    <h2>Lista de periodos</h2>                                    
+                </header>                                
+                <div><!-- widget div-->                                    
+                    <!-- widget edit box -->
+                    <div class="jarviswidget-editbox">
+                        <!-- This area used as dropdown edit box -->                                        
+                    </div>
+                    <!-- end widget edit box -->                                    
+                    <!-- widget content -->
+                    <div class="widget-body no-padding">
+                        <div class="table-responsive">
+                            <div class="widget-body-toolbar"> </div>
+                            <table class="table table-bordered DT-estandar">
+                                <thead>
+                                    <tr>
+                                        <th style="width:10px;text-align:center;">ID</th>
+                                        <th>Año</th>
+                                        <th>Periodo</th>
+                                        <th>Estatus</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{for p in periodos:}}
+                                    <tr>
+                                        <td style="width:10px;text-align:center;"><a href="{{=URL('poliza', 'listar',vars=dict(id=p.id))}}">{{=p.id}}</a></td>
+                                        <td>{{=p.numero}}</td>
+                                        <td>{{=p.nombre}}</td>
+                                        <td>{{=XML('Abierto') if p.estatus==1 else XML('Cerrado')}}</td>
+                                    </tr>
+                                    {{pass}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </article>
+    </div>
+</section>
 
 <script>
 
 $(document).ready(function(){
+
+    pageSetUp();
 
     $('.cerrar').each(function(){
         console.log('cerrar');

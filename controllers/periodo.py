@@ -46,7 +46,17 @@ def index():
     else:
         pass
 
-    return dict(form=form)
+    query = (db.periodo.anio_id == db.anio.id) &\
+            (db.periodo.mes_id == db.mes.id)
+
+    periodos = db(query).select(
+            db.periodo.id.with_alias('id'),
+            db.anio.numero.with_alias('numero'),
+            db.mes.nombre.with_alias('nombre'),
+            db.periodo.estatus_periodo_id.with_alias('estatus')
+            )
+
+    return dict(form=form, periodos =periodos)
 
 
 def listar():
