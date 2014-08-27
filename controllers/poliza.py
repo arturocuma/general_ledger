@@ -91,6 +91,7 @@ def listar():
             details=False,
             create=False,
             user_signature=True,
+            _class="web2py_grid",
             exportclasses=dict(
                 #csv=False,
                 csv_with_hidden_cols=False,
@@ -123,7 +124,7 @@ def listar():
         polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
 
     else:
-        boton_agregar_poliza = A(
+        boton_agregar_poliza = DIV(A(
                 SPAN(_class="fa fa-plus-square"),
                 ' Agregar Póliza',
                 _class="button btn btn-default",
@@ -132,7 +133,7 @@ def listar():
                     "agregar_poliza",
                     vars={'id':request.vars.id}
                     )
-                )
+                ),BR(), BR())
         polizas[2].insert(-1, boton_agregar_poliza)
 
     return dict(polizas=polizas)
@@ -420,7 +421,7 @@ def validar_periodo(fecha_usuario):
     periodo = db(
                 (db.periodo.inicio <=fecha_usuario) &
                 (db.periodo.fin >=fecha_usuario) &
-                (db.periodo.estatus != 3)).select(
+                (db.periodo.estatus_periodo_id != 2)).select(
             db.periodo.ALL,
         ).first()
     if periodo:
