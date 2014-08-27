@@ -102,6 +102,10 @@ def listar():
                 #xml=False
                 )
             )
+    
+    # corregir breadcrumb
+    polizas.element('.w2p_grid_breadcrumb_elem', replace = lambda items:\
+            cambia_breadcrumb(items))
 
     if request.args(-3) == 'poliza' and request.args(-2) == 'asiento.poliza_id':
 
@@ -116,7 +120,9 @@ def listar():
                     )
                 )
         polizas[2].insert(-1, boton_agregar_asiento)
+
         polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
+
     else:
         boton_agregar_poliza = DIV(A(
                 SPAN(_class="fa fa-plus-square"),
@@ -282,10 +288,6 @@ def agregar_poliza():
             db.periodo.inicio,
             db.periodo.estatus_periodo_id
             ).first()
-
-    print '<<<<<<<<<<<<<<<<<<'
-    print periodo
-    print '>>>>>>>>>>>>>>>>>>'
 
     consecutivo_actual = periodo.consecutivo
 

@@ -30,6 +30,7 @@ def index():
         form.vars.mes_id = obtener_id_mes(form.vars.mes)
 
         cadena = '{}{}'.format(form.vars.anio, form.vars.mes)
+        form.vars.clave = cadena
         fecha = datetime.strptime(cadena, "%Y%B").date()
 
         # crear un form.vars.clave
@@ -74,7 +75,7 @@ def cerrar():
     Cierra un periodo contable
     """
     id = request.vars.cerrar
-    db(db.periodo.id == id).update(estatus = False) 
+    db(db.periodo.id == id).update(estatus_periodo_id = 2) 
 
 
 def abrir():
@@ -82,7 +83,7 @@ def abrir():
     Abre un periodo contable
     """
     id = request.vars.abrir
-    db(db.periodo.id == id).update(estatus = True) 
+    db(db.periodo.id == id).update(estatus_periodo_id = 1) 
 
 
 def iniciar():
@@ -105,7 +106,7 @@ def iniciar():
             fin = fin,
             anio_id = anio_id,
             mes_id = mes_id,
-            estatus = True,
+            estatus_periodo_id = 1,
             consecutivo = 0
             )
 

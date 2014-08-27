@@ -39,15 +39,16 @@ $.getJSON('{{=URL("listar")}}', function(json){
                     fila += "<td>"+v+"</td>";
 
                 /* construir link para abrir y cerrar póliza */
-                else if (v == 'T'){
+                else if (v == '1') {
                     div = "<div class='cerrar' id='" + id + "cerrar'>Cerrar</div>";
                     fila += "<td>" + div + "</td>";
-                    fila += "<td class='cerrar'><a href='cerrar?cerrar=" + id + "'>Cerrar</a></td>";
+                    fila += "<td class='cerrar'><a href={{=URL('periodo', 'cerrar')}}?cerrar=" + id + ">Cerrar</a></td>";
                 }
-                else {
+                else if (v == '2') {
                     div = "<div class='abrir' id='" + id + "abrir'>Abrir</div>";
                     fila += "<td>" + div + "</td>";
-                    fila += "<td class='abrir'><a href='abrir?abrir=" + id + "'>Abrir</a></td>";
+                    fila += "<td class='abrir'><a href={{=URL('periodo', 'abrir')}}?abrir=" + id + ">Abrir</a></td>";
+
                 }
 
         });
