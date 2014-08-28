@@ -51,36 +51,39 @@ $(document).ready(function(){
                 });
 
                 $.editable.addInputType('my-row', {
-                    element: $.editable.types.text.element,
-                    plugin: function (settings, original) {
-                        $('input', this).bind('keypress', function (e) {
-                            var TABKEY = 9;
-                            if(e.keyCode == TABKEY) {
-                                if(e.preventDefault) {
-                                    e.preventDefault();
-                                }
+                element: $.editable.types.text.element,
+                plugin: function (settings, original) {
+                        $('input', this).select();
+                        $('input', this).bind('keydown', function (e) {
+                                var TABKEY = 9;
                                 var div_id = $(original).attr('id');
                                 var id= div_id.substr(0, div_id.indexOf('-'));
                                 var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
                                 switch(actual) {
                                     case 'cc_empresa_id':
-                                        next = 'concepto_asiento';
-                                        break;
+                                        if(e.keyCode == TABKEY) {
+                                            next = 'concepto_asiento';
+                                            break;
+                                        }
                                     case 'concepto_asiento':
-                                        next = 'debe';
-                                        break;
+                                        if(e.keyCode == TABKEY) {
+                                            next = 'debe';
+                                            break;
+                                        }
                                     case 'debe':
-                                        next = 'haber';
-                                        break;
+                                        if(e.keyCode == TABKEY) {
+                                            next = 'haber';
+                                            break;
+                                        }
                                     default:
                                         next = '';
                                 }
                                 if (next != ''){
                                     next_id  = '#'+id + '-'+next;
                                     $(next_id).click();
+                                    e.preventDefault();
                                 }
-                                return false;
-                            }
+                                
                         });
                     }
                 });
@@ -152,6 +155,7 @@ $(document).ready(function(){
                 });
 
                 $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                    type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
                     indicator: "Actualizando...",
