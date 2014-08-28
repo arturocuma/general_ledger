@@ -238,9 +238,9 @@ def valida(form):
     response.flash = "I don't like your submission"
 
 
-def actualiza_asiento():
+def actualiza_debe_haber():
     """
-    Actualiza un campo de la tabla `asiento`
+    Actualiza los campos `debe` y `haber` de la tabla `asientos`
     """
     import numbers
 
@@ -249,28 +249,23 @@ def actualiza_asiento():
 
     valor_retornar = value
 
-    if column == 'debe' or column == 'haber':
+    if '$' in value:
+        value = value.replace('$', '')
 
-        print 'before', value
+    if ',' in value:
+        value = value.replace(',', '') 
 
-        if '$' in value:
-            value = value.replace('$', '')
+    try:
+        value = float(value)
+        value = abs(value)
+    except:
+        # si el formato es incorrecto, regresar el valor actual en el registro
+        ex = db(db.asiento.id == id).select(
+                db.asiento[column].with_alias('valor')
+                ).first().valor
+        value = ex
 
-        if ',' in value:
-            value = value.replace(',', '') 
-
-        try:
-            value = float(value)
-            value = abs(value)
-        except:
-            print 'except'
-            valor_retornar = None
-            pass
-        else:
-            print 'else'
-            valor_retornar = locale.currency(float(value), grouping=True)
-
-        #valor_retornar = locale.currency(float(value), grouping=True)
+    valor_retornar = locale.currency(float(value), grouping=True)
 
     db(db.asiento.id == id).update(**{
         column:value,
@@ -279,6 +274,23 @@ def actualiza_asiento():
         })
 
     return valor_retornar
+
+
+def actualiza_asiento():
+    """
+    Actualiza un campo de la tabla `asiento`
+    """
+
+    id, column = request.post_vars.id.split('.')
+    value = request.post_vars.value
+
+    db(db.asiento.id == id).update(**{
+        column: value,
+        'actualizada_en': datetime.now(),
+        'actualizada_por': auth.user['id']
+        })
+
+    return value
 
 
 def actualiza_descripcion():
