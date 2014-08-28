@@ -116,66 +116,93 @@ def obtener_tipo_poliza(tipo_poliza_id):
 
 def selector_fecha(id):
 
+    periodo = obtener_estatus_periodo(request.vars.id)
+
     fecha_poliza = db(db.poliza.id == id).select(
             db.poliza.fecha_usuario
             ).first().fecha_usuario
 
-    fecha = INPUT(
-            _name = 'fecha',
-            _class='fecha_poliza',
-            _id='{}-fecha_usuario'.format(id),
-            value = fecha_poliza
-            )
+    if periodo != 'CERRADO':
+
+        fecha = INPUT(
+                _name = 'fecha',
+                _class='fecha_poliza',
+                _id='{}-fecha_usuario'.format(id),
+                value = fecha_poliza
+                )
+    else:
+
+        fecha = DIV(fecha_poliza)
 
     return fecha
 
 
 def crear_selector_status(id):
     """
-    Retorna el estatus de la póliza a partir de un id
     """
-    opciones_estatus = [OPTION(estatus.nombre, _value=estatus.id) for\
-            estatus in db().select(
-                db.estatus_poliza.ALL,
-                cache=(cache.ram, 3600)
-                )]
+
+    periodo = obtener_estatus_periodo(request.vars.id)
 
     estatus = db(db.poliza.id == id).select(
             db.poliza.estatus
             ).first().estatus
 
-    select = SELECT(
-            _name = 'estatus{}'.format(id),
-            _id = '{}.estatus'.format(id),
-            _class = 'cambiar_estatus',
-            value = estatus,
-            *opciones_estatus
-            )
+    if periodo != 'CERRADO':
+
+        opciones_estatus = [OPTION(estatus.nombre, _value=estatus.id) for\
+                estatus in db().select(
+                    db.estatus_poliza.ALL,
+                    cache=(cache.ram, 3600)
+                    )]
+
+        select = SELECT(
+                _name = 'estatus{}'.format(id),
+                _id = '{}.estatus'.format(id),
+                _class = 'cambiar_estatus',
+                value = estatus,
+                *opciones_estatus
+                )
+    else:
+
+        nombre = db(db.estatus_poliza.id == estatus).select(
+                db.estatus_poliza.nombre
+                ).first().nombre
+        select = DIV(nombre)
 
     return select
 
 
 def crear_selector_tipo(id):
     """
-    Retorna el estatus de la póliza a partir de un id
     """
-    opciones_tipos = [OPTION(tipos.nombre, _value=tipos.id) for\
-            tipos in db().select(
-                db.tipo_poliza.ALL,
-                cache=(cache.ram,3600)
-                )]
+    periodo = obtener_estatus_periodo(request.vars.id)
 
     tipo = db(db.poliza.id == id).select(
             db.poliza.tipo
             ).first().tipo
 
-    select = SELECT(
-            _name = 'tipo{}'.format(id),
-            _id = '{}.tipo'.format(id),
-            _class = 'cambiar_tipo',
-            value = tipo,
-            *opciones_tipos
-            )
+    if periodo != 'CERRADO':
+
+        opciones_tipos = [OPTION(tipos.nombre, _value=tipos.id) for\
+                tipos in db().select(
+                    db.tipo_poliza.ALL,
+                    cache=(cache.ram,3600)
+                    )]
+
+        select = SELECT(
+                _name = 'tipo{}'.format(id),
+                _id = '{}.tipo'.format(id),
+                _class = 'cambiar_tipo',
+                value = tipo,
+                *opciones_tipos
+                )
+    else:
+
+        nombre = db(db.tipo_poliza.id == tipo).select(
+                db.tipo_poliza.nombre
+                ).first().nombre
+        select = DIV(nombre)
+
 
     return select
 
@@ -199,3 +226,18 @@ def obtener_id_anio(anio):
 def obtener_id_mes(mes):
     registro = db(db.mes.nombre == mes).select(db.mes.id).first()
     return registro.id
+
+
+def obtener_estatus_periodo(poliza_id):
+    """
+    Recibe el `id` de la póliza y obtiene el estatus del periodo de esa póliza
+    """
+    estatus_periodo = db(
+                (db.periodo.id == poliza_id) &
+                (db.periodo.estatus_periodo_id == db.estatus_periodo.id)
+            ).select(
+                db.periodo.estatus_periodo_id.with_alias('id'),
+                db.estatus_periodo.nombre.with_alias('nombre')
+            ).first()
+
+    return estatus_periodo.nombre

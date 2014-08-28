@@ -1,7 +1,8 @@
 # coding: utf8
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'login'))
 import csv
-from datetime import datetime
+from json import dumps
+from datetime import datetime, date
 
 empresa_id = session.instancias
 db = empresas.dbs[int(empresa_id)]
@@ -18,24 +19,24 @@ def listar():
             DIV(
                 db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-',
                 _class='cc_empresa_id',
-                _id=str(row.id)+'.cc_empresa_id'
+                _id=str(row.id)+'-cc_empresa_id'
                 )
     
     db.asiento.concepto_asiento.represent = lambda value, row:\
             DIV(value if value!='' else '-',
                     _class='concepto_asiento',
-                    _id=str(row.id)+'.concepto_asiento'
+                    _id=str(row.id)+'-concepto_asiento'
                     )
 
     db.asiento.debe.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
                     _class='debe derecha',
-                    _id='{}.debe'.format(row.id)
+                    _id='{}-debe'.format(row.id)
                     )
     db.asiento.haber.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
                     _class='haber derecha',
-                    _id='{}.haber'.format(row.id)
+                    _id='{}-haber'.format(row.id)
                     )
 
     # modificaciones a campos de la tabla `poliza`
@@ -45,7 +46,7 @@ def listar():
             DIV(
                 value or '-',
                 _class='concepto_general',
-                _id=str(row.id)+'.concepto_general'
+                _id=str(row.id)+'-concepto_general'
                 )
 
     # Columna `fecha`
@@ -78,6 +79,15 @@ def listar():
 
     query = db.poliza.periodo_id == request.vars.id
 
+    if request.vars.id:
+        periodo = obtener_estatus_periodo(request.vars.id)
+    else:
+        poliza_id = request.args(-1)
+        id = db(db.poliza.id == poliza_id).select(
+                db.poliza.periodo_id
+                ).first().periodo_id
+        periodo = obtener_estatus_periodo(id)
+
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
@@ -85,7 +95,7 @@ def listar():
             constraints = dict(poliza=query),
             #selectable=selectable,
             #deletable=auth.has_permission('delete_poliza') or False,
-            deletable=True,
+            deletable=True if periodo != 'CERRADO' else False,
             searchable=False,
             editable=False,
             details=False,
@@ -109,7 +119,7 @@ def listar():
 
     if request.args(-3) == 'poliza' and request.args(-2) == 'asiento.poliza_id':
 
-        boton_agregar_asiento = A(
+        boton_agregar_asiento = DIV(A(
                 SPAN(_class="fa fa-plus-square"),
                 ' Agregar Asiento',
                 _class="button btn btn-default",
@@ -118,8 +128,10 @@ def listar():
                     "agregar_asiento",
                     args=["poliza", request.args(-1)]
                     )
-                )
-        polizas[2].insert(-1, boton_agregar_asiento)
+                ),BR(), BR())
+
+        if periodo != 'CERRADO':
+            polizas[2].insert(-1, boton_agregar_asiento)
 
         polizas.element('tbody', replace = lambda items: agrega_cuadrar(items))
 
@@ -134,9 +146,29 @@ def listar():
                     vars={'id':request.vars.id}
                     )
                 ),BR(), BR())
-        polizas[2].insert(-1, boton_agregar_poliza)
+
+        if periodo != 'CERRADO':
+            polizas[2].insert(-1, boton_agregar_poliza)
 
     return dict(polizas=polizas)
+
+
+def verificar_estatus_periodo():
+    """
+    Función auxiliar
+    """
+    if request.vars.id_poliza:
+        estatus = obtener_estatus_periodo(request.vars.id_poliza)
+    else:
+        poliza_id = request.vars.id_asiento
+        id = db(db.poliza.id == poliza_id).select(
+                db.poliza.periodo_id
+                ).first().periodo_id
+        estatus = obtener_estatus_periodo(id)
+
+    diccionario = {'id': estatus}
+
+    return dumps(diccionario, sort_keys=True)
 
 
 def agregar_asiento():
@@ -210,7 +242,7 @@ def actualiza_asiento():
     """
     Actualiza un campo de la tabla `asiento`
     """
-    id, column = request.post_vars.id.split('.')
+    id, column = request.post_vars.id.split('-')
     value = request.post_vars.value
     value_ = value
 
@@ -234,7 +266,7 @@ def actualiza_descripcion():
     """
     Actualiza el campo `descripcion` de la tabla `asiento`.
     """
-    id, column = request.post_vars.id.split('.')
+    id, column = request.post_vars.id.split('-')
     valor = request.post_vars.value
 
     num_cc = valor.split()[0]
@@ -308,6 +340,7 @@ def agregar_poliza():
             folio = '',
             concepto_general = '',
             importe = 0,
+            fecha_usuario = date.today(),
             periodo_id=periodo_id
             )
 
@@ -367,7 +400,7 @@ def actualiza_tipo_poliza():
     - `actualizada por`
     de la tabla `poliza`
     """
-    id, column = request.post_vars.id.split('.')
+    id, column = request.post_vars.id.split('-')
     value = request.post_vars.value
 
     db(db.poliza.id == id).update(**{column:value})
@@ -383,15 +416,14 @@ def actualiza_tipo_poliza():
         })
 
     # reducir el código aquí
-    #fila = db(db.poliza.id == id).select(
-    #        db.poliza.folio,
-    #        db.poliza.tipo,
-    #        db.poliza.creada_en,
-    #        ).first()
-
-    #consecutivo = int(fila.folio[2:8])
-    #folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
-    #db(db.poliza.id == id).update(folio = folio)
+    fila = db(db.poliza.id == id).select(
+            db.poliza.folio,
+            db.poliza.tipo,
+            db.poliza.creada_en
+            ).first()
+    consecutivo = int(fila.folio[2:8])
+    folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
+    db(db.poliza.id == id).update(folio = folio)
     # fin-reducir el código aquí
 
     return folio
