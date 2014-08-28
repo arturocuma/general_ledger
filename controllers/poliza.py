@@ -19,24 +19,24 @@ def listar():
             DIV(
                 db.cc_empresa(value).num_cc + ' ' + db.cc_empresa(value).descripcion if value else '-',
                 _class='cc_empresa_id',
-                _id=str(row.id)+'-cc_empresa_id'
+                _id=str(row.id)+'.cc_empresa_id'
                 )
     
     db.asiento.concepto_asiento.represent = lambda value, row:\
             DIV(value if value!='' else '-',
                     _class='concepto_asiento',
-                    _id=str(row.id)+'-concepto_asiento'
+                    _id=str(row.id)+'.concepto_asiento'
                     )
 
     db.asiento.debe.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
                     _class='debe derecha',
-                    _id='{}-debe'.format(row.id)
+                    _id='{}.debe'.format(row.id)
                     )
     db.asiento.haber.represent = lambda value, row:\
             DIV(locale.currency(value, grouping=True) if value!='' else '-',
                     _class='haber derecha',
-                    _id='{}-haber'.format(row.id)
+                    _id='{}.haber'.format(row.id)
                     )
 
     # modificaciones a campos de la tabla `poliza`
@@ -46,7 +46,7 @@ def listar():
             DIV(
                 value or '-',
                 _class='concepto_general',
-                _id=str(row.id)+'-concepto_general'
+                _id=str(row.id)+'.concepto_general'
                 )
 
     # Columna `fecha`
@@ -242,19 +242,35 @@ def actualiza_asiento():
     """
     Actualiza un campo de la tabla `asiento`
     """
-    id, column = request.post_vars.id.split('-')
+    import numbers
+
+    id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
-    value_ = value
+
+    valor_retornar = value
 
     if column == 'debe' or column == 'haber':
 
+        print 'before', value
+
         if '$' in value:
-            value = value.replace('$', '') if value.replace('$', '') else 0
+            value = value.replace('$', '')
 
         if ',' in value:
-            value = value.replace(',', '') if value.replace(',', '') else 0
+            value = value.replace(',', '') 
 
-        value_ = locale.currency(float(value), grouping=True)
+        try:
+            value = float(value)
+            value = abs(value)
+        except:
+            print 'except'
+            valor_retornar = None
+            pass
+        else:
+            print 'else'
+            valor_retornar = locale.currency(float(value), grouping=True)
+
+        #valor_retornar = locale.currency(float(value), grouping=True)
 
     db(db.asiento.id == id).update(**{
         column:value,
@@ -262,14 +278,14 @@ def actualiza_asiento():
         'actualizada_por':auth.user['id']
         })
 
-    return value_
+    return valor_retornar
 
 
 def actualiza_descripcion():
     """
     Actualiza el campo `descripcion` de la tabla `asiento`.
     """
-    id, column = request.post_vars.id.split('-')
+    id, column = request.post_vars.id.split('.')
     valor = request.post_vars.value
 
     num_cc = valor.split()[0]
@@ -347,8 +363,6 @@ def agregar_poliza():
             periodo_id=periodo_id
             )
 
-    print id
-
     fila = db(db.poliza.id == id).select(
             db.poliza.tipo,
             db.poliza.creada_en,
@@ -405,7 +419,7 @@ def actualiza_tipo_poliza():
     - `actualizada por`
     de la tabla `poliza`
     """
-    id, column = request.post_vars.id.split('-')
+    id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
 
     db(db.poliza.id == id).update(**{column:value})
