@@ -19,6 +19,79 @@ $(function() {
             }
         });
     });
+    
+    $.editable.addInputType('my-row', {
+            element: $.editable.types.text.element,
+            plugin: function (settings, original) {
+                $('input', this).bind('keypress', function (e) {
+                    var TABKEY = 9;
+                    if(e.keyCode == TABKEY) {
+                        if(e.preventDefault) {
+                            e.preventDefault();
+                        }
+                        var div_id = $(original).attr('id');
+                        var id= div_id.substr(0, div_id.indexOf('-'));
+                        var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
+                        switch(actual) {
+                            case 'cc_empresa_id':
+                                next = 'concepto_asiento';
+                                break;
+                            case 'concepto_asiento':
+                                next = 'debe';
+                                break;
+                            case 'debe':
+                                next = 'haber';
+                                break;
+                            default:
+                                next = '';
+                        }
+                        if (next != ''){
+                            next_id  = '#'+id + '-'+next;
+                            $(next_id).click();
+                        }
+                        return false;
+                    }
+                });
+            }
+        });
+    
+    $("div[id$=-debe]").each(function(){
+        $(this).editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+            type      : 'my-row',
+            tooltip: "Click para editar, ENTER para salvar.",
+            indicator : "Actualizando...",
+            onblur : "submit",
+            callback: function (value, settings) {
+                cuadrarPoliza();
+            },
+            
+        });
+    });
+    
+    $("div[id$=-haber]").each(function(){
+        $(this).editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+            type      : 'my-row',
+            tooltip: "Click para editar, ENTER para salvar.",
+            indicator : "Actualizando...",
+            onblur : "submit",
+            callback: function (value, settings) {
+                cuadrarPoliza();
+            },
+            
+        });
+    });
+    $("div[id$=-concepto_asiento]").each(function(){
+        
+        $(this).editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+            type      : 'my-row',
+            tooltip: "Click para editar, ENTER para salvar.",
+            indicator : "Actualizando...",
+            onblur : "submit"
+        });
+    });
+  
+    
+
 });
 
 /* cuadrar las cuentas */
@@ -50,8 +123,10 @@ $(document).ready(function(){
         });
 
         $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
+            type:"my-row",
             tooltip: 'Click para editar, ENTER para salvar.',
             indicator: 'Actualizando...',
+            onblur : "submit",
         }).click(function() {
             $(this).find('input').autocomplete({
                 source: dataArray
@@ -59,10 +134,7 @@ $(document).ready(function(){
         });
     });
 
-    $('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-    });
+    
 
     $('.cambiar_estatus').change(function() {
 
@@ -88,26 +160,11 @@ $(document).ready(function(){
         });
     });
 
-    $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator : "Actualizando...",
-        callback: function (value, settings) {
-            cuadrarPoliza();
-        }
-    });
-
-    $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
-        callback: function (value, settings) {
-            cuadrarPoliza();
-        }
-    });
-
     /* Funciones para modificar los valores de las pólizas */
     $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
         tooltip: "Click para editar, ENTER para salvar.",
         indicator: "Actualizando...",
+        onblur : "submit",
     });
 
 
