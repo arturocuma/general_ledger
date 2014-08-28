@@ -462,7 +462,7 @@ def actualiza_tipo_poliza():
     - `actualizada por`
     de la tabla `poliza`
     """
-    id, column = request.post_vars.id.split('-')
+    id, column = request.post_vars.id.split('.')
     value = request.post_vars.value
 
     db(db.poliza.id == id).update(**{column:value})
