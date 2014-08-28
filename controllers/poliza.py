@@ -244,14 +244,6 @@ def actualiza_asiento():
     """
     id, column = request.post_vars.id.split('-')
     value = request.post_vars.value
-    value_ = value
-
-    if column == 'debe' or column == 'haber':
-        if '$' in value:
-            value = value.replace('$', '') if value.replace('$', '') else 0
-            value_ = locale.currency(float(value), grouping=True)
-        else:
-            value_ = locale.currency(float(value), grouping=True)
 
     db(db.asiento.id == id).update(**{
         column:value,
@@ -259,7 +251,44 @@ def actualiza_asiento():
         'actualizada_por':auth.user['id']
         })
 
-    return value_
+    return value
+
+def actualiza_debe_haber():
+    """
+    Actualiza los campos `debe` y `haber` de la tabla `asientos`
+    """
+    import numbers
+
+    id, column = request.post_vars.id.split('-')
+    value = request.post_vars.value
+
+    valor_retornar = value
+
+    if '$' in value:
+        value = value.replace('$', '')
+
+    if ',' in value:
+        value = value.replace(',', '') 
+
+    try:
+        value = float(value)
+        value = abs(value)
+    except:
+        # si el formato es incorrecto, regresar el valor actual en el registro
+        ex = db(db.asiento.id == id).select(
+                db.asiento[column].with_alias('valor')
+                ).first().valor
+        value = ex
+
+    valor_retornar = locale.currency(float(value), grouping=True)
+
+    db(db.asiento.id == id).update(**{
+        column:value,
+        'actualizada_en':datetime.now(),
+        'actualizada_por':auth.user['id']
+        })
+
+    return valor_retornar
 
 
 def actualiza_descripcion():

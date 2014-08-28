@@ -151,7 +151,7 @@ $(document).ready(function(){
                 });
 
 
-                $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                $('.debe').editable("{{=URL('poliza', 'actualiza_debe_haber')}}",{
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
@@ -161,7 +161,7 @@ $(document).ready(function(){
                     }
                 });
 
-                $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                $('.haber').editable("{{=URL('poliza', 'actualiza_debe_haber')}}",{
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
