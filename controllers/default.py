@@ -17,8 +17,14 @@ def init():
     from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
     auth = Auth(db_maestro)
     form = auth.login()
-    if request.vars_next:
+    if request.vars._next:
         redirect(URL('default','index'))
+    return dict(form=form)
+
+def register():
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
+    form = auth.register()
     return dict(form=form)
 
 def login():
