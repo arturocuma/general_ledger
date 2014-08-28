@@ -19,7 +19,7 @@ def init():
     form = auth.login()
     if request.vars._next:
         redirect(URL('default','index'))
-    return dict(form=form)
+    return dict(form=form, formReset = auth.retrieve_password())
 
 def register():
     from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
@@ -30,9 +30,13 @@ def register():
 def login():
     from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
     auth = Auth(db_maestro)
-    form = auth.login()
-    form.add_button(T('Register'),URL('default','user/register'),_class='btn')
-    return dict(form=form)
+    ## configure email
+    mail = auth.settings.mailer
+    mail.settings.server = 'smtp.gmail.com:587'
+    mail.settings.sender = 'datawork.mx@gmail.com'
+    mail.settings.login = 'datawork.mx:d4t4w0rk'
+    form = auth.login()    
+    return dict(form=form, formReset = auth.retrieve_password())
 
 def empresa():
     empresa_id = request.args(0)
