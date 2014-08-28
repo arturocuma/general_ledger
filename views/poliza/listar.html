@@ -53,12 +53,18 @@ $(document).ready(function(){
                 $.editable.addInputType('my-row', {
                 element: $.editable.types.text.element,
                 plugin: function (settings, original) {
+                        var div_id = $(original).attr('id');
+                        var id= div_id.substr(0, div_id.indexOf('-'));
+                        var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
+                        var obj = document.getElementById(div_id);
+                        ancho = $(original).width();
+                    //alert(ancho);
+                    $('input', this).css({"width":ancho*0.5+"px"});
                         $('input', this).select();
+                    ancho_ = $('input',this).width();
+                    //alert(ancho_);
                         $('input', this).bind('keydown', function (e) {
                                 var TABKEY = 9;
-                                var div_id = $(original).attr('id');
-                                var id= div_id.substr(0, div_id.indexOf('-'));
-                                var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
                                 switch(actual) {
                                     case 'cc_empresa_id':
                                         if(e.keyCode == TABKEY) {
@@ -128,7 +134,7 @@ $(document).ready(function(){
                         type: "my-row",
                         onblur: "submit",
                         tooltip: 'Click para editar, ENTER para salvar.',
-                        indicator: 'Actualizando...',
+                        //indicator: 'Actualizando...',
                     }).click(function() {
                         $(this).find('input').autocomplete({
                             source: dataArray
@@ -140,7 +146,8 @@ $(document).ready(function(){
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
-                    indicator : "Actualizando...",
+                    //indicator : "Actualizando...",
+                    //style: "inherit"
                 });
 
 
@@ -148,7 +155,7 @@ $(document).ready(function(){
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
-                    indicator : "Actualizando...",
+                    //indicator : "Actualizando...",
                     callback: function (value, settings) {
                         cuadrarPoliza();
                     }
@@ -158,7 +165,7 @@ $(document).ready(function(){
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
-                    indicator: "Actualizando...",
+                    //indicator: "Actualizando...",
                     callback: function (value, settings) {
                         cuadrarPoliza();
                     }
