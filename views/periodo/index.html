@@ -7,7 +7,7 @@
                     <i class="fa-fw fa  fa-calendar"></i>
                     Periodos
                 </p>
-                <small>Creacion y listado de periodos</small>
+                <small>Creación y listado de periodos</small>
             </h1>
         </legend>
     </article>
@@ -155,9 +155,9 @@ $(document).ready(function(){
         $.SmartMessageBox({
             title : msg,
             content : 'Mensaje de confirmación',
-            buttons : '[No][Si]'
+            buttons : '[No][Sí]'
         }, function(ButtonPressed) {
-            if (ButtonPressed === "Si") {
+            if (ButtonPressed === "Sí") {
                 $.ajax({
                         data:  { periodo_id : row },
                         url:   url,

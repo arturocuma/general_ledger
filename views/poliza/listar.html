@@ -1,99 +1,6 @@
 {{extend 'layout.html'}}
 
 <script>
-
-$(function() {
-    $("input[id$=-fecha_usuario]").each(function(){
-
-        $(this).datepicker({ 
-            dateFormat: 'yy-mm-dd',
-            onSelect: function(fecha) { 
-                var id = $(this).attr('id');
-                id = id.replace('-', '.');
-
-                datos = {'value': fecha, 'id': id}
-
-                $.post("{{=URL('actualiza_poliza')}}", datos).success(
-                    function(data){ $(id).html(data); }
-                );
-            }
-        });
-    });
-    
-    $.editable.addInputType('my-row', {
-            element: $.editable.types.text.element,
-            plugin: function (settings, original) {
-                $('input', this).bind('keypress', function (e) {
-                    var TABKEY = 9;
-                    if(e.keyCode == TABKEY) {
-                        if(e.preventDefault) {
-                            e.preventDefault();
-                        }
-                        var div_id = $(original).attr('id');
-                        var id= div_id.substr(0, div_id.indexOf('-'));
-                        var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
-                        switch(actual) {
-                            case 'cc_empresa_id':
-                                next = 'concepto_asiento';
-                                break;
-                            case 'concepto_asiento':
-                                next = 'debe';
-                                break;
-                            case 'debe':
-                                next = 'haber';
-                                break;
-                            default:
-                                next = '';
-                        }
-                        if (next != ''){
-                            next_id  = '#'+id + '-'+next;
-                            $(next_id).click();
-                        }
-                        return false;
-                    }
-                });
-            }
-        });
-    
-    $("div[id$=-debe]").each(function(){
-        $(this).editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-            type      : 'my-row',
-            tooltip: "Click para editar, ENTER para salvar.",
-            indicator : "Actualizando...",
-            onblur : "submit",
-            callback: function (value, settings) {
-                cuadrarPoliza();
-            },
-            
-        });
-    });
-    
-    $("div[id$=-haber]").each(function(){
-        $(this).editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-            type      : 'my-row',
-            tooltip: "Click para editar, ENTER para salvar.",
-            indicator : "Actualizando...",
-            onblur : "submit",
-            callback: function (value, settings) {
-                cuadrarPoliza();
-            },
-            
-        });
-    });
-    $("div[id$=-concepto_asiento]").each(function(){
-        
-        $(this).editable("{{=URL('poliza', 'actualiza_asiento')}}",{
-            type      : 'my-row',
-            tooltip: "Click para editar, ENTER para salvar.",
-            indicator : "Actualizando...",
-            onblur : "submit"
-        });
-    });
-  
-    
-
-});
-
 /* cuadrar las cuentas */
 function cuadrarPoliza() {
 
@@ -113,81 +20,148 @@ $(document).ready(function(){
 
     cuadrarPoliza();
 
-    /* Funciones para modificar los valores de los asientos */
-    $.getJSON('{{=URL("carga_cc")}}', function(json) {
+    {{if request.vars.id:}}
+        {{url = URL('verificar_estatus_periodo', vars={'id_poliza': request.vars.id})}}
+    {{else:}}
+        {{url = URL('verificar_estatus_periodo', vars={'id_asiento': request.args(-1)})}}
+    {{pass}}
 
-        var dataArray = [];
+    $.getJSON("{{=url}}", function(json) {
+        $.each(json, function(index, value) {
 
-        $.each(json, function (index, value) {
-            dataArray.push(value);
-        });
+            /* inicio: validación de periodo */
+            if (value != "CERRADO") {
 
-        $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
-            type:"my-row",
-            tooltip: 'Click para editar, ENTER para salvar.',
-            indicator: 'Actualizando...',
-            onblur : "submit",
-        }).click(function() {
-            $(this).find('input').autocomplete({
-                source: dataArray
-            });
-        });
-    });
+                /* Funciones para modificar los valores de las pólizas */
+                $("input[id$=-fecha_usuario]").each(function(){
 
+                    $(this).datepicker({ 
+                        dateFormat: 'yy-mm-dd',
+                        onSelect: function(fecha) { 
+                            var id = $(this).attr('id');
+                            id = id.replace('-', '.');
+
+                            datos = {'value': fecha, 'id': id}
+
+                            $.post("{{=URL('actualiza_poliza')}}", datos).success(
+                                function(data){ $(id).html(data); }
+                            );
+                        }
+                    });
+                });
+
+                $.editable.addInputType('my-row', {
+                    element: $.editable.types.text.element,
+                    plugin: function (settings, original) {
+                        $('input', this).bind('keypress', function (e) {
+                            var TABKEY = 9;
+                            if(e.keyCode == TABKEY) {
+                                if(e.preventDefault) {
+                                    e.preventDefault();
+                                }
+                                var div_id = $(original).attr('id');
+                                var id= div_id.substr(0, div_id.indexOf('-'));
+                                var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
+                                switch(actual) {
+                                    case 'cc_empresa_id':
+                                        next = 'concepto_asiento';
+                                        break;
+                                    case 'concepto_asiento':
+                                        next = 'debe';
+                                        break;
+                                    case 'debe':
+                                        next = 'haber';
+                                        break;
+                                    default:
+                                        next = '';
+                                }
+                                if (next != ''){
+                                    next_id  = '#'+id + '-'+next;
+                                    $(next_id).click();
+                                }
+                                return false;
+                            }
+                        });
+                    }
+                });
     
+                $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator: "Actualizando...",
+                });
 
-    $('.cambiar_estatus').change(function() {
+                $('.cambiar_tipo').change(function() {
 
-        var id = $(this).attr('id');
-        var value = $(this).val();
-        var datos = {id: id, value:value};
+                    var id = $(this).attr('id');
+                    var value = $(this).val();
+                    var datos = {id: id, value:value};
 
-        $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
-            $(id).html(data);
+                    $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
+                        id = id.replace('.', '');
+                        id = '#' + id.replace('tipo', 'folio');
+                        $(id).html(data);
+                    });
+                });
+
+                $('.cambiar_estatus').change(function() {
+                    var id = $(this).attr('id');
+                    var value = $(this).val();
+                    var datos = {id: id, value:value};
+                    $.post("{{=URL('actualiza_poliza')}}", datos).success(function(data){
+                        $(id).html(data);
+                    });
+                });
+
+                /* Funciones para modificar los valores de los asientos */
+                $.getJSON('{{=URL("carga_cc")}}', function(json) {
+
+                    var dataArray = [];
+
+                    $.each(json, function (index, value) {
+                        dataArray.push(value);
+                    });
+
+                    $('.cc_empresa_id').editable( "{{=URL('poliza', 'actualiza_descripcion')}}", {
+                        type: "my-row",
+                        onblur: "submit",
+                        tooltip: 'Click para editar, ENTER para salvar.',
+                        indicator: 'Actualizando...',
+                    }).click(function() {
+                        $(this).find('input').autocomplete({
+                            source: dataArray
+                        });
+                    });
+                });
+
+                $('.concepto_asiento').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                    type: "my-row",
+                    onblur: "submit",
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator : "Actualizando...",
+                });
+
+
+                $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                    type: "my-row",
+                    onblur: "submit",
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator : "Actualizando...",
+                    callback: function (value, settings) {
+                        cuadrarPoliza();
+                    }
+                });
+
+                $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                    onblur: "submit",
+                    tooltip: "Click para editar, ENTER para salvar.",
+                    indicator: "Actualizando...",
+                    callback: function (value, settings) {
+                        cuadrarPoliza();
+                    }
+                });
+            }
         });
     });
-
-    $('.cambiar_tipo').change(function() {
-
-        var id = $(this).attr('id');
-        var value = $(this).val();
-        var datos = {id: id, value:value};
-
-        $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
-            id = id.replace('.', '');
-            id = '#' + id.replace('tipo', 'folio');
-            $(id).html(data);
-        });
-    });
-
-    /* Funciones para modificar los valores de las pólizas */
-    $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
-        tooltip: "Click para editar, ENTER para salvar.",
-        indicator: "Actualizando...",
-        onblur : "submit",
-    });
-
-
-    /*
-    $.getJSON('{{=URL("carga_tipo_poliza")}}', function(json) {
-
-        var dataArray = [];
-
-        $.each(json, function (index, value) {
-            dataArray.push(value);
-        });
-
-        $('.tipo_poliza').editable("{{=URL('poliza', 'actualiza_tipo_poliza')}}",{
-            tooltip: "Click para editar, ENTER para salvar.",
-            indicator : "Actualizando...",
-        }).click(function() {
-            $(this).find('input').autocomplete({
-                source: dataArray
-            });
-        });
-    });
-    */
-
 });
 </script>
 
@@ -234,57 +208,57 @@ $(document).ready(function(){
     </div>
 </div>
 
-                                <!-- widget grid -->
-                                <section id="widget-grid" class="">
-                                        <!-- row -->
-                                        <div class="row">
-                                                <article class="col-sm-12">
-                                                        <!-- new widget -->
-                                                        <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
-                                                                <!-- widget options:
-                                                                usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
-                                                                data-widget-colorbutton="false"
-                                                                data-widget-editbutton="false"
-                                                                data-widget-togglebutton="false"
-                                                                data-widget-deletebutton="false"
-                                                                data-widget-fullscreenbutton="false"
-                                                                data-widget-custombutton="false"
-                                                                data-widget-collapsed="true"
-                                                                data-widget-sortable="false"
-                                                                -->
-                                                                <header>
-                                                                        <span class="widget-icon"> <i class="fa fa-list txt-color-darken"></i> </span>
-                                                                        <h2>Listado de Pólizas Contables</h2>
-                                                                </header>
-                                                                <!-- widget div-->
-                                                                <div class="no-padding">
-                                                                        <!-- widget edit box -->
-                                                                        <div class="jarviswidget-editbox">
-                                                                                test
-                                                                        </div>
-                                                                        <!-- end widget edit box -->
-                                                                        <div class="widget-body">
-                                                                                <!-- content -->
-                                                                                <div id="myTabContent" class="tab-content">
-                                                                                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
-                                                
-                                                <div class="padding-10">
-                                                    <ul id="expList">
-                                                        
-                                                        {{=polizas}}
-                                                    </ul>
-                                                                                                </div>
-                                                                                        </div>
-                                                                                        <!-- end s1 tab pane -->
-                                                                                </div>
-                                                                                <!-- end content -->
-                                                                        </div>
-                                                                </div>
-                                                                <!-- end widget div -->
-                                                        </div>
-                                                        <!-- end widget -->
-                                                </article>
-                                        </div>
-                                        <!-- end row -->
-                                </section>
-                                <!-- end widget grid -->
+<!-- widget grid -->
+<section id="widget-grid" class="">
+<!-- row -->
+<div class="row">
+    <article class="col-sm-12">
+    <!-- new widget -->
+    <div class="jarviswidget" id="wid-id-0" data-widget-togglebutton="false" data-widget-editbutton="false" data-widget-fullscreenbutton="false" data-widget-colorbutton="false" data-widget-deletebutton="false">
+        <!-- widget options:
+        usage: <div class="jarviswidget" id="wid-id-0" data-widget-editbutton="false">
+            data-widget-colorbutton="false"
+            data-widget-editbutton="false"
+            data-widget-togglebutton="false"
+            data-widget-deletebutton="false"
+            data-widget-fullscreenbutton="false"
+            data-widget-custombutton="false"
+            data-widget-collapsed="true"
+            data-widget-sortable="false"
+            -->
+            <header>
+            <span class="widget-icon"> <i class="fa fa-list txt-color-darken"></i> </span>
+            <h2>Listado de Pólizas Contables</h2>
+            </header>
+            <!-- widget div-->
+            <div class="no-padding">
+                <!-- widget edit box -->
+                <div class="jarviswidget-editbox">
+                    test
+                </div>
+                <!-- end widget edit box -->
+                <div class="widget-body">
+                    <!-- content -->
+                    <div id="myTabContent" class="tab-content">
+                        <div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
+
+                            <div class="padding-10">
+                                <ul id="expList">
+
+                                    {{=polizas}}
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- end s1 tab pane -->
+                    </div>
+                    <!-- end content -->
+                </div>
+            </div>
+            <!-- end widget div -->
+        </div>
+        <!-- end widget -->
+        </article>
+    </div>
+    <!-- end row -->
+    </section>
+    <!-- end widget grid -->
