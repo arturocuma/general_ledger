@@ -241,3 +241,18 @@ def obtener_estatus_periodo(poliza_id):
             ).first()
 
     return estatus_periodo.nombre
+
+def obtener_estatus_periodo2(poliza_id, asiento_id):
+    """
+    Recibe el `id` de la póliza y obtiene el estatus del periodo de esa póliza,
+    si el `id` de la póliza es nulo
+    """
+    estatus_periodo = db(
+                (db.periodo.id == poliza_id) &
+                (db.periodo.estatus_periodo_id == db.estatus_periodo.id)
+            ).select(
+                db.periodo.estatus_periodo_id.with_alias('id'),
+                db.estatus_periodo.nombre.with_alias('nombre')
+            ).first()
+
+    return estatus_periodo.nombre

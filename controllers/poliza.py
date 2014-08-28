@@ -7,6 +7,7 @@ from datetime import datetime, date
 empresa_id = session.instancias
 db = empresas.dbs[int(empresa_id)]
 
+
 # For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
 
@@ -81,12 +82,31 @@ def listar():
 
     if request.vars.id:
         periodo = obtener_estatus_periodo(request.vars.id)
+        links = [lambda row: A(
+            SPAN(_class="fa fa-plus-square"), 
+            _id = '{}-agregar'.format(row.id),
+            _href=URL(
+                "poliza", 
+                "agregar_poliza", 
+                vars={'id':request.vars.id}
+            ))]
     else:
-        poliza_id = request.args(-1)
+        poliza_id = request.args(2)
+
         id = db(db.poliza.id == poliza_id).select(
                 db.poliza.periodo_id
                 ).first().periodo_id
+
         periodo = obtener_estatus_periodo(id)
+
+        links = [lambda row: A(
+            SPAN(_class="fa fa-plus-square"), 
+            _id = '{}-agregar'.format(row.id),
+            _href=URL(
+                "poliza",
+                "agregar_asiento",
+                args=["poliza", request.args(2)]
+            ))]
 
     polizas = SQLFORM.smartgrid(
             db.poliza,
@@ -97,6 +117,7 @@ def listar():
             #deletable=auth.has_permission('delete_poliza') or False,
             deletable=True if periodo != 'CERRADO' else False,
             searchable=False,
+            links=links if periodo != 'CERRADO' else None,
             editable=False,
             details=False,
             create=False,
@@ -128,7 +149,7 @@ def listar():
                     "agregar_asiento",
                     args=["poliza", request.args(-1)]
                     )
-                ),BR(), BR())
+                ), BR(), BR())
 
         if periodo != 'CERRADO':
             polizas[2].insert(-1, boton_agregar_asiento)
@@ -145,7 +166,7 @@ def listar():
                     "agregar_poliza",
                     vars={'id':request.vars.id}
                     )
-                ),BR(), BR())
+                ), BR(), BR())
 
         if periodo != 'CERRADO':
             polizas[2].insert(-1, boton_agregar_poliza)
@@ -176,20 +197,29 @@ def agregar_asiento():
     Agrega un elemento a la tabla `asiento`
     """
 
-    db.asiento.insert(
-            poliza_id = request.args[1],
-            concepto_asiento = '',
-            debe = 0,
-            haber = 0
-            )
+    if request.vars.id:
+        periodo = obtener_estatus_periodo(request.vars.id)
+    else:
+        poliza_id = request.args(-1)
+        id = db(db.poliza.id == poliza_id).select(
+                db.poliza.periodo_id
+                ).first().periodo_id
+        periodo = obtener_estatus_periodo(id)
 
-    redirect(
-            URL(
-                'poliza/listar/poliza',
-                'asiento.poliza_id',
-                args=request.args[1]
+    if periodo != 'CERRADO':
+
+        db.asiento.insert(
+                poliza_id = request.args[1],
+                concepto_asiento = '',
+                debe = 0,
+                haber = 0
                 )
-            )
+
+    redirect(URL(
+        'poliza/listar/poliza',
+        'asiento.poliza_id',
+        args=request.args[1]
+        ))
 
 
 def cuadrar_poliza():
@@ -342,64 +372,67 @@ def agregar_poliza():
     Agrega un elemento a la tabla `póliza`
     """
 
-    periodo_id = request.vars.id
+    periodo_estatus = obtener_estatus_periodo(request.vars.id)
 
-    periodo = db(db.periodo.id == periodo_id).select(
-            db.periodo.consecutivo,
-            db.periodo.inicio,
-            db.periodo.estatus_periodo_id
+    if periodo_estatus != 'CERRADO':
+
+        periodo_id = request.vars.id
+        periodo = db(db.periodo.id == periodo_id).select(
+                db.periodo.consecutivo,
+                db.periodo.inicio,
+                db.periodo.estatus_periodo_id
+                ).first()
+
+        consecutivo_actual = periodo.consecutivo
+
+        ultimo = db(db.poliza.id > 0).select(
+                db.poliza.id,
+                db.poliza.creada_en,
+                orderby =~ db.poliza.id
             ).first()
 
-    consecutivo_actual = periodo.consecutivo
+        # en caso de que no existan pólizas
+        if ultimo:
+            ultimo = int(ultimo.creada_en.strftime('%m'))
+        else:
+            ultimo = int(datetime.now().strftime('%m'))
+        # fin-en caso de que no existan pólizas
 
-    ultimo = db(db.poliza.id > 0).select(
-            db.poliza.id,
-            db.poliza.creada_en,
-            orderby =~ db.poliza.id
-        ).first()
-
-    # en caso de que no existan pólizas
-    if ultimo:
-        ultimo = int(ultimo.creada_en.strftime('%m'))
-    else:
-        ultimo = int(datetime.now().strftime('%m'))
-    # fin-en caso de que no existan pólizas
-
-    id = db.poliza.insert(
-            folio = '',
-            concepto_general = '',
-            importe = 0,
-            fecha_usuario = date.today(),
-            periodo_id=periodo_id
-            )
-
-    fila = db(db.poliza.id == id).select(
-            db.poliza.tipo,
-            db.poliza.creada_en,
-            ).first()
-    ahora = int(fila.creada_en.strftime('%m'))
-
-
-    """
-    if ultimo < ahora:
-        # cambio de mes
-        consecutivo = 1 
-        db(db.periodo.consecutivo == consecutivo_actual).update(
-                consecutivo_polizas = 1
+        id = db.poliza.insert(
+                folio = '',
+                concepto_general = '',
+                importe = 0,
+                fecha_usuario = date.today(),
+                periodo_id=periodo_id
                 )
-    else:
-    """
 
-    consecutivo = int(consecutivo_actual)
+        fila = db(db.poliza.id == id).select(
+                db.poliza.tipo,
+                db.poliza.creada_en,
+                ).first()
+        ahora = int(fila.creada_en.strftime('%m'))
 
-    query = (db.periodo.consecutivo == consecutivo_actual) &\
-            (db.periodo.id == periodo_id)
 
-    db(query).update(consecutivo = consecutivo + 1)
-    consecutivo += 1
+        """
+        if ultimo < ahora:
+            # cambio de mes
+            consecutivo = 1 
+            db(db.periodo.consecutivo == consecutivo_actual).update(
+                    consecutivo_polizas = 1
+                    )
+        else:
+        """
 
-    folio = armar_folio(consecutivo, fila.tipo, periodo.inicio)
-    db(db.poliza.id == id).update(folio = folio)
+        consecutivo = int(consecutivo_actual)
+
+        query = (db.periodo.consecutivo == consecutivo_actual) &\
+                (db.periodo.id == periodo_id)
+
+        db(query).update(consecutivo = consecutivo + 1)
+        consecutivo += 1
+
+        folio = armar_folio(consecutivo, fila.tipo, periodo.inicio)
+        db(db.poliza.id == id).update(folio = folio)
 
     redirect(URL('poliza', 'listar', vars={'id': request.vars.id}))
 
