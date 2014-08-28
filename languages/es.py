@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -141,6 +141,7 @@
 'Copyright': 'Copyright',
 'Correo electrónico': 'Correo electrónico',
 'Correo electrónico inválido': 'Correo electrónico inválido',
+'Creat account': 'Creat account',
 'create file with filename:': 'cree archivo con nombre:',
 'Create new application': 'Cree una nueva aplicación',
 'create new application:': 'nombre de la nueva aplicación:',
@@ -232,6 +233,7 @@
 'Errors': 'Errores',
 'Errors in form, please check it out.': 'Hay errores en el formulario, por favor comprúebelo.',
 'Estado': 'Estado',
+'Este correo electrónico ya tiene una cuenta': 'Este correo electrónico ya tiene una cuenta',
 'export as csv file': 'exportar como archivo CSV',
 'Export:': 'Exportar:',
 'exposes': 'expone',
@@ -352,6 +354,7 @@
 'My Sites': 'Mis Sitios',
 'Móvil': 'Móvil',
 'Name': 'Nombre',
+'Need an account?': 'Need an account?',
 'New': 'Nuevo',
 'New %(entity)s': 'Nuevo %(entity)s',
 'new application "%s" created': 'nueva aplicación "%s" creada',

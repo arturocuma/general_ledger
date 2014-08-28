@@ -589,7 +589,7 @@ header,h1,h2,h3,h4{
 						{{pass}}
 					</li>
 					<li>
-						<a href="javascript:void(0);">
+						<a href="javascript:void();">
 							<i class="fa fa-lg fa-fw  fa-file-text-o "></i>
 							<span class="menu-item-parent">Pólizas</span>
 						</a>
@@ -620,7 +620,7 @@ header,h1,h2,h3,h4{
 
 					</li>
 					<li>
-						<a href="javascript:void(0);"><i class="fa fa-lg fa-fw fa-clipboard  "></i> <span class="menu-item-parent">Reportes</span></a>
+						<a href="javascript:void();"><i class="fa fa-lg fa-fw fa-clipboard  "></i> <span class="menu-item-parent">Reportes</span></a>
 						<ul>
 							<li>
 								<a href="{{=URL('reportes','libro_diario')}}">
@@ -648,7 +648,7 @@ header,h1,h2,h3,h4{
 								</a>
                             </li>
                             <li>
-                                <a href="javascript:void(0);">
+                                <a href="javascript:void();">
 									<i class="fa fa-fw fa-folder-open"></i>
 									Reportes Creados
 								</a>
@@ -672,10 +672,10 @@ header,h1,h2,h3,h4{
 						</ul>
 					</li>
 					<li>
-						<a href="javascript:void(0);"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent"> Configuraciones</span></a>
+						<a href="javascript:void();"><i class="fa fa-lg fa-fw fa-cog"></i> <span class="menu-item-parent"> Configuraciones</span></a>
 						<ul>
                             <li>
-                                <a href="javascript:void(0);"><i class="fa fa-fw fa-folder-open"></i> Catalogos</a>
+                                <a href="javascript:void();"><i class="fa fa-fw fa-folder-open"></i> Catalogos</a>
                                 <ul>
                                 	<li>
                                         <a href="{{=URL('periodo','index')}}"> Periodos </a>
@@ -684,24 +684,24 @@ header,h1,h2,h3,h4{
                                         <a href="{{=URL('cc_empresa','cc_grid')}}"> Cuentas Contables </a>
                                     </li>
                                     <li>
-                                        <a style="color:#595959;" href="javascript:void(0);" disabled='disabled'> Sucursales </a>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Sucursales </a>
                                     </li>
                                     <li>
-                                        <a style="color:#595959;" href="javascript:void(0);" disabled='disabled'> Paises </a>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Paises </a>
                                     </li>
                                     <li>
-                                        <a style="color:#595959;" href="javascript:void(0);" disabled='disabled'> Estados </a>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Estados </a>
                                     </li>
                                     <li>
-                                        <a style="color:#595959;" href="javascript:void(0);" disabled='disabled'> Municipios </a>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Municipios </a>
                                     </li>
                                     <li>
-                                        <a style="color:#595959;" href="javascript:void(0);" disabled='disabled'> Localidades </a>
+                                        <a style="color:#595959;" href="javascript:void();" disabled='disabled'> Localidades </a>
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a href="javascript:void(0);"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> Reportes</a>
+                                <a href="javascript:void();"><i class="fa fa-lg fa-fw fa-bar-chart-o"></i> Reportes</a>
                                 <ul>
                                     <li>
                                         <a href="{{=URL('configuracion','estado_resultados')}}"><i class="fa fa-fw "></i> Estado de Resultados </a>
@@ -712,7 +712,7 @@ header,h1,h2,h3,h4{
                                 </ul>
                             </li>
                             <li>
-								<a href="javascript:void(0)">
+								<a href="javascript:void();">
 									<i class="fa fa-fw fa-user"></i> Usuarios
 								</a>
 								<ul>
@@ -778,6 +778,7 @@ header,h1,h2,h3,h4{
 				<li>
 					<a href="{{=URL('default','user/profile')}}" class="jarvismetro-tile big-cubes selected bg-color-green"> <span class="iconbox"> <i class="fa fa-user fa-4x"></i> <span>Mi Pérfil </span> </span> </a>
 				</li>
+			{{if session.instancias:}}
 				{{if mias:}}
 					{{for m in mias:}}					
 					<li>
@@ -792,6 +793,7 @@ header,h1,h2,h3,h4{
 					</li>
 					{{pass}}
 				{{pass}}
+			{{pass}}
 			</ul>
 		</div>
 		<!-- END SHORTCUT AREA -->		

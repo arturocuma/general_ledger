@@ -13,6 +13,21 @@ import csv
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
 
+def init():
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
+    form = auth.login()
+    if request.vars_next:
+        redirect(URL('default','index'))
+    return dict(form=form)
+
+def login():
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
+    form = auth.login()
+    form.add_button(T('Register'),URL('default','user/register'),_class='btn')
+    return dict(form=form)
+
 def empresa():
     empresa_id = request.args(0)
     if empresa_id:
@@ -457,14 +472,6 @@ def cookieDelete():
         response.cookies['picture_usr'] = 'invalid'
         response.cookies['picture_usr']['expires'] = -10
         response.cookies['picture_usr']['path'] = '/'
-
-
-def login():
-    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-    auth = Auth(db_maestro)
-    form = auth.login()
-    form.add_button(T('Register'),URL('default','user/register'),_class='btn')
-    return dict(form=form)
 
 
 def index():
