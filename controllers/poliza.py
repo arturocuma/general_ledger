@@ -247,11 +247,14 @@ def actualiza_asiento():
     value_ = value
 
     if column == 'debe' or column == 'haber':
+
         if '$' in value:
             value = value.replace('$', '') if value.replace('$', '') else 0
-            value_ = locale.currency(float(value), grouping=True)
-        else:
-            value_ = locale.currency(float(value), grouping=True)
+
+        if ',' in value:
+            value = value.replace(',', '') if value.replace(',', '') else 0
+
+        value_ = locale.currency(float(value), grouping=True)
 
     db(db.asiento.id == id).update(**{
         column:value,
@@ -343,6 +346,8 @@ def agregar_poliza():
             fecha_usuario = date.today(),
             periodo_id=periodo_id
             )
+
+    print id
 
     fila = db(db.poliza.id == id).select(
             db.poliza.tipo,
