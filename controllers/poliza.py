@@ -7,6 +7,7 @@ from datetime import datetime, date
 empresa_id = session.instancias
 db = empresas.dbs[int(empresa_id)]
 
+
 # For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
 
@@ -81,8 +82,8 @@ def listar():
 
     if request.vars.id:
         periodo = obtener_estatus_periodo(request.vars.id)
-        links = [lambda row: BUTTON(
-            '+', 
+        links = [lambda row: A(
+            SPAN(_class="fa fa-plus-square"), 
             _id = '{}-agregar'.format(row.id),
             _href=URL(
                 "poliza", 
@@ -90,18 +91,21 @@ def listar():
                 vars={'id':request.vars.id}
             ))]
     else:
-        poliza_id = request.args(-1)
+        poliza_id = request.args(2)
+
         id = db(db.poliza.id == poliza_id).select(
                 db.poliza.periodo_id
                 ).first().periodo_id
+
         periodo = obtener_estatus_periodo(id)
-        links = [lambda row: BUTTON(
-            '+', 
+
+        links = [lambda row: A(
+            SPAN(_class="fa fa-plus-square"), 
             _id = '{}-agregar'.format(row.id),
             _href=URL(
                 "poliza",
                 "agregar_asiento",
-                args=["poliza", request.args(-1)]
+                args=["poliza", request.args(2)]
             ))]
 
     polizas = SQLFORM.smartgrid(
