@@ -13,6 +13,31 @@ import csv
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
 
+def init():
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
+    form = auth.login()
+    if request.vars._next:
+        redirect(URL('default','index'))
+    return dict(form=form, formReset = auth.retrieve_password())
+
+def register():
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
+    form = auth.register()
+    return dict(form=form)
+
+def login():
+    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
+    auth = Auth(db_maestro)
+    ## configure email
+    mail = auth.settings.mailer
+    mail.settings.server = 'smtp.gmail.com:587'
+    mail.settings.sender = 'datawork.mx@gmail.com'
+    mail.settings.login = 'datawork.mx:d4t4w0rk'
+    form = auth.login()    
+    return dict(form=form, formReset = auth.retrieve_password())
+
 def empresa():
     empresa_id = request.args(0)
     if empresa_id:
@@ -457,14 +482,6 @@ def cookieDelete():
         response.cookies['picture_usr'] = 'invalid'
         response.cookies['picture_usr']['expires'] = -10
         response.cookies['picture_usr']['path'] = '/'
-
-
-def login():
-    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-    auth = Auth(db_maestro)
-    form = auth.login()
-    form.add_button(T('Register'),URL('default','user/register'),_class='btn')
-    return dict(form=form)
 
 
 def index():

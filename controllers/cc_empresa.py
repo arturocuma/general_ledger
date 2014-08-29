@@ -454,7 +454,7 @@ def wiz_cc():
     #    db_.rollback()
     #else:
     #    db_.commit()
-        redirect(URL('default','index',args=[empresa_id]))
+        redirect(URL('default','empresa',args=[empresa_id]))
         return XML(msg)
 
 
