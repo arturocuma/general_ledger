@@ -1,2 +1,2 @@
 #crontab
-0-59/1  *  *  *  * root *applications/instore/modules/background_updater.py
+0-59/1  *  *  *  * root *applications/general_ledger/modules/crontest.py
