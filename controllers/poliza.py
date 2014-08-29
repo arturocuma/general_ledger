@@ -85,6 +85,7 @@ def listar():
         links = [lambda row: A(
             SPAN(_class="fa fa-plus-square"), 
             _id = '{}-agregar'.format(row.id),
+            _class = 'agregar',
             _href=URL(
                 "poliza", 
                 "agregar_poliza", 
@@ -102,6 +103,7 @@ def listar():
         links = [lambda row: A(
             SPAN(_class="fa fa-plus-square"), 
             _id = '{}-agregar'.format(row.id),
+            _class = 'agregar',
             _href=URL(
                 "poliza",
                 "agregar_asiento",
