@@ -7,12 +7,13 @@ from datetime import datetime, date
 empresa_id = session.instancias
 db = empresas.dbs[int(empresa_id)]
 
+
 # For referencing static and views from other application
 def index(): return dict(message="hello from poliza.py")
 
 def listar():
     """
-    Crea un objeto `smartgrid` para editar las pólizas
+    Crea un objeto `smartgrid` para editar las pólizas y sus respectivos asientos
     """
 
     db.asiento.cc_empresa_id.represent = lambda value, row: \
@@ -79,24 +80,40 @@ def listar():
 
     query = db.poliza.periodo_id == request.vars.id
 
+    periodo = obtener_estatus(request.vars.id, request.args(2))
+
     if request.vars.id:
-        periodo = obtener_estatus_periodo(request.vars.id)
+
+        links = [lambda row: A(
+            SPAN(_class='fa fa-plus-square'), 
+            _id = '{}-agregar'.format(row.id),
+            _class = 'agregar',
+            _href=URL(
+                'poliza', 
+                'agregar_poliza', 
+                vars={'id': request.vars.id}
+            ))]
     else:
-        poliza_id = request.args(-1)
-        id = db(db.poliza.id == poliza_id).select(
-                db.poliza.periodo_id
-                ).first().periodo_id
-        periodo = obtener_estatus_periodo(id)
+
+        links = [lambda row: A(
+            SPAN(_class='fa fa-plus-square'), 
+            _id = '{}-agregar'.format(row.id),
+            _class = 'agregar',
+            _href=URL(
+                'poliza',
+                'agregar_asiento',
+                args=['poliza', request.args(2)]
+            ))]
 
     polizas = SQLFORM.smartgrid(
             db.poliza,
             linked_tables=['asiento'],
-            onvalidation=valida,
             constraints = dict(poliza=query),
             #selectable=selectable,
             #deletable=auth.has_permission('delete_poliza') or False,
             deletable=True if periodo != 'CERRADO' else False,
             searchable=False,
+            links=links if periodo != 'CERRADO' else None,
             editable=False,
             details=False,
             create=False,
@@ -128,7 +145,7 @@ def listar():
                     "agregar_asiento",
                     args=["poliza", request.args(-1)]
                     )
-                ),BR(), BR())
+                ), BR(), BR())
 
         if periodo != 'CERRADO':
             polizas[2].insert(-1, boton_agregar_asiento)
@@ -145,7 +162,7 @@ def listar():
                     "agregar_poliza",
                     vars={'id':request.vars.id}
                     )
-                ),BR(), BR())
+                ), BR(), BR())
 
         if periodo != 'CERRADO':
             polizas[2].insert(-1, boton_agregar_poliza)
@@ -153,43 +170,74 @@ def listar():
     return dict(polizas=polizas)
 
 
-def verificar_estatus_periodo():
+def agregar_poliza():
     """
-    Función auxiliar
-    """
-    if request.vars.id_poliza:
-        estatus = obtener_estatus_periodo(request.vars.id_poliza)
-    else:
-        poliza_id = request.vars.id_asiento
-        id = db(db.poliza.id == poliza_id).select(
-                db.poliza.periodo_id
-                ).first().periodo_id
-        estatus = obtener_estatus_periodo(id)
-
-    diccionario = {'id': estatus}
-
-    return dumps(diccionario, sort_keys=True)
-
-
-def agregar_asiento():
-    """
-    Agrega un elemento a la tabla `asiento`
+    Agrega un elemento a la tabla `póliza`
     """
 
-    db.asiento.insert(
-            poliza_id = request.args[1],
-            concepto_asiento = '',
-            debe = 0,
-            haber = 0
-            )
+    periodo_estatus = estatus_periodo(request.vars.id)
 
-    redirect(
-            URL(
-                'poliza/listar/poliza',
-                'asiento.poliza_id',
-                args=request.args[1]
+    if periodo_estatus != 'CERRADO':
+
+        periodo_id = request.vars.id
+        periodo = db(db.periodo.id == periodo_id).select(
+                db.periodo.consecutivo,
+                db.periodo.inicio,
+                db.periodo.estatus_periodo_id
+                ).first()
+
+        consecutivo_actual = periodo.consecutivo
+
+        ultimo = db(db.poliza.id > 0).select(
+                db.poliza.id,
+                db.poliza.creada_en,
+                orderby =~ db.poliza.id
+            ).first()
+
+        # en caso de que no existan pólizas
+        if ultimo:
+            ultimo = int(ultimo.creada_en.strftime('%m'))
+        else:
+            ultimo = int(datetime.now().strftime('%m'))
+        # fin-en caso de que no existan pólizas
+
+        id = db.poliza.insert(
+                folio = '',
+                concepto_general = '',
+                importe = 0,
+                fecha_usuario = date.today(),
+                periodo_id=periodo_id
                 )
-            )
+
+        fila = db(db.poliza.id == id).select(
+                db.poliza.tipo,
+                db.poliza.creada_en,
+                ).first()
+        ahora = int(fila.creada_en.strftime('%m'))
+
+
+        """
+        if ultimo < ahora:
+            # cambio de mes
+            consecutivo = 1 
+            db(db.periodo.consecutivo == consecutivo_actual).update(
+                    consecutivo_polizas = 1
+                    )
+        else:
+        """
+
+        consecutivo = int(consecutivo_actual)
+
+        query = (db.periodo.consecutivo == consecutivo_actual) &\
+                (db.periodo.id == periodo_id)
+
+        db(query).update(consecutivo = consecutivo + 1)
+        consecutivo += 1
+
+        folio = armar_folio(consecutivo, fila.tipo, periodo.inicio)
+        db(db.poliza.id == id).update(folio = folio)
+
+    redirect(URL('poliza', 'listar', vars={'id': request.vars.id}))
 
 
 def cuadrar_poliza():
@@ -227,63 +275,223 @@ def cuadrar_poliza():
         return row
 
 
-def valida(form):
-    #print "In onvalidation callback"
-    #print form.vars
-    #form.errors= True  #this prevents the submission from completing
+def actualiza_poliza():
+    """
+    Actualiza un campo de la tabla `poliza`
+    """
 
-    #...or to add messages to specific elements on the form
-    #form.errors.first_name = "Do not name your child after prominent deities"
-    #form.errors.last_name = "Last names must start with a letter"
-    response.flash = "I don't like your submission"
+    if request.post_vars:
+
+        id, column = request.post_vars.id.split('-')
+        value = request.post_vars.value
+
+        db(db.poliza.id == id).update(**{
+            column:value,
+            'actualizada_en':datetime.now(),
+            'actualizada_por':auth.user['id']
+            })
+
+        return value
+    else:
+        return 'Forbidden Access'
+
+
+def actualiza_tipo_poliza():
+    """
+    Actualiza los campos:
+    - `tipo`
+    - `actualizada_en`
+    - `actualizada por`
+    de la tabla `poliza`
+    """
+
+    if request.post_vars:
+
+        id, column = request.post_vars.id.split('-')
+        value = request.post_vars.value
+
+        db(db.poliza.id == id).update(**{column:value})
+
+        resultado = db(db.tipo_poliza.id == value).select(
+                db.tipo_poliza.id,
+                ).first()
+
+        db(db.poliza.id == id).update(**{
+            'tipo':resultado.id,
+            'actualizada_en':datetime.now(),
+            'actualizada_por':auth.user['id']
+            })
+
+        # reducir el código aquí
+        fila = db(db.poliza.id == id).select(
+                db.poliza.folio,
+                db.poliza.tipo,
+                db.poliza.creada_en
+                ).first()
+        consecutivo = int(fila.folio[2:8])
+        folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
+        db(db.poliza.id == id).update(folio = folio)
+        # fin-reducir el código aquí
+
+        return folio
+    else:
+        return 'Forbidden Access'
+
+
+def carga_tipo_poliza():
+    """
+    Carga el catálogo de los tipos de póliza a un objeto JSON, función auxiliar
+    """
+    from json import loads, dumps
+
+    query = (db.tipo_poliza.id > 0)
+
+    resultado = db(query).select(
+            db.tipo_poliza.id,
+            db.tipo_poliza.nombre
+            )
+
+    diccionario = dict()
+
+    [diccionario.update({r.id: '{}'.format(r.nombre)})\
+            for r in resultado]
+
+    return dumps(diccionario)
+
+
+def verificar_estatus_periodo():
+    """
+    Función auxiliar, genera un archivo JSON que recibe la vista
+    """
+
+    if request.vars.id_poliza:
+        estatus = obtener_estatus_periodo(request.vars.id_poliza)
+    else:
+        poliza_id = request.vars.id_asiento
+
+        id = db(db.poliza.id == poliza_id).select(
+                db.poliza.periodo_id
+                ).first().periodo_id
+        estatus = obtener_estatus_periodo(id)
+
+    diccionario = {'id': estatus}
+
+    return dumps(diccionario, sort_keys=True)
+
+
+def agregar_asiento():
+    """
+    Agrega un registro a la tabla `asiento`
+    """
+
+    estatus = obtener_estatus(request.vars.id, request.args(1))
+
+    if estatus != 'CERRADO':
+
+        db.asiento.insert(
+                poliza_id = request.args(1),
+                concepto_asiento = '',
+                debe = 0,
+                haber = 0
+                )
+
+    redirect(URL(
+        'poliza/listar/poliza',
+        'asiento.poliza_id',
+        args=request.args(1)
+        ))
 
 
 def actualiza_asiento():
     """
     Actualiza un campo de la tabla `asiento`
+    `post_vars` previene inserciones por URL
     """
-    id, column = request.post_vars.id.split('-')
-    value = request.post_vars.value
-    value_ = value
+    if request.post_vars:
 
-    if column == 'debe' or column == 'haber':
+        id, column = request.post_vars.id.split('-')
+        value = request.post_vars.value
+
+        db(db.asiento.id == id).update(**{
+            column:value,
+            'actualizada_en':datetime.now(),
+            'actualizada_por':auth.user['id']
+            })
+
+        return value
+    else:
+        return 'Forbidden Access'
+
+
+def actualiza_debe_haber():
+    """
+    Actualiza los campos `debe` y `haber` de la tabla `asientos`
+    """
+    import numbers
+
+    if request.post_vars:
+
+        id, column = request.post_vars.id.split('-')
+        value = request.post_vars.value
+
+        valor_retornar = value
+
         if '$' in value:
-            value = value.replace('$', '') if value.replace('$', '') else 0
-            value_ = locale.currency(float(value), grouping=True)
-        else:
-            value_ = locale.currency(float(value), grouping=True)
+            value = value.replace('$', '')
 
-    db(db.asiento.id == id).update(**{
-        column:value,
-        'actualizada_en':datetime.now(),
-        'actualizada_por':auth.user['id']
-        })
+        if ',' in value:
+            value = value.replace(',', '') 
 
-    return value_
+        try:
+            value = float(value)
+            value = abs(value)
+        except:
+            # si el formato es incorrecto, regresar el valor actual en el registro
+            ex = db(db.asiento.id == id).select(
+                    db.asiento[column].with_alias('valor')
+                    ).first().valor
+            value = ex
+
+        valor_retornar = locale.currency(float(value), grouping=True)
+
+        db(db.asiento.id == id).update(**{
+            column:value,
+            'actualizada_en':datetime.now(),
+            'actualizada_por':auth.user['id']
+            })
+
+        return valor_retornar
+    else:
+        return 'Forbidden Access'
 
 
 def actualiza_descripcion():
     """
     Actualiza el campo `descripcion` de la tabla `asiento`.
+    Obtiene
     """
-    id, column = request.post_vars.id.split('-')
-    valor = request.post_vars.value
+    if request.post_vars:
 
-    num_cc = valor.split()[0]
+        id, column = request.post_vars.id.split('-')
+        valor = request.post_vars.value
 
-    resultado = db(db.cc_empresa.num_cc == num_cc).select(
-            db.cc_empresa.id,
-            db.cc_empresa.num_cc,
-            db.cc_empresa.descripcion
-            ).first()
+        num_cc = valor.split()[0]
 
-    db(db.asiento.id == id).update(**{
-        column:resultado.id,
-        'actualizada_en': datetime.now(),
-        'actualizada_por': auth.user['id']
-        })
+        resultado = db(db.cc_empresa.num_cc == num_cc).select(
+                db.cc_empresa.id,
+                db.cc_empresa.num_cc,
+                db.cc_empresa.descripcion
+                ).first()
 
-    return "%s %s" % (resultado.num_cc, resultado.descripcion)
+        db(db.asiento.id == id).update(**{
+            column:resultado.id,
+            'actualizada_en': datetime.now(),
+            'actualizada_por': auth.user['id']
+            })
+
+        return "%s %s" % (resultado.num_cc, resultado.descripcion)
+    else:
+        return 'Forbidden Access'
 
 
 def carga_cc():
@@ -307,147 +515,6 @@ def carga_cc():
 
     return dumps(diccionario)
 
-
-def agregar_poliza():
-    """
-    Agrega un elemento a la tabla `póliza`
-    """
-
-    periodo_id = request.vars.id
-
-    periodo = db(db.periodo.id == periodo_id).select(
-            db.periodo.consecutivo,
-            db.periodo.inicio,
-            db.periodo.estatus_periodo_id
-            ).first()
-
-    consecutivo_actual = periodo.consecutivo
-
-    ultimo = db(db.poliza.id > 0).select(
-            db.poliza.id,
-            db.poliza.creada_en,
-            orderby =~ db.poliza.id
-        ).first()
-
-    # en caso de que no existan pólizas
-    if ultimo:
-        ultimo = int(ultimo.creada_en.strftime('%m'))
-    else:
-        ultimo = int(datetime.now().strftime('%m'))
-    # fin-en caso de que no existan pólizas
-
-    id = db.poliza.insert(
-            folio = '',
-            concepto_general = '',
-            importe = 0,
-            fecha_usuario = date.today(),
-            periodo_id=periodo_id
-            )
-
-    fila = db(db.poliza.id == id).select(
-            db.poliza.tipo,
-            db.poliza.creada_en,
-            ).first()
-    ahora = int(fila.creada_en.strftime('%m'))
-
-
-    """
-    if ultimo < ahora:
-        # cambio de mes
-        consecutivo = 1 
-        db(db.periodo.consecutivo == consecutivo_actual).update(
-                consecutivo_polizas = 1
-                )
-    else:
-    """
-
-    consecutivo = int(consecutivo_actual)
-
-    query = (db.periodo.consecutivo == consecutivo_actual) &\
-            (db.periodo.id == periodo_id)
-
-    db(query).update(consecutivo = consecutivo + 1)
-    consecutivo += 1
-
-    folio = armar_folio(consecutivo, fila.tipo, periodo.inicio)
-    db(db.poliza.id == id).update(folio = folio)
-
-    redirect(URL('poliza', 'listar', vars={'id': request.vars.id}))
-
-
-def actualiza_poliza():
-    """
-    Actualiza un campo de la tabla `poliza`
-    """
-
-    id, column = request.post_vars.id.split('.')
-    value = request.post_vars.value
-
-    db(db.poliza.id == id).update(**{
-        column:value,
-        'actualizada_en':datetime.now(),
-        'actualizada_por':auth.user['id']
-        })
-
-    return value
-
-
-def actualiza_tipo_poliza():
-    """
-    Actualiza los campos:
-    - `tipo`
-    - `actualizada_en`
-    - `actualizada por`
-    de la tabla `poliza`
-    """
-    id, column = request.post_vars.id.split('-')
-    value = request.post_vars.value
-
-    db(db.poliza.id == id).update(**{column:value})
-
-    resultado = db(db.tipo_poliza.id == value).select(
-            db.tipo_poliza.id,
-            ).first()
-
-    db(db.poliza.id == id).update(**{
-        'tipo':resultado.id,
-        'actualizada_en':datetime.now(),
-        'actualizada_por':auth.user['id']
-        })
-
-    # reducir el código aquí
-    fila = db(db.poliza.id == id).select(
-            db.poliza.folio,
-            db.poliza.tipo,
-            db.poliza.creada_en
-            ).first()
-    consecutivo = int(fila.folio[2:8])
-    folio = armar_folio(consecutivo, fila.tipo, fila.creada_en)
-    db(db.poliza.id == id).update(folio = folio)
-    # fin-reducir el código aquí
-
-    return folio
-
-
-def carga_tipo_poliza():
-    """
-    Carga el catálogo de los tipos de póliza a un objeto JSON, función auxiliar
-    """
-    from json import loads, dumps
-
-    query = (db.tipo_poliza.id > 0)
-
-    resultado = db(query).select(
-            db.tipo_poliza.id,
-            db.tipo_poliza.nombre
-            )
-
-    diccionario = dict()
-
-    [diccionario.update({r.id: '{}'.format(r.nombre)})\
-            for r in resultado]
-
-    return dumps(diccionario)
 
 def validar_periodo(fecha_usuario):
     periodo = db(

@@ -39,7 +39,6 @@ $(document).ready(function(){
                         dateFormat: 'yy-mm-dd',
                         onSelect: function(fecha) { 
                             var id = $(this).attr('id');
-                            id = id.replace('-', '.');
 
                             datos = {'value': fecha, 'id': id}
 
@@ -53,12 +52,15 @@ $(document).ready(function(){
                 $.editable.addInputType('my-row', {
                 element: $.editable.types.text.element,
                 plugin: function (settings, original) {
+                        var div_id = $(original).attr('id');
+                        var id= div_id.substr(0, div_id.indexOf('-'));
+                        var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
+                        var obj = document.getElementById(div_id);
+                        ancho = $(original).width();
+                        $('input', this).css({"width":ancho*0.5+"px"});
                         $('input', this).select();
                         $('input', this).bind('keydown', function (e) {
                                 var TABKEY = 9;
-                                var div_id = $(original).attr('id');
-                                var id= div_id.substr(0, div_id.indexOf('-'));
-                                var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
                                 switch(actual) {
                                     case 'cc_empresa_id':
                                         if(e.keyCode == TABKEY) {
@@ -75,19 +77,38 @@ $(document).ready(function(){
                                             next = 'haber';
                                             break;
                                         }
+                                    case 'haber':
+                                        if(e.keyCode == TABKEY) {
+                                            next = 'agregar';
+                                            break;
+                                        }    
                                     default:
                                         next = '';
                                 }
                                 if (next != ''){
                                     next_id  = '#'+id + '-'+next;
-                                    $(next_id).click();
-                                    e.preventDefault();
+                                    
+                                    //console.log(next_id)
+                                    if (next!='agregar'){
+                                        $(next_id).click();
+                                        e.preventDefault();
+                                    }else{
+                                        $(next_id).select();
+                                        $(next_id).css( "background-color", "#b4b4b4" ).blur(function() {
+                                               $(next_id).css( "background-color", "#f9f9f9" )
+                                            });;
+                                    }
+                                    
                                 }
                                 
                         });
                     }
                 });
-    
+                $('.agregar').select(function(){
+                    console.log(this);
+                    $(this).css( "background-color", "#e4e4e4" );
+                });
+                
                 $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
                     tooltip: "Click para editar, ENTER para salvar.",
                     indicator: "Actualizando...",
@@ -100,7 +121,7 @@ $(document).ready(function(){
                     var datos = {id: id, value:value};
 
                     $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
-                        id = id.replace('.', '');
+                        id = id.replace('-', '');
                         id = '#' + id.replace('tipo', 'folio');
                         $(id).html(data);
                     });
@@ -128,7 +149,7 @@ $(document).ready(function(){
                         type: "my-row",
                         onblur: "submit",
                         tooltip: 'Click para editar, ENTER para salvar.',
-                        indicator: 'Actualizando...',
+                        //indicator: 'Actualizando...',
                     }).click(function() {
                         $(this).find('input').autocomplete({
                             source: dataArray
@@ -140,25 +161,26 @@ $(document).ready(function(){
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
-                    indicator : "Actualizando...",
+                    //indicator : "Actualizando...",
+                    //style: "inherit"
                 });
 
 
-                $('.debe').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                $('.debe').editable("{{=URL('poliza', 'actualiza_debe_haber')}}",{
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
-                    indicator : "Actualizando...",
+                    //indicator : "Actualizando...",
                     callback: function (value, settings) {
                         cuadrarPoliza();
                     }
                 });
 
-                $('.haber').editable("{{=URL('poliza', 'actualiza_asiento')}}",{
+                $('.haber').editable("{{=URL('poliza', 'actualiza_debe_haber')}}",{
                     type: "my-row",
                     onblur: "submit",
                     tooltip: "Click para editar, ENTER para salvar.",
-                    indicator: "Actualizando...",
+                    //indicator: "Actualizando...",
                     callback: function (value, settings) {
                         cuadrarPoliza();
                     }

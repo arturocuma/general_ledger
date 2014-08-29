@@ -109,7 +109,7 @@ def importe_cuenta_balanza(num_cc, cc_naturaleza_id, fecha):
 
 def cabecera_balanza(clase):
     if clase=='':
-        cadena='<table id="dt_basic"  class="table table-striped table-bordered table-hover">'\
+        cadena='<table id="dt_basic"  class="table table-striped  table-bordered table-hover">'\
         '	<thead>'\
         '		<tr>'\
         '			<td>No. cuenta</td>'\
@@ -139,6 +139,7 @@ def cabecera_balanza(clase):
         '	<tbody>'
         
     return cadena
+    
 
 def fila_balanza(clase,num_cc, descripcion, nivel, importe_inicial, debe, haber, importe_final):
     id_row = num_cc
@@ -566,6 +567,17 @@ def mes(mes):
         mes = 'DIC'
     return mes
 
+def seccion_reporte(descripcion):
+    cadena = """<tr>\
+            <td>{}</td>\
+            <td></td>\
+            <td></td>\
+            <td></td>\
+            <td></td>\
+            <td></td>\
+            </tr>""".format(XML(descripcion))
+    return cadena
+
 def reportes_creados():
     clase=''
     if request.vars:
@@ -602,6 +614,7 @@ def reportes_creados():
             cuentas_seccion=db( (db.cuentas_seccion_reporte.seccion_reporte_id==seccion.id)
                                 & (db.cc_empresa.id==db.cuentas_seccion_reporte.cc_empresa_id)).select(db.cc_empresa.ALL)
             
+            tabla+=seccion_reporte(seccion.descripcion)
             for cuenta in cuentas_seccion:
                 num_cc=cuenta.num_cc
                 descripcion=cuenta.descripcion

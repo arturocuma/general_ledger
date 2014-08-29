@@ -486,7 +486,7 @@ select{
                                 <a href="javascript:void(0)" disabled='disabled'>
                                 {{pass}}
 									<i class="fa fa-lg fa-fw  fa-plus-square"></i>
-									Agregar pólizas
+									Ver pólizas
 								</a>
 							</li>
                             <li>
@@ -537,7 +537,7 @@ select{
                                 {{reportes=db(db.reporte).select(db.reporte.ALL)}}
                                 <ul>
                                     {{for reporte in reportes:}}
-                                    {{if reporte.nombre!='estado_resultados':}}
+                                    {{if (reporte.nombre!='estado_resultados') and (reporte.estatus==1):}}
                                     <li>
                                         <a href="{{=URL('reportes','reportes_creados',vars={'reporte_id':reporte.id})}}">
                                             
