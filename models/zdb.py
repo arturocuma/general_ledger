@@ -303,6 +303,7 @@ class EmpresaDB(object):
         db.define_table('reporte',
             Field('nombre', 'string', label='Nombre'),
             Field('descripcion', 'string', label='Descripción'),
+            Field('estatus', 'integer', label='Estatus'),
             format='%(descripcion)s'
             )
 
