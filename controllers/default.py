@@ -480,16 +480,18 @@ def index():
     import urllib
     import urllib2
     import gluon.contrib.simplejson
+    import time
     from gluon.storage import Storage
     from uuid import uuid4
     from gluon.storage import Storage
+
     login =''
+    hoy = time.strftime("%A %d de %B del %Y.")
     empresa_id = request.args(0)
     if empresa_id:
         session.instancias = empresa_id
 
     if session.auth:
-
         if not request.cookies.has_key('login_general_ledger'):
             cookieCreate()
             #session.instancias = []
@@ -551,4 +553,4 @@ def index():
         mias = ''
         compartidas = ''        
 
-    return dict(mias=mias, compartidas=compartidas)
+    return dict(mias=mias, compartidas=compartidas, hoy=hoy)
