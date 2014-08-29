@@ -157,7 +157,7 @@ def crear_selector_status(id):
 
         select = SELECT(
                 _name = 'estatus{}'.format(id),
-                _id = '{}.estatus'.format(id),
+                _id = '{}-estatus'.format(id),
                 _class = 'cambiar_estatus',
                 value = estatus,
                 *opciones_estatus
@@ -191,7 +191,7 @@ def crear_selector_tipo(id):
 
         select = SELECT(
                 _name = 'tipo{}'.format(id),
-                _id = '{}.tipo'.format(id),
+                _id = '{}-tipo'.format(id),
                 _class = 'cambiar_tipo',
                 value = tipo,
                 *opciones_tipos
