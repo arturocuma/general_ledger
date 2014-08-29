@@ -39,7 +39,6 @@ $(document).ready(function(){
                         dateFormat: 'yy-mm-dd',
                         onSelect: function(fecha) { 
                             var id = $(this).attr('id');
-                            id = id.replace('-', '.');
 
                             datos = {'value': fecha, 'id': id}
 
@@ -122,7 +121,7 @@ $(document).ready(function(){
                     var datos = {id: id, value:value};
 
                     $.post("{{=URL('actualiza_tipo_poliza')}}", datos).success(function(data){
-                        id = id.replace('.', '');
+                        id = id.replace('-', '');
                         id = '#' + id.replace('tipo', 'folio');
                         $(id).html(data);
                     });
