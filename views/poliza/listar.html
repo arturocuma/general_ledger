@@ -58,11 +58,8 @@ $(document).ready(function(){
                         var actual = div_id.substr(div_id.indexOf('-')+1, div_id.length-1);
                         var obj = document.getElementById(div_id);
                         ancho = $(original).width();
-                    //alert(ancho);
-                    $('input', this).css({"width":ancho*0.5+"px"});
+                        $('input', this).css({"width":ancho*0.5+"px"});
                         $('input', this).select();
-                    ancho_ = $('input',this).width();
-                    //alert(ancho_);
                         $('input', this).bind('keydown', function (e) {
                                 var TABKEY = 9;
                                 switch(actual) {
@@ -81,19 +78,38 @@ $(document).ready(function(){
                                             next = 'haber';
                                             break;
                                         }
+                                    case 'haber':
+                                        if(e.keyCode == TABKEY) {
+                                            next = 'agregar';
+                                            break;
+                                        }    
                                     default:
                                         next = '';
                                 }
                                 if (next != ''){
                                     next_id  = '#'+id + '-'+next;
-                                    $(next_id).click();
-                                    e.preventDefault();
+                                    
+                                    //console.log(next_id)
+                                    if (next!='agregar'){
+                                        $(next_id).click();
+                                        e.preventDefault();
+                                    }else{
+                                        $(next_id).select();
+                                        $(next_id).css( "background-color", "#b4b4b4" ).blur(function() {
+                                               $(next_id).css( "background-color", "#f9f9f9" )
+                                            });;
+                                    }
+                                    
                                 }
                                 
                         });
                     }
                 });
-    
+                $('.agregar').select(function(){
+                    console.log(this);
+                    $(this).css( "background-color", "#e4e4e4" );
+                });
+                
                 $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
                     tooltip: "Click para editar, ENTER para salvar.",
                     indicator: "Actualizando...",
