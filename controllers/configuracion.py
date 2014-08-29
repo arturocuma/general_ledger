@@ -69,13 +69,16 @@ def estado_resultados():
 def wizard_reportes():
     msg=''
     tipo_msg=''
+    
+    reportes = db(db.reporte).select(db.reporte.ALL, orderby=db.reporte.nombre)
+    
     cc_empresa = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
                    "node.id, node.cc_vista_id "\
                    "FROM cc_empresa AS node , cc_empresa AS parent "\
                    "WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
                    "GROUP BY node.id "\
                    "ORDER BY node.lft;")
-    print request.vars
+    
     if request.vars:
         if request.vars.nombre_reporte == '':
             tipo_msg='error'
@@ -93,7 +96,7 @@ def wizard_reportes():
                 reporte_id= db(db.reporte.nombre==request.vars.nombre_reporte).select(db.reporte.ALL).first()
                 msg='Error al insertar el nombre del reporte'
                 if not reporte_id:
-                    reporte_id=db.reporte.insert(nombre=request.vars.nombre_reporte, descripcion=request.vars.nombre_reporte)
+                    reporte_id=db.reporte.insert(nombre=request.vars.nombre_reporte, descripcion=request.vars.nombre_reporte, estatus=1)
                 else:
                     reporte_id = reporte_id.id
                 #seccion_1
@@ -124,7 +127,7 @@ def wizard_reportes():
             #    tipo_msg='error'
             #    db.rollback()
     
-    return dict(cc_empresa=cc_empresa, msg=XML(msg), tipo_msg=XML(tipo_msg))
+    return dict(cc_empresa=cc_empresa, msg=XML(msg), tipo_msg=XML(tipo_msg), reportes=reportes)
 
 def cambiar_catalogo():
     db(db.cc_empresa).delete()
@@ -246,3 +249,25 @@ def agregar_poliza_csv(folio_externo, tipo, fecha_usuario, concepto_general):
             concepto_general=concepto_general
                 )
     return id
+
+def eliminar_reporte():
+    """
+    Elimina un reporte creado
+    """
+    id = request.vars.reporte_id
+    db(db.reporte.id == id).delete()
+
+def deshabilitar_reporte():
+    """
+    Cierra un periodo contable
+    """
+    id = request.vars.reporte_id
+    db(db.reporte.id == id).update(estatus = 2)
+
+
+def habilitar_reporte():
+    """
+    Abre un periodo contable
+    """
+    id = request.vars.reporte_id
+    db(db.reporte.id == id).update(estatus = 1)
