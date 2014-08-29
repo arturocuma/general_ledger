@@ -4,7 +4,7 @@
 		<meta charset="utf-8">
 		<!--<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">-->
 
-		<title> General Ledger </title>
+		<title> Registro </title>
 		<meta name="description" content="">
 		<meta name="author" content="">
 
@@ -44,12 +44,12 @@
 			<!--<span id="logo"></span>-->
 
 			<div id="logo-group">
-				<span id="logo"> <img src="{{=URL('static/smartadmin','img/logo-blue.png')}}" alt="General Ledger"> </span>
+				<span id="logo"> <img src="{{=URL('static','images/logo-pale.png')}}" alt="General Ledger"> </span>
 
 				<!-- END AJAX-DROPDOWN -->
 			</div>
 
-			<span id="login-header-space"> <span class="hidden-mobile">¿Necesitas una cuenta?</span> <a href="{{=URL('default','register')}}" class="btn btn-info">Crear cuenta</a> </span>
+			<span id="login-header-space"> <span class="hidden-mobile">¿Ya tienes una cuenta?</span> <a href="{{=URL('default','init')}}" class="btn btn-info">Inicia sesión</a> </span>
 
 		</header>
 
@@ -92,99 +92,102 @@
 
 					</div>
 					<!--Formulario de login-->
-					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" >
+					<div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
 						<div class="well no-padding">
-							<form method='POST' id="login-form" class="smart-form client-form">
-								{{=form.custom.begin}}
+							<form method="post" id="form-register" class="smart-form client-form">
+							{{=form.custom.begin}}
 								<header>
-									Entrar
+									Registrate es gratis
 								</header>
-								<fieldset> 
- 									<section>
-										<label class="label">Correo</label>
+
+								<fieldset>
+									<!--<section>
 										<label class="input"> <i class="icon-append fa fa-user"></i>
-											<!--<input type="email" name="email">-->
+											<input type="text" name="username" placeholder="Username">
+											<b class="tooltip tooltip-bottom-right">Needed to enter the website</b> </label>
+									</section>-->
+
+									<section>
+										<label class="input"> <i class="icon-append">@</i>
+											<!--<input type="email" name="email" placeholder="Email address">-->
+											{{form.element(_name='email')['_placeholder']='Correo electronico'}}
 											{{=form.custom.widget.email}}
-											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Por favor ingrese su correo</b></label>
+											<b class="tooltip tooltip-bottom-right">Necesario para verificar su cuenta</b> </label>
 									</section>
 
 									<section>
-										<label class="label">Contraseña</label>
 										<label class="input"> <i class="icon-append fa fa-lock"></i>
-											<!--<input type="password" name="password">-->
+											<!--<input type="password" name="password" placeholder="Password" id="password">-->
+											{{form.element(_name='password')['_placeholder']='Contraseña'}}
+											{{form.element(_name='password')['_id']='password'}}
 											{{=form.custom.widget.password}}
-											<b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Ingresa tu contraseña</b> </label>
-										<div class="note">
-											<a href="javascript:void();" data-toggle="modal" data-target="#recordar">¿Olvidó su contraseña?</a>
-										</div>
+											<b class="tooltip tooltip-bottom-right">No olvide su contraseña</b> </label>
 									</section>
 
-									<!--<section>
-										<label class="checkbox">
-											<input type="checkbox" name="remember" checked="">
-											<i></i>Stay signed in</label>
-									</section>-->
+									<section>
+										<label class="input"> <i class="icon-append fa fa-lock"></i>
+											<!--<input type="password" name="passwordConfirm" placeholder="Confirm password">-->
+											{{form.element(_name='password_two')['_placeholder']='Confirme contraseña'}}
+											{{=form.custom.widget.password_two}}
+											<b class="tooltip tooltip-bottom-right">No olvide su contraseña</b> </label>
+									</section>
+								</fieldset>
+
+								<fieldset>
+									<div class="row">
+										<section class="col col-6">
+											<label class="input">
+												<!--<input type="text" name="firstname" placeholder="First name">-->
+												{{form.element(_name='first_name')['_placeholder']='Nombre'}}
+												{{=form.custom.widget.first_name}}
+											</label>
+										</section>
+										<section class="col col-6">
+											<label class="input">
+												<!--<input type="text" name="lastname" placeholder="Last name">-->
+												{{form.element(_name='last_name')['_placeholder']='Apellidos'}}
+												{{=form.custom.widget.last_name}}
+											</label>
+										</section>
+									</div>
+
+									<div class="row">
+										<section class="col col-6">
+											<label class="select">
+												<select name="gender">
+													<option value="0" selected="" disabled="">Sexo</option>
+													<option value="1">Masculino</option>
+													<option value="2">Femenino</option>
+													<option value="3">Prefiero no responder</option>
+												</select> <i></i> 
+											</label>
+										</section>
+										<section class="col col-6">
+											<label class="checkbox">
+												<input type="checkbox" name="terms" id="terms">
+												<i></i>Acepto los<a href="#" > términos y condiciones </a>
+											</label>
+										</section>
+									</div>
 								</fieldset>
 								<footer>
 								{{form.element(_type='submit')['_class']='btn btn-primary'}}
 									{{=form.custom.submit}}
 									<!--<button type="submit" class="btn btn-primary">
-										Iniciar sesión
+										Register
 									</button>-->
 								</footer>
+
 								{{=form.custom.end}}
 							</form>
-
-						</div>
-						
-						<h5 class="text-center"> - o inicia sesión con -</h5>															
+							<h5 class="text-center"> - o inicia sesión con -</h5>															
 							<ul class="list-inline text-center">
 								<li>
 									<a href="{{=URL('default/user','login')}}" class="btn btn-primary btn-circle"><i class="fa fa-google-plus"></i></a>
 								</li>
-							</ul>						
+							</ul>		
+						</div>
 					</div>
-				</div>
-			</div>
-
-		</div>
-
-		<div class="modal fade" id="recordar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">					
-					{{=formReset.custom.begin}}
-					<div class="modal-header">
-						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
-							×
-						</button>
-						<h4 class="modal-title">Recordar contraseña</h4>
-					</div>
-					<div class="modal-body">
-						<p>
-							<section>
-								<label class="input"> <i class="icon-append">@</i>
-									<!--<input type="email" name="email" placeholder="Email address">-->
-									{{formReset.element(_name='email')['_placeholder']='Correo electronico'}}
-									{{=formReset.custom.widget.email}}
-									<b class="tooltip tooltip-bottom-right">Necesario para verificar su cuenta</b> </label>
-							</section>
-						</p>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-default" data-dismiss="modal">
-							Cerrar
-						</button>
-						{{formReset.element(_type='submit')['_class']='btn btn-primary'}}
-						{{=formReset.custom.submit}}
-						<!--<button type="button" class="btn btn-primary">
-							Save changes
-						</button>-->
-					</div>
-				{{=formReset.custom.end}}
-				</div><!-- /.modal-content -->
-			</div><!-- /.modal-dialog -->
-		</div>
-
 		<!--================================================== -->	
 
 		<!-- PACE LOADER - turn this on if you want ajax loading to show (caution: uses lots of memory on iDevices)-->
@@ -241,13 +244,15 @@
 
 		<!-- MAIN APP JS FILE -->
 		<script src="{{=URL('static/smartadmin','js/app.js')}}"></script>
-
 		<script type="text/javascript">
 			runAllForms();
-
+			
+			
+			// Validation
 			$(function() {
 				// Validation
-				$("#login-form").validate({
+				$("#form-register").validate({
+
 					// Rules for form validation
 					rules : {
 						email : {
@@ -258,18 +263,68 @@
 							required : true,
 							minlength : 3,
 							maxlength : 20
+						},
+						password_two: {
+							required : true,
+							minlength : 3,
+							maxlength : 20,
+							equalTo : '#password'
+						},
+						first_name : {
+							required : true
+						},
+						last_name : {
+							required : true
+						},
+						gender : {
+							required : true
+						},
+						terms : {
+							required : true
 						}
 					},
 
 					// Messages for form validation
 					messages : {
+						login : {
+							required : 'Please enter your login'
+						},
 						email : {
-							required : 'Introduzca su dirección de correo electrónico',
-							email : 'Introduce una dirección de correo electrónico válida'
+							required : 'Ingrese un correo electrónico',
+							email : 'Ingrese un correo electrónico válido'
 						},
 						password : {
-							required : 'Por favor, introduzca su contraseña'
+							required : 'Ingresa tu contraseña',
+							minlength : 'La contraseña debe contener al menos 3 caracteres',
+							maxlength : 'La contraseña no debe contener mas 20 caracteres',
+						},
+						password_two : {
+							required : 'Ingresa tu contraseña una vez mas',
+							minlength : 'La contraseña debe contener al menos 3 caracteres',
+							maxlength : 'La contraseña no debe contener mas 20 caracteres',
+							equalTo : 'Ingrese la misma contraseña que el anterior'
+						},
+						first_name : {
+							required : 'Escriba su nombre'
+						},
+						last_name : {
+							required : 'Escriba sus apellidos'
+						},
+						gender : {
+							required : 'Selecciona'
+						},
+						terms : {
+							required : 'Debe aceptar los términos y condiciones'
 						}
+					},
+
+					// Ajax form submition
+					submitHandler : function(form) {
+						$(form).ajaxSubmit({
+							success : function() {
+								$("#form-register").addClass('submited');
+							}
+						});
 					},
 
 					// Do not change code below
@@ -277,8 +332,8 @@
 						error.insertAfter(element.parent());
 					}
 				});
-			});
 
+			});
 		</script>
 
 	</body>
