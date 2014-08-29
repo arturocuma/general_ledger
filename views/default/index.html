@@ -1,25 +1,49 @@
 {{extend 'layout.html'}}
 {{if session.auth:}}
 {{ult_sesion = db_maestro(db_maestro.auth_event.user_id == auth.user['id']).select(db_maestro.auth_event.time_stamp).last()}}
+
 <div class="row">
-    <div class="col-md-12">
-        <div class='jumbotron'>
-            <div class="row">
-                <div class="col-md-8">
-                    <h1 class="page-title txt-color-blueDark">
-                        Bienvenido {{=auth.user['first_name'] + ' ' + auth.user['last_name']}}
-                    </h1>    
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="well">
+                    <div class="row">
+                        <div class="col-sm-12">                
+                            <div class="row">
+                                <div class="col-sm-3 profile-pic">
+                                    {{pic = 'http://pbs.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png'}}
+                                    {{if session.auth:}}                                
+                                        <img src="{{=session.picture if session.picture else pic}}" />
+                                    {{else:}}
+                                        <img src="{{=URL('static/smartadmin','img/avatars/male.png')}}" />
+                                    {{pass}}
+                                </div>
+                                <div class="col-sm-6">
+                                    <h1 class="txt-color-darken">{{=auth.user['first_name']}} <span class="semi-bold">{{ =auth.user['last_name']}}</span>
+                                    <br>
+                                    <small>Bienvenido</small></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-            {{if ult_sesion:}}
-            <div class="row">
-                <div class="col-md-4 col-md-offset-8" style="text-align: right;">
-                    <p>Ultima vez que iniciaste sesión:</p>
-                    <p>{{=ult_sesion.time_stamp}}</p>                
+            <div class="col-sm-12 col-md-12 col-lg-6">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6" style="text-align: right;">
+                        <h4 class="txt-color-darken">{{=hoy}}</h4>
+                    </div>
                 </div>
+                {{if ult_sesion:}}
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-6" style="text-align: right;">                        
+                        <p class="txt-color-darken">Ultima vez que iniciaste sesión:</p>
+                        <p class="txt-color-darken">{{=ult_sesion.time_stamp}}</p>
+                    </div>
+                </div>
+                {{pass}}
             </div>
-            {{pass}}
-        </div>
+        </div>        
     </div>
 </div>
     {{if not session.instancias:}}
@@ -27,7 +51,7 @@
         <div class='row'>
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <header role="heading">
-                    <h2>Tu(s) empresa(s)</h2>
+                     <h2 class="txt-color-darken">Tu(s) empresa(s)</h2>
                 </header>
                 {{for m in mias:}}
                 <div class="col-sm-4 col-md-2">
@@ -48,7 +72,7 @@
         <div class='row'>
             <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                 <header role="heading">
-                    <h2>Empresas compartidas contigo</h2>
+                    <h2 class="txt-color-darken">Empresas compartidas contigo</h2>
                 </header>
                 {{for c in compartidas:}}
                 <div class="col-sm-4 col-md-2">
