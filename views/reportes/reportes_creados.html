@@ -46,17 +46,17 @@
 						<!-- content -->
 						<div id="myTabContent" class="tab-content">
 							<div class="tab-pane fade active in padding-10 no-padding-bottom" id="s1">
-								<div class="padding-10">
+								<div class="">
 									
 										<!-- widget div-->
 										<div>
 											<!-- widget content -->
-											<div class="widget-body no-padding">
+											<div class="widget-body ">
 												<div class="widget-body-toolbar">
 												</div>
-												<div id="div_cuentas">
+												
 													{{=tabla}}
-												</div>
+												
 											</div>
 										</div>
 									
@@ -99,8 +99,10 @@
                                         				  </div>
                                         				</label>
                                     			      </section>
-                                        			      <input type="submit" value="Buscar">
-                                        			      <button class="btn btn-default" type="button" onclick="location.href='{{=URL('reportes','libro_diario')}}'"> Limpiar </button>
+                                                       <footer>
+                                        <button class="btn btn-primary" type="submit"> Buscar </button>
+                                        <button class="btn btn-default" onclick="location.href='{{=URL('reportes','libro_diario')}}'" type="button"> Limpiar </button>
+                                                    </footer>    
                                     			    </fieldset>
                                     			</div>
                                     	    </div>
@@ -122,15 +124,6 @@
 </section>
 <!-- end widget grid -->
 
-<!-- PAGE RELATED PLUGIN(S) -->
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/jquery.dataTables-cust.min.js')}}"></script>
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/ColReorder.min.js')}}"></script>
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/FixedColumns.min.js')}}"></script>
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/ColVis.min.js')}}"></script>
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/ZeroClipboard.min.js')}}"></script>
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/media/js/TableTools.min.js')}}"></script>
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/DT_bootstrap.js')}}"></script>
-<script src="{{=URL('static', 'smartadmin/js/plugin/datatables/jquery.dataTables-cust.min.js')}}"></script>
 		
 <script type="text/javascript">
     $(document).ready(function() {
@@ -147,8 +140,6 @@
                 ],
                 "aLengthMenu": [[10, 25, 50, 100, 200, -1], [10, 25, 50, 100, 200, "Todos"]],
                 "iDisplayLength":50,
-                "scrollX":true,
-                "scrollY": true,
                 "oLanguage":{
                     "sProcessing":     "Procesando...",
                     "sLengthMenu":     "_MENU_",
@@ -172,9 +163,6 @@
                         "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                     }
                 },
-                "language":{
-                    "searchPlaceholder": "Search..."
-                }
 			});
 	
 			/* END BASIC */
