@@ -80,32 +80,27 @@ def listar():
 
     query = db.poliza.periodo_id == request.vars.id
 
+    periodo = obtener_estatus(request.vars.id, request.args(2))
+
     if request.vars.id:
-        periodo = obtener_estatus_periodo(request.vars.id)
+
         links = [lambda row: A(
-            SPAN(_class="fa fa-plus-square"), 
+            SPAN(_class='fa fa-plus-square'), 
             _id = '{}-agregar'.format(row.id),
             _href=URL(
-                "poliza", 
-                "agregar_poliza", 
-                vars={'id':request.vars.id}
+                'poliza', 
+                'agregar_poliza', 
+                vars={'id': request.vars.id}
             ))]
     else:
-        poliza_id = request.args(2)
-
-        id = db(db.poliza.id == poliza_id).select(
-                db.poliza.periodo_id
-                ).first().periodo_id
-
-        periodo = obtener_estatus_periodo(id)
 
         links = [lambda row: A(
-            SPAN(_class="fa fa-plus-square"), 
+            SPAN(_class='fa fa-plus-square'), 
             _id = '{}-agregar'.format(row.id),
             _href=URL(
-                "poliza",
-                "agregar_asiento",
-                args=["poliza", request.args(2)]
+                'poliza',
+                'agregar_asiento',
+                args=['poliza', request.args(2)]
             ))]
 
     polizas = SQLFORM.smartgrid(
@@ -176,7 +171,7 @@ def listar():
 
 def verificar_estatus_periodo():
     """
-    Función auxiliar
+    Función auxiliar, genera un archivo JSON que recibe la vista
     """
     if request.vars.id_poliza:
         estatus = obtener_estatus_periodo(request.vars.id_poliza)
@@ -194,19 +189,12 @@ def verificar_estatus_periodo():
 
 def agregar_asiento():
     """
-    Agrega un elemento a la tabla `asiento`
+    Agrega un registro a la tabla `asiento`, verifica 
     """
 
-    if request.vars.id:
-        periodo = obtener_estatus_periodo(request.vars.id)
-    else:
-        poliza_id = request.args(-1)
-        id = db(db.poliza.id == poliza_id).select(
-                db.poliza.periodo_id
-                ).first().periodo_id
-        periodo = obtener_estatus_periodo(id)
+    estatus = obtener_estatus(request.vars.id, request.args(1))
 
-    if periodo != 'CERRADO':
+    if estatus != 'CERRADO':
 
         db.asiento.insert(
                 poliza_id = request.args[1],
@@ -372,7 +360,8 @@ def agregar_poliza():
     Agrega un elemento a la tabla `póliza`
     """
 
-    periodo_estatus = obtener_estatus_periodo(request.vars.id)
+    periodo_estatus = estatus_periodo(request.vars.id)
+    print periodo_estatus
 
     if periodo_estatus != 'CERRADO':
 
