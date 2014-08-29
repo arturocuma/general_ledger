@@ -97,7 +97,7 @@
 							<form method='POST' id="login-form" class="smart-form client-form">
 								{{=form.custom.begin}}
 								<header>
-									Entrar
+									Inicio de sesión
 								</header>
 								<fieldset> 
  									<section>
@@ -107,7 +107,6 @@
 											{{=form.custom.widget.email}}
 											<b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Por favor ingrese su correo</b></label>
 									</section>
-
 									<section>
 										<label class="label">Contraseña</label>
 										<label class="input"> <i class="icon-append fa fa-lock"></i>
@@ -152,7 +151,6 @@
 		<div class="modal fade" id="recordar" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 			<div class="modal-dialog">
 				<div class="modal-content">					
-					{{=formReset.custom.begin}}
 					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">
 							×
@@ -161,13 +159,18 @@
 					</div>
 					<div class="modal-body">
 						<p>
-							<section>
-								<label class="input"> <i class="icon-append">@</i>
-									<!--<input type="email" name="email" placeholder="Email address">-->
-									{{formReset.element(_name='email')['_placeholder']='Correo electronico'}}
-									{{=formReset.custom.widget.email}}
-									<b class="tooltip tooltip-bottom-right">Necesario para verificar su cuenta</b> </label>
-							</section>
+							<form method='POST' class="smart-form client-form">
+								{{=formReset.custom.begin}}
+								<fieldset> 
+									<section>
+										<label class="input"> <i class="icon-append">@</i>
+											<!--<input type="email" name="email" placeholder="Email address">-->
+											{{formReset.element(_name='email')['_placeholder']='Correo electronico'}}
+											{{=formReset.custom.widget.email}}
+											<b class="tooltip tooltip-bottom-right">Necesario para verificar su cuenta</b> </label>
+									</section>
+								</fieldset>
+							
 						</p>
 					</div>
 					<div class="modal-footer">
@@ -181,6 +184,7 @@
 						</button>-->
 					</div>
 				{{=formReset.custom.end}}
+				</form>
 				</div><!-- /.modal-content -->
 			</div><!-- /.modal-dialog -->
 		</div>

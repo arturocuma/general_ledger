@@ -13,14 +13,6 @@ import csv
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
 
-def init():
-    from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
-    auth = Auth(db_maestro)
-    form = auth.login()
-    if request.vars._next:
-        redirect(URL('default','index'))
-    return dict(form=form, formReset = auth.retrieve_password())
-
 def register():
     from gluon.tools import Auth, Crud, Service, PluginManager, prettydate
     auth = Auth(db_maestro)
@@ -35,8 +27,33 @@ def login():
     mail.settings.server = 'smtp.gmail.com:587'
     mail.settings.sender = 'datawork.mx@gmail.com'
     mail.settings.login = 'datawork.mx:d4t4w0rk'
-    form = auth.login()    
+    form = auth.login()
     return dict(form=form, formReset = auth.retrieve_password())
+
+def user():
+
+    """
+    exposes:
+    http://..../[app]/default/user/login
+    http://..../[app]/default/user/logout
+    http://..../[app]/default/user/register
+    http://..../[app]/default/user/profile
+    http://..../[app]/default/user/retrieve_password
+    http://..../[app]/default/user/change_password
+    http://..../[app]/default/user/manage_users (requires membership in
+    use @auth.requires_login()
+        @auth.requires_membership('group name')
+        @auth.requires_permission('read','table name',record_id)
+    to decorate functions that need access control
+    """
+    if request.args(0)=='logout':
+
+        [empresas.dbs[instancia].close() for instancia in empresas.dbs]
+        cookieDelete()
+
+    elif request.args(0)=='login':
+        auth.settings.login_form=GoogleAccount()
+    return dict(form=auth())
 
 def empresa():
     empresa_id = request.args(0)
@@ -395,31 +412,6 @@ def index4():
         response.flash = 'Formulario incompleto'
 
     return dict(form=form)
-
-def user():
-
-    """
-    exposes:
-    http://..../[app]/default/user/login
-    http://..../[app]/default/user/logout
-    http://..../[app]/default/user/register
-    http://..../[app]/default/user/profile
-    http://..../[app]/default/user/retrieve_password
-    http://..../[app]/default/user/change_password
-    http://..../[app]/default/user/manage_users (requires membership in
-    use @auth.requires_login()
-        @auth.requires_membership('group name')
-        @auth.requires_permission('read','table name',record_id)
-    to decorate functions that need access control
-    """
-    if request.args(0)=='logout':
-
-        [empresas.dbs[instancia].close() for instancia in empresas.dbs]
-        cookieDelete()
-
-    elif request.args(0)=='login':
-        auth.settings.login_form=GoogleAccount()
-    return dict(form=auth())
 
 @cache.action()
 def download():
