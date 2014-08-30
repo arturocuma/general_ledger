@@ -332,7 +332,7 @@ select{
 				<span class="label">Empresa:</span>
 				<span id="project-selector" class="popover-trigger-element dropdown-toggle" data-toggle="dropdown" rel="tooltip" data-placement="bottom" data-original-title="Click para ver/cambiar de empresa">
 					{{nom = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
-					Empresa {{=nom.razon_social}}
+					{{=nom.razon_social}}
 					<i class="fa fa-angle-down"></i>
 				</span>
 				<ul class="dropdown-menu">
