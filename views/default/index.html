@@ -55,7 +55,7 @@
                 <ul class="media-list">
                     {{for m in mias:}}
                     <li class="media">
-                        <a class="pull-left" href="j{{=URL('default', 'empresa', args=m.id)}}">
+                        <a class="pull-left" href="{{=URL('default', 'empresa', args=m.id)}}">
                             <img class="media-object" src="{{=URL('static','images/logo-blue.png')}}">
                         </a>
                         <div class="media-body">
