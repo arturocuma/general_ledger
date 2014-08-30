@@ -2,7 +2,7 @@
 <div class="row">
    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
       <legend>
-         <h1>
+         <h1 class="txt-color-darken">
             <p>
                <i class="fa-fw fa fa-dollar"></i>
               Importar Pólizas
@@ -44,19 +44,21 @@
             </header>
             <div role='content'>
                <div class="widget-body">
-                   <form class="form-horizontal" method="POST" action="{{=URL('poliza','importar_polizas')}}" enctype="multipart/form-data">
-                     <div class="row">
-                        <div class="col-md-12 col-sm-12">
-                           <legend>Archivo CSV</legend>
-                           <input name="csv_saldo_inicial" type="file" required>       
-                        </div>
-                     </div>
-                     <div class="row">
-                        <div class="col-md-6">                           
-                           <button class="btn btn-default" onclick={{=URL('poliza','importar_polizas')}}> Cancelar </button>
-                            <button class="btn btn-primary" type="submit" >Cargar</button>
-                        </div>
-                     </div>
+                  <form class="smart-form" method="POST" action="{{=URL('poliza','importar_polizas')}}" enctype="multipart/form-data">
+                     <fieldset>
+                        <section>
+                           <label class="label">Archivo CSV</label>
+                           <div class="input input-file">
+                              <span class="button"><input name="csv_saldo_inicial" type="file" required  onchange="this.parentNode.nextSibling.value = this.value">Examinar</span><input type="text" placeholder="Seleccione un archivo" readonly="">
+                           </div>
+                        </section>
+                     </fieldset>            
+                     <footer>    
+                        <input class="btn btn-primary" type="submit" value="Cargar" class="btn btn-primary">                    
+                        <button type="button" class="btn btn-default" onclick={{=URL('poliza','importar_polizas')}}>
+                           Cancelar
+                        </button>                        
+                     </footer>
                   </form>
                </div>
             </div>
