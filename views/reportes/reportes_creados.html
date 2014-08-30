@@ -66,7 +66,7 @@
                             <div class="tab-pane fade " id="s2">
                                 <div class="padding-10">    
                                     <div class="panel-body" id="campos-filtro">
-		                                <form class="smart-form" method="POST" id="filtros" name="filtros">
+		                                <form class="smart-form client-form" method="POST" id="filtros" name="filtros">
 			                            <!--<article class="col-sm-12 col-md-12 col-lg-4">-->
 			                                 <div role="content">
 			                                 <div class="widget-body no-padding" >
@@ -99,10 +99,11 @@
                                         				  </div>
                                         				</label>
                                     			      </section>
-                                                       <footer>
+                                             <section>
                                         <button class="btn btn-primary" type="submit"> Buscar </button>
-                                        <button class="btn btn-default" onclick="location.href='{{=URL('reportes','libro_diario')}}'" type="button"> Limpiar </button>
-                                                    </footer>    
+                                                 <button class="btn btn-default" onclick="location.href='{{=URL('reportes','reportes_creados?reporte_id='+request.vars.reporte_id)}}'" type="button"> Limpiar </button>
+                                                 </section>
+                                                     
                                     			    </fieldset>
                                     			</div>
                                     	    </div>
