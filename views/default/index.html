@@ -5,10 +5,10 @@
 <div class="row">
     <div class="col-sm-12">
         <div class="row">
-            <div class="col-sm-12 col-md-12 col-lg-6">
+            <div class="col-sm-12 col-md-12 col-lg-12">
                 <div class="well">
                     <div class="row">
-                        <div class="col-sm-12">                
+                        <div class="ol-sm-12 col-md-12 col-lg-7">                
                             <div class="row">
                                 <div class="col-sm-3 profile-pic">
                                     {{pic = 'http://pbs.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png'}}
@@ -24,106 +24,81 @@
                                     <small>Bienvenido</small></h1>
                                 </div>
                             </div>
+                        </div>                
+                        <div class="col-sm-12 col-md-12 col-lg-5">
+                            <div class="row">
+                                <div class="col-md-12" style="text-align: right;">
+                                    <h4 class="txt-color-darken">{{=hoy}}</h4>
+                                </div>
+                            </div>
+                            {{if ult_sesion:}}
+                            <div class="row">
+                                <div class="col-md-12" style="text-align: right;">                        
+                                    <p class="txt-color-darken">Ultima vez que iniciaste sesión:</p>
+                                    <p class="txt-color-darken">{{=ult_sesion.time_stamp}}</p>
+                                </div>
+                            </div>
+                            {{pass}}
                         </div>
-                    </div>
+                    </div>                        
                 </div>
-            </div>
-            <div class="col-sm-12 col-md-12 col-lg-6">
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-6" style="text-align: right;">
-                        <h4 class="txt-color-darken">{{=hoy}}</h4>
-                    </div>
-                </div>
-                {{if ult_sesion:}}
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-6" style="text-align: right;">                        
-                        <p class="txt-color-darken">Ultima vez que iniciaste sesión:</p>
-                        <p class="txt-color-darken">{{=ult_sesion.time_stamp}}</p>
-                    </div>
-                </div>
-                {{pass}}
             </div>
         </div>        
     </div>
 </div>
     {{if not session.instancias:}}
+    <div class="row">
         {{if mias:}}
-        <div class='row'>
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <header role="heading">
-                     <h2 class="txt-color-darken">Tu(s) empresa(s)</h2>
-                </header>
-                {{for m in mias:}}
-                <div class="col-sm-4 col-md-2">
-                    <a href="{{=URL('default', 'empresa', args=m.id)}}">
-                        <div class="thumbnail">
-                            <img src="{{=URL('static','images/logo-o.png')}}">
-                            <div class="caption">
-                                <h3>{{=m.razon_social}}</h3>
-                            </div>
-                        </div><!--thumbnail-->
-                    </a>
-                </div><!--fin col-->
-                {{pass}}
-            </div><!--fin col 12-->
-        </div><!--fin row-->
-        {{pass}}
-        {{if compartidas:}}
-        <div class='row'>
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-                <header role="heading">
-                    <h2 class="txt-color-darken">Empresas compartidas contigo</h2>
-                </header>
-                {{for c in compartidas:}}
-                <div class="col-sm-4 col-md-2">
-                    <a href="{{=URL('default', 'empresa', args=c.id)}}">
-                        <div class="thumbnail">
-                            <img src="{{=URL('static','images/logo-o.png')}}">
-                            <div class="caption">
-                                <h3>{{=c.razon_social}}</h3>
-                            </div>
-                        </div><!--thumbnail-->
-                    </a>
-                </div><!--fin col-->
-                {{pass}}
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="well">
+                <h2 class="txt-color-darken">Tu(s) empresa(s)</h2>
+                <ul class="media-list">
+                    {{for m in mias:}}
+                    <li class="media">
+                        <a class="pull-left" href="j{{=URL('default', 'empresa', args=m.id)}}">
+                            <img class="media-object" src="{{=URL('static','images/logo-blue.png')}}">
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading txt-color-darken">{{=m.razon_social}}</h4>
+                            <p class='txt-color-darken'>
+                                Empresa Sociedad Anonima de Capital Variable
+                            </p>
+                        </div>
+                    </li>
+                    {{pass}}                    
+                </ul>
             </div>
         </div>
         {{pass}}
+        {{if compartidas:}}
+        <div class="col-sm-12 col-md-6 col-lg-6">
+            <div class="well">
+                <h2 class="txt-color-darken">Empresas compartidas contigo</h2>
+                <ul class="media-list">
+                    {{for c in compartidas:}}
+                    <li class="media">
+                        <a class="pull-left" href="{{=URL('default', 'empresa', args=c.id)}}">
+                            <img class="media-object" src="{{=URL('static','images/logo-o.png')}}">
+                        </a>
+                        <div class="media-body">
+                            <h4 class="media-heading txt-color-darken">{{=c.razon_social}}</h4>
+                            <p class='txt-color-darken'>
+                                Empresa Sociedad de Responsabilidad Limitada
+                            </p>
+                        </div>
+                    </li>
+                    {{pass}}                    
+                </ul>
+            </div>
+        </div>
+        {{pass}}
+    </div>
     {{pass}}
 {{else:}}
     {{redirect(URL('default','login'))}}
 {{pass}}
 <style>
-    .jumbotron{
-        padding-bottom: 20px;
-        padding-top: 20px;
-    }
-    .jumbotron h1{
-        font-size: 40px;
-    }
-    .jumbotron p{
-        font-size: 15px;
-        font-weight: 100;
-        margin-bottom: 0;
-    }
-    .thumbnail{
-        border: 1px solid #bbbbbb;
-        background: #cccccc;
-        background: -webkit-gradient(linear, left top, left bottom, from(#eeeeee), to(#cccccc));
-        background: -webkit-linear-gradient(top, #eeeeee, #cccccc);
-        background: -moz-linear-gradient(top, #eeeeee, #cccccc);
-        background: -ms-linear-gradient(top, #eeeeee, #cccccc);
-        background: -o-linear-gradient(top, #eeeeee, #cccccc);
-        color: #22262e;
-        text-align: center;
-    }
-    .thumbnail:hover{
-        background-color: #bbbbbb;
-    }
-    .thumbnail > img{
-        margin-top: 10px;
-    }
-    h3{
-        margin:10px;
+    .media-object:hover{
+        opacity: 0.5;
     }
 </style>
