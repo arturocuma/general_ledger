@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# coding: utf-8
 
 from gluon.tools import Auth
 from psycopg2 import connect
@@ -13,20 +13,23 @@ class EmpresaDB(object):
     Recupera las bases de datos
     """
 
-    def __init__(self, db):
+    def __init__(self, db, user_id=None):
         """
         Método init
         """
-
         self.db = db
+        self.user_id = user_id
 
-        # crear la variable diccionario que almacene los ids
-        auth = Auth(db)
+        #try:
+        #    self.user_id = auth.user['id']
+        #    empresas = EmpresaDB(db_maestro, user_id = user_id)
+        #except:
+        #    pass
 
-        try:
-            self.user_id = auth.user['id']
-        except:
-            self.user_id = None
+        email = db(db.auth_user.id == self.user_id).select(
+                db.auth_user.ALL
+                ).first().email
+        self.email = email
 
         lista = db(
                 (db.mi_empresa.empresa_id == db.empresa.id) &\
@@ -44,7 +47,8 @@ class EmpresaDB(object):
             instancia=i.id
             if i.tipo == 1:
                 # bases de datos propias
-                email = auth.user['email']
+                # email = auth.user['email']
+                email = self.email
                 dbs[i.id] = self.cargar_modelo_de_instancia(email, i.razon_social)
 
             else:
@@ -95,16 +99,18 @@ class EmpresaDB(object):
                 readable=False
                 ),
             Field('creada_por', 'string',
-                default=auth.user.id,
-                readable=False
+                #default = auth.user.id,
+                default = self.user_id,
+                readable = False
                 ),
             Field('actualizada_en', 'datetime',
-                default=request.now,
-                readable=False
+                default = request.now,
+                readable = False
                 ),
             Field('actualizada_por', 'string',
-                default=auth.user.id,
-                readable=False
+                #default=auth.user.id,
+                default = self.user_id,
+                readable = False
                 )
         )
 
@@ -397,4 +403,8 @@ class Web2Postgress():
     def cerrar_sesiones():
         pass
 
-empresas = EmpresaDB(db_maestro)
+try:
+    user_id = auth.user['id']
+    empresas = EmpresaDB(db_maestro, user_id = user_id)
+except:
+    pass

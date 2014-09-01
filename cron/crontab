@@ -1,2 +1,7 @@
 #crontab
+# cada minuto
 0-59/1  *  *  *  * root *applications/general_ledger/modules/crontest.py
+# cada cinco minutos
+#*/5  *  *  *  * root *applications/general_ledger/modules/crontest.py
+# cada mes
+#0 0 1 * * root *applications/general_ledger/modules/crontest.py
