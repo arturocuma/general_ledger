@@ -4,7 +4,7 @@
     <div class="row">
         <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
             <legend>
-                <h1>
+                <h1 class="txt-color-darken">
                     <p>
                         <i class="fa-fw fa fa-cog "></i>
                         Configuración de empresa {{=nom.razon_social}}
@@ -47,31 +47,33 @@
     <div class="modal-dialog">
         <div class="modal-content">
             {{=form.custom.begin}}
+            <form class="smart-form">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                     &times;
                 </button>
                 <h4 class="modal-title" id="myModalLabel"><i class='fa fa-hand-o-right'></i> Compartir empresa</h4>
             </div>
-            <div class="modal-body">                
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="form-group">
-                            <p>
-                                <label>Escribe el correo del usuario con quien quieres compartir tu empresa</label>
-                            </p>
-                            {{=form.custom.widget.invitado}}
-                        </div>
-                    </div>
-                </div>
+            <div class="modal-body">
+                
+                    <fieldset>
+                        <section>
+                            <label class="label">Escribe el correo del usuario con quien quieres compartir tu empresa</label>
+                            <label class="input">
+                                {{=form.custom.widget.invitado}}
+                            </label>
+                        </section>
+                    </fieldset>                
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">
                     Cancelar
                 </button>
+                    {{form.element(_type='submit')['_class']='btn btn-primary'}}
                     {{=form.custom.submit}}
             </div>
             {{=form.custom.end}}
+            </form>
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->

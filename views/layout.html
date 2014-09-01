@@ -357,7 +357,7 @@ select{
 				}}
 				 	{{if mias:}}
 				 		<li class="divider"></li>
-				 		<li style="font-weight:bold;">Mis empresas</li>
+				 		<li style="font-weight:bold;">Tu(s) empresa(s)</li>
 				 		<li class="divider"></li>
 				 		{{for m in mias:}}
 				 			<li><a href="{{=URL('default', 'empresa', args=m.id)}}">{{=m.razon_social}}</a></li>				 			
@@ -365,7 +365,7 @@ select{
 				 	{{pass}}
 				 	{{if compartidas:}}
 				 		<li class="divider"></li>
-				 		<li style="font-weight:bold;">Compartidas conmigo</li>
+				 		<li style="font-weight:bold;">Compartidas contigo</li>
 				 		<li class="divider"></li>
 				 		{{for c in compartidas:}}
 				 			<li><a href="{{=URL('default', 'empresa', args=c.id)}}">{{=c.razon_social}}</a></li>				 			
