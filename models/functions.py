@@ -143,7 +143,7 @@ def crear_selector_status(id):
 
     periodo = obtener_estatus_periodo(request.vars.id)
 
-    estatus = db(db.poliza.id == id).select(
+    estatus_ = db(db.poliza.id == id).select(
             db.poliza.estatus
             ).first().estatus
 
@@ -159,8 +159,8 @@ def crear_selector_status(id):
                 _name = 'estatus{}'.format(id),
                 _id = '{}-estatus'.format(id),
                 _class = 'cambiar_estatus',
-                value = estatus,
-                *opciones_estatus
+                *opciones_estatus,
+                value = estatus_
                 )
     else:
 
