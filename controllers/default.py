@@ -11,6 +11,7 @@
 import time
 from datetime import datetime
 import csv
+db = None
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
 
@@ -61,6 +62,7 @@ def empresa():
    
     if empresa_id:
         session.instancias = empresa_id
+        global db
         db=empresas.dbs[int(session.instancias)]
         
     fecha=time.strftime("%Y-%m-%d")
