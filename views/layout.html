@@ -255,8 +255,6 @@ select{
 }
 /*Fin del estilo del select*/
 
-
-
 /*Estilos de errores en los campos*/
 .error_wrapper{
   background-color: #f2dede;
@@ -268,10 +266,6 @@ select{
    margin-top: 2px;
    margin-bottom: 2px;
    color: #a94442;
-}
-/*Fin Estilos de errores en los campos*/
-header,h1,h2,h3,h4{
-	color:#4c4f53;
 }
 </style>
 
@@ -338,7 +332,7 @@ header,h1,h2,h3,h4{
 				<span class="label">Empresa:</span>
 				<span id="project-selector" class="popover-trigger-element dropdown-toggle" data-toggle="dropdown" rel="tooltip" data-placement="bottom" data-original-title="Click para ver/cambiar de empresa">
 					{{nom = db_maestro(db_maestro.empresa.id == session.instancias ).select(db_maestro.empresa.razon_social).first()}}
-					Empresa {{=nom.razon_social}}
+					{{=nom.razon_social}}
 					<i class="fa fa-angle-down"></i>
 				</span>
 				<ul class="dropdown-menu">

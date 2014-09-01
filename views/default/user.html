@@ -1,4 +1,18 @@
 {{extend 'layout.html'}}
+
+<div id="web2py_user_form">
+{{
+if request.args(0)=='login' and not session.auth_2_factor_user:
+    if not 'register' in auth.settings.actions_disabled:
+        form.add_button(T('Register'),URL(args='register', vars={'_next': request.vars._next} if request.vars._next else None),_class='btn')
+    pass
+    if not 'request_reset_password' in auth.settings.actions_disabled:
+        form.add_button(T('Lost Password'),URL(args='request_reset_password'),_class='btn')
+    pass
+pass
+}}
+</div>
+
 {{if session.auth and request.args(0)=='profile':}}
   {{pic = 'http://pbs.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png'}}
   <!--<img src="{{=session.picture if session.picture else pic}}" alt='Yo' class="online" />-->
@@ -15,28 +29,130 @@
         </legend>
     </article>
 </div>
-{{else:}}
-	<h2>{{=T( request.args(0).replace('_',' ').capitalize() )}}</h2>
-{{pass}}
-<div id="web2py_user_form">
-{{
-if request.args(0)=='login' and not session.auth_2_factor_user:
-    if not 'register' in auth.settings.actions_disabled:
-        form.add_button(T('Register'),URL(args='register', vars={'_next': request.vars._next} if request.vars._next else None),_class='btn')
-    pass
-    if not 'request_reset_password' in auth.settings.actions_disabled:
-        form.add_button(T('Lost Password'),URL(args='request_reset_password'),_class='btn')
-    pass
-pass
-=form
-}}
+<!--Formulario de login-->
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" >
+        <div class="well no-padding">
+            <form method='POST' id="login-form" class="smart-form client-form">
+                {{=form.custom.begin}}
+                <header>
+                    Información del usuario
+                </header>
+                <fieldset>
+                    <section>
+                        <label class="label">Nombre</label>
+                        <label class="input"> <i class="icon-append fa fa-user"></i>
+                            <!--<input type="email" name="email">-->
+                            {{=form.custom.widget.first_name}}
+                            <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Nombre del usuario</b></label>
+                    </section>
+                    <section>
+                        <label class="label">Apellidos</label>
+                        <label class="input"> <i class="icon-append fa fa-user"></i>
+                            <!--<input type="email" name="email">-->
+                            {{=form.custom.widget.last_name}}
+                            <b class="tooltip tooltip-top-right"><i class="fa fa-user txt-color-teal"></i> Apellidos del usuario</b></label>
+                    </section>
+                    <section>
+                        <label class="label">Correo</label>
+                        <label class="input"> <i class="icon-append ">@</i>
+                            <!--<input type="email" name="email">-->
+                            {{=form.custom.widget.email}}
+                            <b class="tooltip tooltip-top-right"><i class="txt-color-teal">@</i> Correo del usuario</b></label>
+                    </section>
+                    <section>
+                        <div class="note">
+                            <a href="{{=URL('default','user/change_password')}}" >Cambiar contraseña</a>
+                        </div>
+                    </section>
+                    <!--<section>
+                        <label class="checkbox">
+                            <input type="checkbox" name="remember" checked="">
+                            <i></i>Stay signed in</label>
+                    </section>-->
+                </fieldset>
+                <footer>
+                {{form.element(_type='submit')['_class']='btn btn-primary'}}
+                    {{=form.custom.submit}}
+                    <!--<button type="submit" class="btn btn-primary">
+                        Iniciar sesión
+                    </button>-->
+                </footer>
+                {{=form.custom.end}}
+            </form>
+        </div>
+    </div>
 </div>
+{{elif session.auth and request.args(0)=='change_password':}}
+<div class="row">
+    <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
+        <legend>
+            <h1>
+                <p>
+                    <i class="fa-fw fa fa-user"></i>
+                    {{=auth.user['first_name']}} {{=auth.user['last_name']}}   
+                </p>
+                <small>Cambio de contraseña</small>
+            </h1>
+        </legend>
+    </article>
+</div>
+<!--Formulario de login-->
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5" >
+        <div class="well no-padding">
+            <form method='POST' id="login-form" class="smart-form client-form">
+                {{=form.custom.begin}}
+                <header>
+                    Información de contraseñas
+                </header>
+                <fieldset>
+                    <section>
+                        <label class="label">Contraseña actual</label>
+                        <label class="input"> <i class="icon-append fa fa-lock"></i>
+                            <!--<input type="email" name="email">-->
+                            {{form.element(_name='old_password')['_autocomplete']='off'}}
+                            {{=form.custom.widget.old_password}}
+                            <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Contraseña actual</b></label>
+                    </section>
+                    <section>
+                        <label class="label">Contraseña nueva</label>
+                        <label class="input"> <i class="icon-append fa fa-lock"></i>
+                            <!--<input type="email" name="email">-->
+                            {{=form.custom.widget.new_password}}
+                            <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Contraseña nueva</b></label>
+                    </section>
+                    <section>
+                        <label class="label">Verificar contraseña</label>
+                        <label class="input"> <i class="icon-append fa fa-lock"></i>
+                            <!--<input type="email" name="email">-->
+                            {{=form.custom.widget.new_password2}}
+                            <b class="tooltip tooltip-top-right"><i class="fa fa-lock txt-color-teal"></i> Verificar contraseña</b></label>
+                    </section>
+                </fieldset>
+                <footer>
+                    {{form.element(_type='submit')['_class']='btn btn-primary'}}
+                    {{=form.custom.submit}}
+                    <!--<button type="submit" class="btn btn-primary">
+                        Iniciar sesión
+                    </button>-->
+                </footer>
+                {{=form.custom.end}}
+            </form>
+        </div>
+    </div>
+</div>
+{{else:}}
+	<h2>{{=T( request.args(0).replace('_',' ').capitalize() )}}</h2>    
+    {{=form}}
+{{pass}}
+
 <script language="javascript"><!--
 jQuery("#web2py_user_form input:visible:enabled:first").focus();
 {{if request.args(0)=='register':}}
     web2py_validate_entropy(jQuery('#auth_user_password'),100);
 {{elif request.args(0) in ('change_password','reset_password'):}}
-    web2py_validate_entropy(jQuery('#no_table_new_password'),100);
+    web2py_validate_entropy(jQuery('#no_table_new_password'),100);    
 {{pass}}
 //--></script>
 
