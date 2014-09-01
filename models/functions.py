@@ -164,7 +164,7 @@ def crear_selector_status(id):
                 )
     else:
 
-        nombre = db(db.estatus_poliza.id == estatus).select(
+        nombre = db(db.estatus_poliza.id == estatus_).select(
                 db.estatus_poliza.nombre
                 ).first().nombre
         select = DIV(nombre)
