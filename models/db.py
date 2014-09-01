@@ -388,4 +388,9 @@ db_maestro.define_table('invitacion',
         Field('email_invitado', label='Email'),
         Field('fecha', 'datetime'),
         Field('url_hash', 'string')
-        )
+)
+
+
+#from applications.general_ledger.modules.DBs import *
+#EmpresaDB = local_import(EmpresaDB)
+#empresas = EmpresaDB(db_maestro, user_id = auth.user['id'])

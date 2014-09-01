@@ -26,14 +26,27 @@ def c():
     return loquesea
 
 def cc_grid2():
-    num_cc='1.1'
-    nivel='2'
-    cc_empresa = hijos_nivel(num_cc, nivel)
+    num_cc=''
+    nivel='0'
+    fecha=time.strftime("%Y-%m-%d")
+    #cc_empresa = hijos_nivel(num_cc, nivel)
+    cc_empresa = catalogo_nivel(nivel)
     tabla='<table>'
-    for cc in cc_empresa:
-        tabla+='<tr><td>'+cc[0]+' '+cc[1]+'</td></tr>'
+    lista=[]
+    total=0
+    for num_cc in cc_empresa:
+        cantidad=importe_cuenta_balanza(num_cc[0], num_cc[5], fecha)
+        total+=cantidad
+        lista.append(cantidad)
+        tabla+='<tr><td>'+num_cc[0]+' '+num_cc[1]+' '+str(total)+' </td></tr>'
+        
+    '''
+    for num_cc in cc_empresa:
+        cantidad=importe_cuenta_balanza(num_cc[0], num_cc[5], fecha)
+        lista.append((cantidad/total)*100)
+    '''
     tabla+='</table>'
-    return dict(cc_empresa=XML(tabla))
+    return dict(cc_empresa=XML(tabla), lista=lista)
 
 
 def balanza():
@@ -43,13 +56,24 @@ def balanza():
     fecha_final = balanza['fecha_final']
     return dict(cc_empresa=cc_empresa, fecha_inicial = fecha_inicial, fecha_final = fecha_final)
 
+def catalogo_nivel(nivel):
+    catalogo = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+                   " node.id, node.cc_vista_id, node.cc_naturaleza_id "\
+                   " FROM cc_empresa AS node , cc_empresa AS parent "\
+                   " WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   " GROUP BY node.id "\
+                   " HAVING (COUNT(parent.descripcion) - 1)  <= "+nivel+""\
+                   " ORDER BY node.lft;"\
+                   )
+    return catalogo
+
 def hijos_nivel(num_cc,nivel):
     if num_cc!='':
-        cuenta= " AND node.num_cc = "+num_cc
+        cuenta= " AND node.num_cc = '"+str(num_cc)+"'"
     else:
         cuenta= " "
     query="SELECT node.num_cc, node.descripcion, (COUNT(parent.id) - (sub_tree.depthh + 1)) AS depth,"\
-                               " node.id, node.cc_vista_id FROM cc_empresa AS node,"\
+                               " node.id, node.cc_vista_id, node.cc_naturaleza_id FROM cc_empresa AS node,"\
                                " cc_empresa AS parent,"\
                                " cc_empresa AS sub_parent,"\
                                " ("\
@@ -64,8 +88,8 @@ def hijos_nivel(num_cc,nivel):
                                " WHERE node.lft BETWEEN parent.lft AND parent.rgt"\
                                " AND node.lft BETWEEN sub_parent.lft AND sub_parent.rgt"\
                                " AND sub_parent.id = sub_tree.id"\
-                               " GROUP BY node.id"\
-                               " HAVING depth = "+nivel+""\
+                               " GROUP BY node.id, sub_tree.depthh"\
+                               " HAVING (COUNT(parent.id) - (sub_tree.depthh + 1))  = "+nivel+""\
                                " ORDER BY node.lft;"
     hijos = db.executesql(query)
     return hijos

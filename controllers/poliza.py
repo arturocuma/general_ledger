@@ -173,6 +173,7 @@ def listar():
 def agregar_poliza():
     """
     Agrega un elemento a la tabla `póliza`
+    #ToDo: ¿bloquear la inserción por URL?
     """
 
     periodo_estatus = estatus_periodo(request.vars.id)
@@ -303,6 +304,7 @@ def actualiza_tipo_poliza():
     - `actualizada_en`
     - `actualizada por`
     de la tabla `poliza`
+    Retorna el valor de un nuevo folio
     """
 
     if request.post_vars:
