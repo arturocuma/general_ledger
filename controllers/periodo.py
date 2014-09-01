@@ -29,9 +29,10 @@ def index():
         form.vars.anio_id = obtener_id_anio(form.vars.anio)
         form.vars.mes_id = obtener_id_mes(form.vars.mes)
 
-        cadena = '{}{}'.format(form.vars.anio, form.vars.mes)
-        form.vars.clave = cadena
-        fecha = datetime.strptime(cadena, "%Y%B").date()
+        clave = '{}{}'.format(form.vars.mes[0:3], form.vars.anio)
+        form.vars.clave = clave
+
+        fecha = datetime.strptime(clave, "%b%Y").date()
 
         # crear un form.vars.clave
         form.vars.inicio = date(fecha.year, fecha.month, 1)
