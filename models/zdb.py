@@ -329,7 +329,7 @@ class EmpresaDB(object):
         return db
 
 
-class Web2Postgress():
+class Web2Postgres():
     """
     Interactua con postgres
     """
@@ -388,17 +388,30 @@ class Web2Postgress():
         #ToDo: crear exepciones
         """
         import os
-        import time
+        from datetime import datetime
 
         nombre_db = hashlib.sha1(nombre + email).hexdigest()
         usuario = 'web2py'
         host = 'localhost'
         contrasenia = 'w3b2py'
-        fecha = time.strftime('%Y-%m-%d')
 
-        comando = 'pg_dump -U web2py contabilidad -f {}'.format(nombre_db)
+        fecha = datetime.now().strftime('%Y-%m-%d-%H-%M-%S')
 
-        os.popen('')
+        cmd = 'pg_dump -U web2py _{}_{} -f {}_{}.sql -h localhost'.format(
+                email, nombre_db,
+                nombre_db, fecha
+                )
+
+        """
+        path = os.path.join(request.folder, 'uploads/{}/'.format(nombre_db))
+        if not os.path.isdir(path):
+            os.mkdir(path)
+        """
+
+        print request.folder
+
+        ecsito = os.popen(cmd)
+        print 'ecsito', ecsito
 
     def cerrar_sesiones():
         pass

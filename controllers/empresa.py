@@ -31,7 +31,7 @@ def eliminar():
             db_maestro.empresa.razon_social
             ).first().razon_social
 
-    instancia = Web2Postgress()
+    instancia = Web2Postgres()
 
     # eliminar registro de la base de datos maestra
     db_maestro(db_maestro.empresa.id == id).delete()
@@ -99,7 +99,17 @@ def respaldar():
     """
     Crea un respaldo de la base de datos
     """
-    pass
+    id = request.vars.id
+
+    razon_social = db_maestro(db_maestro.empresa.id == id).select(
+            db_maestro.empresa.razon_social
+            ).first().razon_social
+
+    instancia = Web2Postgres()
+
+    # crear respaldo
+    email = auth.user['email']
+    instancia.crear_respaldo(razon_social, email)
 
 
 def configuracion():

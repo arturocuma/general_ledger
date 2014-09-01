@@ -293,7 +293,7 @@ def empresa_wizard():
 
         db_maestro.mi_empresa.insert(user_id=auth.user['id'], empresa_id=empresa_id)
 
-        instancia = Web2Postgress()
+        instancia = Web2Postgres()
         instancia.crear_db(nombre, email)
 
         empresas.cargar_modelo_de_instancia(email, nombre, vez_primera=True)

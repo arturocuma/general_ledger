@@ -18,7 +18,9 @@
     <div class="row">
         <div class="col-md-4">
             <div class="alert alert-info">
-                <h2 style=" color: #305d8c;"><i class='fa fa-copy'></i> Crear respaldo</h2>
+                <a id="{{=session.instancias}}" data-nombre='{{=nom.razon_social}}' class="respaldo" style="cursor:pointer; text-decoration:none;">
+                    <h2 style=" color: #305d8c;"><i class='fa fa-copy'></i> Crear respaldo</h2>
+                </a>
                 <p>Haz un respaldo de tu empresa.</p>
             </div>
         </div>
@@ -78,34 +80,32 @@
 
 <script>
 
-    /* Enviar email de invitación */
-    $('.invitar').click(function(e) {
-        e.preventDefault();
-        window.location.href = '#modal_invitar';
-        $("#form_invitar").load("{{=URL('empresa', 'invitar')}}");
-    });
+    $('.respaldo').click(function(e) {
 
-    /* Compartir empresa */
-    $('.compartir-empresa').click(function(e) {
-        e.preventDefault();
+        id = $(this).attr('id');
+        nombre = $(this).data('nombre');
 
-        empresa_id = $(this).attr('id');
-        usuario_id = 3;
-
-        $.ajax({
-            type: "post",
-            url: "{{=URL('empresa', 'compartir')}}",
-            data: {empresa_id: empresa_id, usuario_id:usuario_id},
-            success: function (response) {
-                console.log('good');
-                location.reload();
-            },
-            error: function (response) {
-                console.log('bad');
-            },
+        $.SmartMessageBox({
+            title : "Se dispone a crear un respaldo de la empresa " + nombre,
+            content : "¿Realmente quieres crear un respaldo?",
+            buttons : "[Sí][No]",
+            }, function(ButtonPress, Value) {
+            if (ButtonPress == "Sí") {
+                $.ajax({
+                    type: "post",
+                    url: "{{=URL('empresa', 'respaldar')}}",
+                    data: {id: id},
+                    success: function (response) {
+                        /*mandar mensaje de éxito */
+                    },
+                    error: function (response) {
+                        console.log(response);
+                    },
+                });
+                return 0;
+            }
         });
     });
-
 
     $('.eliminar-empresa').click(function(e) {
 
@@ -132,7 +132,6 @@
                 return 0;
             }
         });
-
     });
 
 </script>
