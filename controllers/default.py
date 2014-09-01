@@ -8,7 +8,8 @@
 ## - download is for downloading files uploaded in the db_maestro (does streaming)
 ## - call exposes all registered services (none by default)
 #########################################################################
-
+import time
+from datetime import datetime
 import csv
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
@@ -57,9 +58,21 @@ def user():
 
 def empresa():
     empresa_id = request.args(0)
+   
     if empresa_id:
         session.instancias = empresa_id
-    return dict()
+        db=empresas.dbs[int(session.instancias)]
+        
+    fecha=time.strftime("%Y-%m-%d")
+    nivel='0'
+    cc_empresa = catalogo_nivel(nivel)
+    total=0
+    lista=[]
+    for num_cc in cc_empresa:
+        cantidad=importe_cuenta_balanza(num_cc[0], num_cc[5], fecha)
+        total+=cantidad
+        lista.append(cantidad)
+    return dict(lista=lista)
 
 def insertar_pais(nombre):
     """
@@ -554,3 +567,31 @@ def index():
         compartidas = ''        
 
     return dict(mias=mias, compartidas=compartidas, hoy=hoy)
+
+def catalogo_nivel(nivel):
+    catalogo = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
+                   " node.id, node.cc_vista_id, node.cc_naturaleza_id "\
+                   " FROM cc_empresa AS node , cc_empresa AS parent "\
+                   " WHERE node.lft BETWEEN parent.lft AND parent.rgt "\
+                   " GROUP BY node.id "\
+                   " HAVING (COUNT(parent.descripcion) - 1)  <= "+nivel+""\
+                   " ORDER BY node.lft;"\
+                   )
+    return catalogo
+
+def importe_cuenta_balanza(num_cc, cc_naturaleza_id, fecha):
+    filtro=" AND poliza.fecha_usuario <= '"+str(fecha)+"'"
+    cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
+                                 " FROM poliza, asiento, cc_empresa "\
+                                 " WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 " AND poliza.id = asiento.poliza_id "\
+                                 " AND poliza.estatus= 3 "\
+                                 " AND cc_empresa.num_cc like '"+num_cc+"%'"\
+                                 +filtro)
+    debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+    haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
+    if cc_naturaleza_id==2: #Deudora
+        importe=debe-haber
+    else:
+        importe=haber-debe
+    return importe
