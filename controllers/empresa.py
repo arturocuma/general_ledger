@@ -99,6 +99,7 @@ def respaldar():
     """
     Crea un respaldo de la base de datos
     """
+    from json import loads, dumps
     id = request.vars.id
 
     razon_social = db_maestro(db_maestro.empresa.id == id).select(
@@ -109,7 +110,10 @@ def respaldar():
 
     # crear respaldo
     email = auth.user['email']
-    instancia.crear_respaldo(razon_social, email)
+    path = instancia.crear_respaldo(razon_social, email)
+    diccionario = {'url': URL('static', path)}
+
+    return dumps(diccionario)
 
 
 def configuracion():
