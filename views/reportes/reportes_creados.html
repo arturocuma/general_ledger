@@ -86,7 +86,7 @@
                                         				<label class="input">
                                         				  <div class="input-group">
                                         				    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        				    <input type="text" name="fecha_ini" class="activo fecha form-control input-sm" placeholder="Fecha inicio" value="{{=XML(request.vars.fecha_ini) if request.vars.fecha_ini else ''}}">
+                                        				    <input id='f1' type="text" name="fecha_ini" class="activo fecha form-control input-sm" placeholder="Fecha inicio" value="{{=XML(request.vars.fecha_ini) if request.vars.fecha_ini else ''}}">
                                         				  </div>
                                         				</label>
                                     			      </section>
@@ -95,7 +95,7 @@
                                         				<label class="input">
                                         				  <div class="input-group">
                                         				    <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
-                                        				    <input type="text" name="fecha_fin" class="activo fecha form-control input-sm" placeholder="Fecha fin" value="{{=XML(request.vars.fecha_fin) if request.vars.fecha_fin else ''}}">
+                                        				    <input id='f2' type="text" name="fecha_fin" class="activo fecha form-control input-sm" placeholder="Fecha fin" value="{{=XML(request.vars.fecha_fin) if request.vars.fecha_fin else ''}}">
                                         				  </div>
                                         				</label>
                                     			      </section>
@@ -233,13 +233,22 @@
 			});
 		/* END TABLE TOOLS */
         
-        $(".fa-calendar").click(function () {
-				$(".fecha").datepicker({
-						dateFormat: 'yy-mm-dd',
-					});
+        	$('#f1').datepicker({
+				dateFormat : 'yy-mm-dd',
+				prevText : '<i class="fa fa-chevron-left"></i>',
+				nextText : '<i class="fa fa-chevron-right"></i>',
+				onSelect : function(selectedDate) {
+					$('#f2').datepicker('option', 'minDate', selectedDate);
+				}
 			});
-			$(".fecha").datepicker({
-				dateFormat: 'yy-mm-dd',
+			
+			$('#f2').datepicker({
+				dateFormat : 'yy-mm-dd',
+				prevText : '<i class="fa fa-chevron-left"></i>',
+				nextText : '<i class="fa fa-chevron-right"></i>',
+				onSelect : function(selectedDate) {
+					$('#f1').datepicker('option', 'maxDate', selectedDate);
+				}
 			});
-		})
+		});
 </script>

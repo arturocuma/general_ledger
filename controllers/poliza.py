@@ -139,7 +139,7 @@ def listar():
         boton_agregar_asiento = DIV(A(
                 SPAN(_class="fa fa-plus-square"),
                 ' Agregar Asiento',
-                _class="button btn btn-default",
+                _class="button btn btn-primary",
                 _href=URL(
                     "poliza",
                     "agregar_asiento",
@@ -156,7 +156,7 @@ def listar():
         boton_agregar_poliza = DIV(A(
                 SPAN(_class="fa fa-plus-square"),
                 ' Agregar Póliza',
-                _class="button btn btn-default",
+                _class="button btn btn-primary",
                 _href=URL(
                     "poliza",
                     "agregar_poliza",
