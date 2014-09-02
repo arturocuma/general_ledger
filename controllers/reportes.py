@@ -307,6 +307,7 @@ def tabla_balance():
                                  " FROM poliza, asiento, cc_empresa "\
                                  " WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  " AND poliza.id=asiento.poliza_id "\
+                                 " AND poliza.estatus= 3 "\
                                  " AND cc_empresa.num_cc like '"+cat[0]+"%'")
         nivel_cc=cat[2]
         digito=int(cat[0][0])
@@ -372,7 +373,9 @@ def libro_diario():
             LEFT JOIN asiento a ON (a.poliza_id = p.id) \
             LEFT JOIN cc_empresa cc ON (a.cc_empresa_id = cc.id)\
             LEFT JOIN tipo_poliza tp ON (p.tipo = tp.id)\
-            WHERE p.id > 0 "+ filtro
+            WHERE p.id > 0 "+ filtro+" \
+            AND p.estatus=3 \
+            ORDER BY p.id"
 
     query = db.executesql(query, as_dict=True)
 
@@ -479,9 +482,11 @@ def importe_cuenta_er(cuenta, acumulado):
     elif acumulado==False:
         cadena=" AND poliza.fecha_usuario between '"+mes_actual+"' and '"+fecha_actual+"'"
     cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
-                                 "FROM asiento, poliza, cc_empresa "\
-                                 "WHERE asiento.cc_empresa_id = cc_empresa.id "\
-                                 "AND cc_empresa.num_cc like '"+str(cuenta.num_cc)+"%'"\
+                                 " FROM asiento, poliza, cc_empresa "\
+                                 " WHERE asiento.cc_empresa_id = cc_empresa.id "\
+                                 " AND poliza.id=asiento.poliza_id "\
+                                 " AND poliza.estatus= 3 "\
+                                 " AND cc_empresa.num_cc like '"+str(cuenta.num_cc)+"%'"\
                                  +cadena)
     debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
     haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
@@ -515,11 +520,11 @@ def seccion_er(cuentas,total_ingresos):
         row.append(cuenta.descripcion)
         actual = importe_cuenta_er(cuenta,False)
         row.append(actual)
-        porc_actual=(100.0/total_ingresos['actual'])*actual if actual > 0 else 0.0
+        porc_actual=(100.0/total_ingresos['actual'])*actual if total_ingresos['actual'] > 0 else 0.0
         row.append(porc_actual)
         acumulado = importe_cuenta_er(cuenta,True)
         row.append(acumulado)
-        porc_acumulado=(100.0/total_ingresos['acumulado'])*acumulado if acumulado > 0 else 0.0
+        porc_acumulado=(100.0/total_ingresos['acumulado'])*acumulado if total_ingresos['acumulado'] > 0 else 0.0
         row.append(porc_acumulado)
         seccion.append(row)
     return seccion
@@ -547,6 +552,7 @@ def libro_mayor():
                         FROM asiento a, poliza p, cc_empresa cc\
                         WHERE a.cc_empresa_id = cc.id\
                         AND a.poliza_id = p.id\
+                        AND p.estatus= 3 \
                         GROUP BY a.cc_empresa_id, cc.num_cc, date_part('month',p.fecha_usuario)"
 
     asientos = db.executesql(query_asientos,as_dict=True)
