@@ -11,6 +11,7 @@
 import time
 from datetime import datetime
 import csv
+
 db = None
 if session.instancias:
     db=empresas.dbs[int(session.instancias)]
@@ -63,7 +64,7 @@ def empresa():
     if empresa_id:
         session.instancias = empresa_id
         global db
-        db=empresas.dbs[int(session.instancias)]
+        db = empresas.dbs[int(session.instancias)]
         
     fecha=time.strftime("%Y-%m-%d")
     nivel='0'
@@ -308,7 +309,7 @@ def empresa_wizard():
 
         db_maestro.mi_empresa.insert(user_id=auth.user['id'], empresa_id=empresa_id)
 
-        instancia = Web2Postgress()
+        instancia = Web2Postgres()
         instancia.crear_db(nombre, email)
 
         empresas.cargar_modelo_de_instancia(email, nombre, vez_primera=True)
@@ -569,6 +570,7 @@ def index():
         compartidas = ''        
 
     return dict(mias=mias, compartidas=compartidas, hoy=hoy)
+
 
 def catalogo_nivel(nivel):
     catalogo = db.executesql("SELECT node.num_cc, node.descripcion,(COUNT(parent.descripcion) - 1) AS depth, "\
