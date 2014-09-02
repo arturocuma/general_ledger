@@ -19,9 +19,9 @@
         <div class="col-md-4">
             <div class="alert alert-info">
                 <a id="{{=session.instancias}}" data-nombre='{{=nom.razon_social}}' class="respaldo" style="cursor:pointer; text-decoration:none;">
-                    <h2 style=" color: #305d8c;"><i class='fa fa-copy'></i> Crear respaldo</h2>
+                    <h2 style="color: #305d8c;"><i class='fa fa-copy'></i> Crear respaldo</h2>
                 </a>
-                <p>Haz un respaldo de tu empresa</p>
+                <p>Haz un respaldo de tu empresa <a id="auxiliar"></a></p>
             </div>
         </div>
         <div class="col-md-4">
@@ -80,18 +80,6 @@
 
 <script>
 
-    $(document).ready(function() {
-        {{url = URL('respaldar', vars={'id': session.instancias}) }}
-
-        $.getJSON("{{=url}}", function(json) {
-            $.each(json, function(index, value) {
-                $('.respaldo').attr('href', value);
-                $('.respaldo').attr('_download', 'respaldo.sql');
-            });
-        });
-    });
-
-    /*
     $('.respaldo').click(function(e) {
 
         id = $(this).attr('id');
@@ -101,24 +89,24 @@
             title : "Se dispone a crear un respaldo de la empresa " + nombre,
             content : "¿Realmente quieres crear un respaldo?",
             buttons : "[Sí][No]",
-            }, function(ButtonPress, Value) {
-            if (ButtonPress == "Sí") {
+            }, 
+            function(ButtonPress, Value) {
+                if (ButtonPress == "Sí") {
 
-                $.ajax({
-                    type: "post",
-                    url: "{{=URL('empresa', 'respaldar')}}",
-                    data: {id: id},
-                    success: function (response) {
-                    },
-                    error: function (response) {
-                        console.log(response);
-                    },
-                });
-                return 0;
-            }
-        });
+                    {{url = URL('respaldar', vars={'id': session.instancias})}}
+
+                    $.getJSON("{{=url}}", function(json) {
+                        $.each(json, function(index, value) {
+                            $('.respaldo').attr('href', value);
+                            $('.respaldo').attr('_download', 'respaldo.sql');
+                            $('.respaldo')[0].click();
+                            $('.respaldo').removeAttr('href');
+                        });
+                    });
+                    return 0;
+                }
+            });
     });
-    */
 
     $('.eliminar-empresa').click(function(e) {
 
