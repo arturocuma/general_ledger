@@ -142,6 +142,11 @@ def ul_list(tipo, empresa_id):
 
     n=0
     for cat in categories:
+        if cat[2]==0:
+            display=''
+        else:
+            display='style="display:None"'
+           
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
@@ -149,20 +154,20 @@ def ul_list(tipo, empresa_id):
         debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
         haber=cantidad[0][0] if cantidad[0][0]!=None else 0.0
         if cat[2]>n:
-            cadena+='<ul><li>'
+            cadena+='<ul><li '+display+' >'
         elif cat[2]==n:
             if n>0:
-                cadena+='</li><li>'
+                cadena+='</li><li '+display+' >'
             else:
                 cadena+='<li>'
         else:
             for i in range(cat[2],n):
                 cadena+='</li></ul>'
-            cadena+='<li>'
+            cadena+='<li '+display+'>'
 
         if tipo=="config":
             cadena+='<span><i class="fa fa-minus-circle"></i></span> '
-            cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
+            cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton" data-toggle="modal" data-target="#modal_editar"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton" data-toggle="modal" data-target="#modal_crear"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
         elif tipo=="wizard":
             cadena+='<span><i class="fa fa-minus-circle"></i> '+cat[0]+' '+cat[1]+'</span> '
         elif tipo=="grid":
