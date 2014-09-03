@@ -163,10 +163,12 @@ def ul_list(tipo):
 
         if tipo=="config":
             cadena+='<span><i class="fa fa-minus-circle"></i></span> '
+
             cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton" data-toggle="modal" data-target="#modal_editar"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div>'
             if cat[4]==1:
                 cadena+='<div class="menu-boton" data-toggle="modal" data-target="#modal_crear"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div>'
             cadena+='</ul></div>'
+
         elif tipo=="wizard":
             cadena+='<span><i class="fa fa-minus-circle"></i> '+cat[0]+' '+cat[1]+'</span> '
         elif tipo=="grid":
@@ -516,6 +518,7 @@ def crear_cuenta():
         add_node(padre_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
         redirect(URL('cc_grid'))
 
+
     return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)
 
 
@@ -525,8 +528,9 @@ def editar_cuenta():
     db.cc_empresa.rgt.writable=False
     db.cc_empresa.rgt.readable=False
     form=crud.update(db.cc_empresa, request.vars.id)
+    form.element(_type='submit')['_class']='btn btn-primary'
     if request.vars.num_cc:
-        redirect(URL('index'))
+        redirect(URL('cc_grid'))
     return dict(form=form)
 
 
