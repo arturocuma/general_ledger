@@ -1,4 +1,4 @@
-# coding: utf8
+# coding: utf-8
 {
 '!=': '!=',
 '!langcode!': 'es',
@@ -306,8 +306,8 @@
 'invalid ticket': 'tiquete inválido',
 'IP del Cliente': 'IP del Cliente',
 'Is Active': 'Está Activo',
-'json': 'json',
 'JSON': 'JSON',
+'json': 'json',
 'JSON export of visible columns': 'JSON export of visible columns',
 'Key': 'Llave',
 'language file "%(filename)s" created/updated': 'archivo de lenguaje "%(filename)s" creado/actualizado',
@@ -436,6 +436,7 @@
 'Record': 'Registro',
 'Record %(id)s created': 'Registro %(id)s creado',
 'Record Created': 'Registro Creado',
+'Record Deleted': 'Record Deleted',
 'record does not exist': 'el registro no existe',
 'Record ID': 'ID de Registro',
 'Record id': 'Id de registro',
