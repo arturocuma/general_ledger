@@ -660,16 +660,15 @@ select{
 				</li>
 			{{if session.instancias:}}
 				{{if mias:}}
-					{{for m in mias:}}					
+					{{for m in mias:}}
 					<li>
 						<a href="{{=URL('default', 'empresa', args=m.id)}}" class="jarvismetro-tile big-cubes bg-color-blueDark {{='selected' if int(session.instancias) == int(m.id) else ''}}" > <span class="iconbox"> <i class="fa fa-building  fa-4x"></i> <span>{{=m.razon_social}}</span> </span> </a>
 					</li>
 					{{pass}}
 				{{pass}}
 				{{if compartidas:}}
-				 	{{for c in compartidas:}}
 				 	<li>
-						<a href="{{=URL('default', 'empresa', args=c.id)}}" class="jarvismetro-tile big-cubes selected bg-color-blue {{='selected' if int(session.instancias) == int(c.id) else ''}}" > <span class="iconbox"> <i class="fa fa-building  fa-4x"></i> <span>{{=c.razon_social}}</span> </span> </a>
+						<a href="{{=URL('default', 'empresa', args=c.id)}}" class="jarvismetro-tile big-cubes bg-color-blue {{='selected' if int(session.instancias) == int(c.id) else ''}}" > <span class="iconbox"> <i class="fa fa-building  fa-4x"></i> <span>{{=c.razon_social}}</span> </span> </a>
 					</li>
 					{{pass}}
 				{{pass}}

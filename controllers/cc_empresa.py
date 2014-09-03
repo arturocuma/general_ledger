@@ -1,10 +1,11 @@
 # coding: utf8
+if session.instancias:
+    db = empresas.dbs[int(session.instancias)]
 (auth.user or request.args(0) == 'login') or redirect(URL('default', 'user', args='login'))
 
 import csv
 
-if session.instancias:
-    db = empresas.dbs[int(session.instancias)]
+
 
 def index():
     tipo="config"
@@ -13,7 +14,7 @@ def index():
     if empresa_id:
         session.instancias = empresa_id
         
-    cc_empresa = ul_list(tipo, empresa_id)
+    cc_empresa = ul_list(tipo)
     return dict(cc_empresa = cc_empresa)
 
 def ancestor(num_cc):
@@ -37,7 +38,7 @@ def balanza():
 def cc_grid():
     tipo="config"
     empresa_id=int(session.instancias)
-    cc_empresa = ul_list(tipo, empresa_id)
+    cc_empresa = ul_list(tipo)
     return dict(cc_empresa=cc_empresa)
 
 def ul_list2():
@@ -116,20 +117,15 @@ def ul_list2():
     return cadena
 
 
-def ul_list(tipo, empresa_id):
-
-    db = empresas.dbs[int(empresa_id)]
-
+def ul_list(tipo):
+    global db
     cadena=''
     if tipo=='wizard':
         db = db_maestro
-        empresa_id = empresa_id
         cadena='<div class="tree "><ul>'
     elif tipo=='grid':
-        empresa_id = empresa_id
         cadena='<div class="tree"><ul>'
     else:
-        empresa_id = empresa_id
         cadena='<div class="tree"><ul>'
         
     categories = db.executesql("SELECT node.num_cc, node.descripcion,\
@@ -167,7 +163,12 @@ def ul_list(tipo, empresa_id):
 
         if tipo=="config":
             cadena+='<span><i class="fa fa-minus-circle"></i></span> '
-            cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton" data-toggle="modal" data-target="#modal_editar"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div> <div class="menu-boton" data-toggle="modal" data-target="#modal_crear"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div></ul></div>'
+
+            cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton" data-toggle="modal" data-target="#modal_editar"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div>'
+            if cat[4]==1:
+                cadena+='<div class="menu-boton" data-toggle="modal" data-target="#modal_crear"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div>'
+            cadena+='</ul></div>'
+
         elif tipo=="wizard":
             cadena+='<span><i class="fa fa-minus-circle"></i> '+cat[0]+' '+cat[1]+'</span> '
         elif tipo=="grid":
@@ -249,8 +250,8 @@ def add_node(
         cc_vista_id=None
         ):
 
-    empresa_id = request.vars.empresa_id
-    db = empresas.dbs[int(empresa_id)]
+    #empresa_id = request.vars.empresa_id
+    #db = empresas.dbs[int(empresa_id)]
     #db = db_maestro
     tabla = db['cc_empresa']
 
@@ -506,7 +507,7 @@ def crear_cuenta():
     msg=""
 
     if request.vars.num_cc:
-        empresa_id = 1
+        
         padre_id=int(request.vars.num_cc_padre)
         num_cc=request.vars.num_cc
         descripcion=request.vars.descripcion
@@ -514,8 +515,9 @@ def crear_cuenta():
         naturaleza_id=int(request.vars.cc_naturaleza_id)
         vista_id = int(request.vars.cc_vista_id)
         msg = 'Cuenta Creada'
-        add_node(padre_id, empresa_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
-        redirect(URL('index'))
+        add_node(padre_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
+        redirect(URL('cc_grid'))
+
 
     return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)
 
@@ -526,8 +528,9 @@ def editar_cuenta():
     db.cc_empresa.rgt.writable=False
     db.cc_empresa.rgt.readable=False
     form=crud.update(db.cc_empresa, request.vars.id)
+    form.element(_type='submit')['_class']='btn btn-primary'
     if request.vars.num_cc:
-        redirect(URL('index'))
+        redirect(URL('cc_grid'))
     return dict(form=form)
 
 

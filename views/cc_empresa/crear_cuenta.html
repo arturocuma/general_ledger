@@ -1,96 +1,67 @@
-<style>
-    #table {
-        display: inline;
-        padding-left:10px;
-        width:100%;
-    }
-    #row {
-        display: table-row; 
-        padding-left:5px;
-        width:100%;
-    }
-     #cell {
-        display: table-cell; 
-        padding-left:17px;
-        width:50%;
-    }
-</style>
+<form enctype="multipart/form-data" action="{{=URL('cc_empresa','crear_cuenta')}}" method="post">
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="num_cc_padre">Cuenta padre</label>
+            <select class="form-control"  name='num_cc_padre' id='num_cc_padre'>
+            {{for cc_padre in cc_empresa:}}
+               <option value="{{=cc_padre.id}}"
+                  {{="selected='selected'" if str(cc_padre.id)==request.vars.num_cc_padre else ""}}>
+                  {{=cc_padre.num_cc}} {{=cc_padre.descripcion}} 
+               </option>
+            {{pass}}
+            </select>
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="num_cc"> Número de cuenta</label>
+            <input type="text" id="num_cc" name="num_cc" value="" class="form-control" placeholder="Ej. 1.2.3">
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12">
+         <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <input type="text" name="descripcion" id="descripcion" value="" class="form-control" placeholder="Descripción de la cuenta" required>
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="cc_naturaleza_id">Naturaleza</label>
+            <select class="form-control" name='cc_naturaleza_id' id='cc_naturaleza_id'>
+            {{for naturaleza in cc_naturaleza:}}
+               <option value="{{=naturaleza.id}}"
+                  {{="selected='selected'" if str(naturaleza.id)==request.vars.cc_naturaleza_id else ""}}>
+               {{=naturaleza.nombre}}
+               </option>
+            {{pass}}
+            </select>
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="num_cc_vista_id">Vista</label>
+            <select class="form-control" name='cc_vista_id' id='cc_vista_id'>
+            {{for vista in cc_vista:}}
+               <option value="{{=vista.id}}"
+                  {{="selected='selected'" if str(vista.id)==request.vars.cc_vista_id else ""}}>
+               {{=vista.nombre}}
+               </option>
+            {{pass}}
+            </select>
+            
+         </div>
+      </div>
+   </div>
+   <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">
+         Cancelar
+      </button>
+      <input type="Submit" class="btn btn-primary" value="Guardar">
+   </div>
+</form>
 {{=msg}}
-<div>
-    <form enctype="multipart/form-data" action="{{=URL('cc_empresa','crear_cuenta')}}" method="post">
-        <div id="table">
-           
-           <div id="row">
-               <div id="cell" >
-                <label for="num_cc_padre" >Cuenta Padre</label>
-               </div>
-               <div id="cell" >
-                <select  name='num_cc_padre' id='num_cc_padre'>
-                            {{for cc_padre in cc_empresa:}}
-                            <option value="{{=cc_padre.id}}"
-                                {{="selected='selected'" if str(cc_padre.id)==request.vars.num_cc_padre else ""}}>
-                                {{=cc_padre.num_cc}} {{=cc_padre.descripcion}} 
-                            </option>
-                            {{pass}}
-                  </select>
-               </div>
-            </div >
-            <div id="row">
-               <div id="cell" >
-                <label for="num_cc" >Número de Cuenta</label>
-               </div>
-               <div id="cell">
-                <input type="text" id="num_cc" name="num_cc" value="">
-               </div>
-            </div>
-            <div id="row">
-               <div id="cell">
-                <label for="descripcion" >Descripción</label>
-               </div>
-               <div id="cell" >
-                <input type="text" name="descripcion" id="descripcion" value="">
-               </div>
-            </div>
-            <div id="row">
-               <div id="cell" >
-                <label for="cc_naturaleza_id" >Naturaleza</label>
-               </div>
-               <div id="cell">
-                <select  name='cc_naturaleza_id' id='cc_naturaleza_id'>
-                            {{for naturaleza in cc_naturaleza:}}
-                            <option value="{{=naturaleza.id}}"
-                                {{="selected='selected'" if str(naturaleza.id)==request.vars.cc_naturaleza_id else ""}}>
-                            {{=naturaleza.nombre}}
-                            </option>
-                            {{pass}}
-                  </select>
-               </div>
-            </div>
-            <div id="row">
-               <div id="cell" >
-                <label for="cc_vista_id" >Vista</label>
-               </div>
-               <div id="cell">
-                <select  name='cc_vista_id' id='cc_vista_id'>
-                            {{for vista in cc_vista:}}
-                            <option value="{{=vista.id}}"
-                                {{="selected='selected'" if str(vista.id)==request.vars.cc_vista_id else ""}}>
-                            {{=vista.nombre}}
-                            </option>
-                            {{pass}}
-                  </select>
-               </div>
-            </div>
-            <div id="row">
-                <div id="cell">
-                    
-                </div>
-               <div id="cell" >
-                <input type="Submit" value="Enviar">
-               </div>
-            </div>
-        </div>
-        
-    </form>
-
-</div>
