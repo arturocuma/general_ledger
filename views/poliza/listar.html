@@ -111,6 +111,7 @@ $(document).ready(function(){
                 
                 $('.concepto_general').editable("{{=URL('poliza', 'actualiza_poliza')}}",{
                     tooltip: "Click para editar, ENTER para salvar.",
+                    onblur: "submit",
                     indicator: "Actualizando...",
                 });
 
