@@ -153,4 +153,29 @@
             alert('No se puede crear una subcuenta en una cuenta de detalle');
         }
     } 
+    function eliminar_cc( num_cc, nombre_cc ){
+        $.SmartMessageBox({
+            title : "¿Estas seguro de eliminar la cuenta " + num_cc +" "+ nombre_cc +"?",
+            content : "En caso de tener hijos, las cuentas hijo tambien serán eliminadas.",
+            buttons : "[Cancelar][Eliminar]",
+            }, function(ButtonPress, Value) {
+            if (ButtonPress == "Eliminar") {
+                $.ajax({
+                    url : "{{=URL('eliminar_cc')}}",
+                    type: "POST",
+                    data : {num_cc:num_cc},
+                    success: function(data)
+                    {
+                        if(data){
+                            window.location.reload();
+                        }
+                    },
+                    error: function (data)
+                    {
+                        console.log(data);
+                    }
+                });
+            }
+        });        
+    }
 </script>
