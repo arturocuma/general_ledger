@@ -1,3 +1,53 @@
-<form action="editar_cuenta" enctype="multipart/form-data" method="post">
-    {{=form}}    
-{{=form.custom.end}}
+<form enctype="multipart/form-data" action="{{=URL('cc_empresa','crear_cuenta')}}" method="post">
+{{=form.custom.begin}}
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="num_cc_">Número de cuenta</label>
+            {{form.element(_name='num_cc')['_class']='form-control'}}
+            {{=form.custom.widget.num_cc}}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="clave_sat">Clave SAT</label>
+            {{form.element(_name='clave_sat')['_class']='form-control'}}
+            {{=form.custom.widget.clave_sat}}
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-12">
+         <div class="form-group">
+            <label for="descripcion">Descripción de la cuenta</label>
+            {{form.element(_name='descripcion')['_class']='form-control'}}
+            {{=form.custom.widget.descripcion}}
+         </div>
+      </div>
+   </div>
+   <div class="row">
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="cc_naturaleza_id">Naturaleza</label>
+            {{form.element(_name='cc_naturaleza_id')['_class']='form-control'}}
+            {{=form.custom.widget.cc_naturaleza_id}}
+         </div>
+      </div>
+      <div class="col-md-6">
+         <div class="form-group">
+            <label for="cc_vista_id">Vista</label>
+            {{form.element(_name='cc_vista_id')['_class']='form-control'}}
+            {{=form.custom.widget.cc_vista_id}}
+         </div>
+      </div>
+   	</div>
+   	<div class="modal-footer">
+      <button type="button" class="btn btn-default" data-dismiss="modal">
+         Cancelar
+      </button>
+      	{{form.element(_type='submit')['_class']='btn btn-primary'}}
+      	{{form.element(_type='submit')['_value']='Guardar cambios'}}
+		{{=form.custom.submit}}
+   </div>
+ {{=form.custom.end}}
+</form>
