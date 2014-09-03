@@ -19,9 +19,16 @@ pass
 <div class="row">
     <article class='col-xs-12 col-sm-12 col-md-12 col-lg-12'>
         <legend>
+            <div class="col-sm-3 col-md-2 col-lg-2 profile-pic">
+                {{pic = 'http://pbs.twimg.com/profile_images/2284174872/7df3h38zabcvjylnyfe3_normal.png'}}
+                {{if session.auth:}}                                
+                    <img src="{{=session.picture if session.picture else pic}}" />
+                {{else:}}
+                    <img src="{{=URL('static/smartadmin','img/avatars/male.png')}}" />
+                {{pass}}
+            </div>
             <h1>
                 <p>
-                    <i class="fa-fw fa fa-user"></i>
                  	{{=auth.user['first_name']}} {{=auth.user['last_name']}}   
                 </p>
                 <small>Perfil de usuario</small>
