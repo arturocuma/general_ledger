@@ -515,7 +515,7 @@ def crear_cuenta():
         vista_id = int(request.vars.cc_vista_id)
         msg = 'Cuenta Creada'
         add_node(padre_id, num_cc, descripcion, clave_sat, naturaleza_id, vista_id)
-        redirect(URL('index'))
+        redirect(URL('cc_grid'))
 
     return dict(cc_empresa=cc_empresa,cc_vista=cc_vista,cc_naturaleza=cc_naturaleza, msg=msg)
 
@@ -528,7 +528,7 @@ def editar_cuenta():
     form=crud.update(db.cc_empresa, request.vars.id)
     form.element(_type='submit')['_class']='btn btn-primary'
     if request.vars.num_cc:
-        redirect(URL('index'))
+        redirect(URL('cc_grid'))
     return dict(form=form)
 
 
