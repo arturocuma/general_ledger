@@ -167,7 +167,7 @@ def configuracion():
     elif form.errors:
         print 'errores en el formulario'
     else:
-        print 'formulario incompleto'
+        pass
 
     return dict(form=form)
 
