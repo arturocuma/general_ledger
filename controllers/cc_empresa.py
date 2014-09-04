@@ -143,12 +143,16 @@ def ul_list(tipo):
         else:
             display='style="display:None"'
            
+        
         cantidad = db.executesql("SELECT SUM(debe) as suma_debe, SUM(haber) as suma_haber  "\
                                  "FROM asiento, cc_empresa "\
                                  "WHERE asiento.cc_empresa_id = cc_empresa.id "\
                                  "AND cc_empresa.num_cc like '"+cat[0]+"%'")
+        existe_asiento=False
         debe=cantidad[0][0] if cantidad[0][0]!=None else 0.0
-        haber=cantidad[0][0] if cantidad[0][0]!=None else 0.0
+        haber=cantidad[0][1] if cantidad[0][1]!=None else 0.0
+        if (debe>0.0 or haber>0.0):
+            existe_asiento=True
         if cat[2]>n:
             cadena+='<ul><li '+display+' >'
         elif cat[2]==n:
@@ -164,8 +168,10 @@ def ul_list(tipo):
         if tipo=="config":
             cadena+='<span><i class="fa fa-minus-circle"></i></span> '
 
-            cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton" data-toggle="modal" data-target="#modal_editar"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div><div class="menu-boton" ><a href="javascript:eliminar_cc(\''+str(cat[0])+'\',\''+str(cat[1])+'\')" >Eliminar</a></div>'
-            if cat[4]==1:
+            cadena+= '<div class="btn-group"><button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">'+cat[0]+' '+cat[1]+' <div class="fa fa-caret-down"></div></button><ul class="dropdown-menu" role="menu"><div class="menu-boton" data-toggle="modal" data-target="#modal_editar"><a href="javascript:editar_cuenta('+str(cat[3])+')" >Editar</a></div>'
+            if existe_asiento==False:
+                cadena+='<div class="menu-boton" ><a href="javascript:eliminar_cc(\''+str(cat[0])+'\',\''+str(cat[1])+'\')" >Eliminar</a></div>'
+            if cat[4]:
                 cadena+='<div class="menu-boton" data-toggle="modal" data-target="#modal_crear"><a href="javascript:crear_cuenta('+str(cat[3])+','+str(cat[4])+')">Crear Sub-cuenta</a></div>'
             cadena+='</ul></div>'
 
